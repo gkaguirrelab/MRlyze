@@ -1,4 +1,4 @@
-function FIR_assemble(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
+function SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
 % FIR_assemble(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
 
 for hh = 1:length(hemis)
@@ -46,34 +46,23 @@ for hh = 1:length(hemis)
             for i = 1:length(Conditions)
                 condName = Conditions{i};
                 runNums = Runs{i};
-                %[means{i},sems{i}] = psc_cope(session_dir,subject_name,runNums,func,ROIind, copeNames);
-                [means{i},sems{i}] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind, copeNames);
-                FIR_plot(means{i},sems{i},ROI,condName,subj_name,hemi,funcName);
-                if ~exist (fullfile(session_dir, 'FIR_figures'),'dir')
-                    mkdir (session_dir, 'FIR_figures');
+                fileNameM = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'mean.csv'];
+                fileNameS = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'SEM.csv'];
+                 if ~exist (fullfile(session_dir, 'CSV_datafiles'),'dir')
+                    mkdir (session_dir, 'CSV_datafiles');
                 end
-                if ~exist (fullfile(dropbox_dir, 'FIR_figures'),'dir')
-                    mkdir (dropbox_dir, 'FIR_figures');
+                if ~exist (fullfile(dropbox_dir, 'CSV_datafiles'),'dir')
+                    mkdir (dropbox_dir, 'CSV_datafiles');
                 end
-                savefig(fullfile(session_dir, 'FIR_figures', [subj_name '_' condName '_' hemi '_' ROI '_' func '.fig'])); %save .fig on cluster
-                set(gcf, 'PaperPosition', [0 0 4 4]);
-                set(gcf, 'PaperSize', [4 4]);
-                saveas(gcf, fullfile(dropbox_dir,'FIR_figures', [subj_name '_' condName '_' hemi '_' ROI '_' func]), 'pdf');%save .pdf on dropbox
-                close all;
+                
+                [means{i},sems{i}] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind, copeNames);  
             end
-            if ~exist (fullfile(session_dir, 'CSV_datafiles'),'dir')
-                mkdir (session_dir, 'CSV_datafiles');
-            end
-            if ~exist (fullfile(dropbox_dir, 'CSV_datafiles'),'dir')
-                mkdir (dropbox_dir, 'CSV_datafiles');
-            end
-            fileNameM = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'mean.csv'];
-            fileNameS = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'SEM.csv'];
             csvwrite ((fullfile(dropbox_dir,'CSV_datafiles', fileNameM)), means);
-            csvwrite ((fullfile(dropbox_dir,'CSV_datafiles', fileNameS)), sems);
+            csvwrite ((fullfile(dropbox_dir, 'CSV_datafiles', fileNameS)), sems);
             csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameM)), means);
-            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameS)), sems);
+            csvwrite ((fullfile(session_dir, 'CSV_datafiles', fileNameS)), sems);
             
         end
+        
     end
 end
