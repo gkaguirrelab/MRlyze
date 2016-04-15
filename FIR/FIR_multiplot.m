@@ -23,22 +23,7 @@ function FIR_multiplot (output_dir,dataFiles, dataExt, legendTexts, titleText, s
 % 
 % FIR_multiplot (output_dir,dataFiles, dataExt, legendTexts, titleText, saveName)
 
-%%
-switch dataExt
-    case 'fig' % get datapoints from fig files
-        for ff = 1:length(dataFiles)
-            H = open (dataFiles{ff});
-            D=get(gca,'Children');
-            YData=get(D,'YData');
-            y(ff) = YData(1);
-            close (H);
-        end
-    case 'csv' %get datapoints from csv files
-        for ff = 1:length(dataFiles)
-            y(ff) = csvread(dataFiles{ff});
-        end
-end
-%% plot all in same figure
+%% set axes
 figure('units','normalized','position',[0 0 1 1]);
 hold on
 xlabel('Time in seconds');
@@ -54,15 +39,36 @@ xlim(xlims); ylim(ylims);
 ax = gca;
 set(ax,'XTick',xTick);
 set(ax,'XTickLabel',xLabels);
-for pp = 1:length(dataFiles)
-    dataP = y(pp);
-    dataP = transpose (dataP{:});
+
+
+for ff = 1:length(dataFiles)
+    switch dataExt
+        case 'fig' % get datapoints from fig files
+            
+            H = open (dataFiles{ff});
+            D=get(gca,'Children');
+            YData=get(D,'YData');
+            y(ff) = YData(1);
+            close (H);
+            
+            dataP = y(ff);
+            dataP = transpose (dataP{:});
+            
+            
+        case 'csv' %get datapoints from csv files
+            
+            y(:,ff) = csvread(dataFiles{ff});
+            
+            dataP = y(:,ff);
+    end
     dataL = length(dataP);
     x = 0:1:dataL-1;
     plot(x,dataP,'o-');
     axis square;
-    legendInfo{pp} = (legendTexts{pp}); 
+    legendInfo{ff} = (legendTexts{ff});
+    
 end
+
 legend (legendInfo, 'Interpreter','none');
 
 %save pdf in output dir
