@@ -1,0 +1,9 @@
+#!/bin/bash
+session_dir=
+rr=
+srcROI=
+hemi=
+srcind=
+datamat=
+
+matlab -nodisplay -nosplash -r "submit_pRF('$session_dir',$rr,'$srcROI','$hemi',$srcind,'$datamat');"

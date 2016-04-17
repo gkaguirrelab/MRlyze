@@ -1,0 +1,40 @@
+Installation of AFNI for Mac
+
+Install the latest version of Xcode, XQuartz, FSL, & Freesurfer
+Install Xcode in terminal with 
+xcode-select —install
+Install Homebrew in terminal with
+ 
+  ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)”
+
+In terminal, install the following:
+
+brew install qt
+brew install sip
+brew install pyqt
+
+Download afni with:
+
+wget http://afni.nimh.nih.gov/pub/dist/tgz/macosx_10.7_Intel_64.tgz -P ~/Downloads/
+
+Install by the following:
+
+cd ~/Downloads
+tar -xvzf macosx_10.7_Intel_64.tgz
+mkdir ~/afni
+cp -r ~/Downloads/macosx_10.7_Intel_64/* ~/afni/
+/bin/rm -fr ~/Downloads/macosx_10.7_Intel_64*  
+
+Edit bash profile by:
+
+open -e ~/.bash_profile
+Add the following to .bash_profile
+   	export PATH=~/afni:$PATH
+	export DYLD_FALLBACK_LIBRARY_PATH=~/afni
+	export PYTHONPATH=/usr/local/lib/python2.7/site-packages
+
+Verify installation of afni by entering "afni" in terminal (without quotes).
+
+make sure to add the following to matlab startup.m:
+
+setenv('DYLD_LIBRARY_PATH', '/usr/local/bin/');
