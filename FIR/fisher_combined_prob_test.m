@@ -1,4 +1,4 @@
-function fisher_combined_prob_test(session_dir,subject_name,runNums,func,thresh,SUBJECTS_DIR,inAnatomicalSpace)
+function fisher_combined_prob_test(session_dir,subject_name,subj_name, condition, runNums,func,thresh,SUBJECTS_DIR,inAnatomicalSpace)
 
 % Loads pval.nii.gz or pval.anat.nii.gz from feat/stats directory 
 %
@@ -56,11 +56,11 @@ logTmp = log(tmp);
 sumLogTmp = -2*sum(logTmp, 4);
 pval.vol = sumLogTmp;
 fprintf('\t * Saving out Fisher''s test...');
-save_nifti(pval,fullfile(session_dir,'fishers_test.anat.nii.gz'));
+save_nifti(pval,fullfile(output_dir,[subj_name '_' condition '_' 'Fisher_Chisq.anat.nii.gz']));
 fprintf('done!');
 
 P = 1 - chi2cdf(sumLogTmp,length(runNums));
 pval.vol = P;
 fprintf('\t * Saving out Fisher''s test as p values...');
-save_nifti(pval,fullfile(session_dir,'fishers_test_p.anat.nii.gz'));
+save_nifti(pval,fullfile(output_dir,[subj_name '_' condition '_' 'Fisher_pval.anat.nii.gz']));
 fprintf('done!');
