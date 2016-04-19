@@ -42,16 +42,20 @@ x = 0:1:(length(means)-1);
 
 figure('units','normalized','position',[0 0 1 1]);
 plot([xlims(1) xlims(end)],[0 0],'k'); hold on;
-errorbar(x,means,SEMs, 'k');hold on;
-plot(x, means,'.r','MarkerSize',16);
-title({subj_name, [hemi ' ' ROI ' ' condName ' ' func]},'Interpreter','none')
+h = plot(x, means, ':k'); hold on;
+set(get(get(h,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
+g = errorbar(x,means,SEMs, '.k','MarkerSize',16); hold on;
+set(get(get(g,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
+p = plot(x, means, '.r', 'MarkerSize',16);
+legend (p, ['Mean ' char(177) ' SEM']);
+title({subj_name, [condName ' - ' hemi ' ' ROI ' ' func]},'Interpreter','none')
 xlabel('Time [sec]');
 ylabel('Amplitude [% signal change]');
 xlim(xlims); ylim(ylims);
 ax = gca;
 
 str = ['Valid runs = ',num2str(length(runNums))];
-text(0, 1, str)
+text(0, -0.4, str)
 
 set(ax,'XTick',xTick);
 set(ax,'XTickLabel',xLabels);

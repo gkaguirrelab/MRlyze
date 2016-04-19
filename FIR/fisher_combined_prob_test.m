@@ -1,4 +1,4 @@
-function fisher_combined_prob_test(session_dir,subject_name,subj_name, condition, runNums,func,thresh,SUBJECTS_DIR,inAnatomicalSpace)
+function fisher_combined_prob_test(output_dir, session_dir,subject_name,subj_name, condition, runNums,func,thresh,SUBJECTS_DIR,inAnatomicalSpace)
 
 % Loads pval.nii.gz or pval.anat.nii.gz from feat/stats directory 
 %

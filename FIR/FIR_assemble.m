@@ -1,8 +1,8 @@
-function FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, condition)
+function FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, runNums, hemis, ROIs, funcs, condition)
 % Saves out FIR responses and means
 
 
-% FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
+% FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, condition)
 
 
 for hh = 1:length(hemis)
@@ -33,20 +33,22 @@ for hh = 1:length(hemis)
             func = funcs{ff};
             funcName = funcs{ff};
             condName = condition;
-            [means{i},sems{i}] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind, copeNames);
+            [mean,sem] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames);
             % Plot and save figures
-            FIR_plot(means{i},sems{i},ROI,condName,hemi,funcName, subj_name, runNums);
-            if ~exist (fullfile(session_dir, 'FIR_figures'),'dir')
-                mkdir (session_dir, 'FIR_figures');
-            end
-            if ~exist (fullfile(output_dir, 'FIR_figures'),'dir')
-                mkdir (output_dir, 'FIR_figures');
-            end
-            savefig(fullfile(session_dir, 'FIR_figures', [subj_name '_' condName '_' hemi '_' ROI '_' func '.fig'])); %save .fig on cluster
-            set(gcf, 'PaperPosition', [0 0 7 7]);
-            set(gcf, 'PaperSize', [7 7]);
-            saveas(gcf, fullfile(output_dir,'FIR_figures', [subj_name '_' condName '_' hemi '_' ROI '_' func]), 'pdf');%save .pdf on dropbox
-            close all;
+            
+                FIR_plot(mean,sem,ROI,condName,hemi,funcName, subj_name, runNums);
+                if ~exist (fullfile(session_dir, 'FIR_figures'),'dir')
+                    mkdir (session_dir, 'FIR_figures');
+                end
+                if ~exist (fullfile(output_dir, 'FIR_figures'),'dir')
+                    mkdir (output_dir, 'FIR_figures');
+                end
+                savefig(fullfile(session_dir, 'FIR_figures', [subj_name '_' condName '_' hemi '_' ROI '_' func '.fig'])); %save .fig on cluster
+                set(gcf, 'PaperPosition', [0 0 7 7]);
+                set(gcf, 'PaperSize', [7 7]);
+                saveas(gcf, fullfile(output_dir,'FIR_figures', [subj_name '_' condName '_' hemi '_' ROI '_' func]), 'pdf');%save .pdf on dropbox
+                close all;
+            
             % save means
             if ~exist (fullfile(session_dir, 'CSV_datafiles'),'dir')
                 mkdir (session_dir, 'CSV_datafiles');
@@ -56,10 +58,10 @@ for hh = 1:length(hemis)
             end
             fileNameM = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'mean.csv'];
             fileNameS = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'SEM.csv'];
-            csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameM)), means);
-            csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameS)), sems);
-            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameM)), means);
-            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameS)), sems);
+            csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameM)), mean);
+            csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameS)), sem);
+            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameM)), mean);
+            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameS)), sem);
             
         end
     end
