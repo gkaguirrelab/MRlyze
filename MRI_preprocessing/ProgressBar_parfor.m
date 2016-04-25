@@ -15,12 +15,12 @@ function ProgressBar_parfor(varargin)
 %   poolobj = gcp; % start parpool
 %   tstart = clock;
 %   nloops = 100; % number of loops
-%   ProgressBar_parfor();
+%   ProgressBar_parfor(tstart);
 %   parfor v = 1:nloops
 %       <some stuff>
 %       ProgressBar_parfor(tstart,v,nloops);
 %   end
-%   ProgressBar_parfor(tstart); % Display total loop time
+%   ProgressBar_parfor(tstart,'clean'); % Display total loop time
 %   delete(poolobj); % close parpool
 %
 %   Written by Andrew S Bock Mar 2014
@@ -39,7 +39,7 @@ elseif nargin == 3;
     fclose(f);
     perc = 100*sum(prog(1:end))/varargin{3};
     tstart = varargin{1};
-    if mod(perc,10) < 0.1 % every 10% (or so) give an update
+    if mod(perc,1) < 0.1 % every 10% (or so) give an update
         %disp(['Working on input: ' num2str(varargin{2}) ' out of ' num2str(varargin{3})]);
         disp(['Iterations completed: ' num2str(perc) '%']);
         tmp = clock;
