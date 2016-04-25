@@ -43,7 +43,7 @@ srcdims = size(src.vol);
 nFrames = srcdims(4);
 TR = src.pixdim(5)/1000;
 if TR < 0.1
-   error('TR is less than 0.1, header TR most likely not in msec'); 
+    error('TR is less than 0.1, header TR most likely not in msec');
 end
 srctc = reshape(src.vol,srcdims(1)*srcdims(2)*srcdims(3),srcdims(4))';
 % Pull out relevant timecourses
@@ -64,7 +64,7 @@ save(fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.' func '.prfs.mat'
 %% Plot in src volume
 disp('Making pRF maps...');
 if strcmp(srcROI,'cortex');
-    mri = load_nifti(fullfile(session_dir,[hemi '.ecc.nii.gz']));
+    mri = load_nifti(fullfile(session_dir,'pRFs','anat_templates',[hemi '.ecc.nii.gz']));
 else
     mri = load_nifti(fullfile(session_dir,d{runNum},'single_TR.nii.gz'));
 end
@@ -86,26 +86,26 @@ varsig4 = mri;
 disp('Saving correlation and variance explained maps...');
 %co and copeakt
 co.vol(srcind) = prfs.co;
-save_nifti(co,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.co.prfs.nii.gz']));
+save_nifti(co,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.co.prfs.nii.gz']));
 copeakt.vol(srcind) = prfs.copeakt;
-save_nifti(copeakt,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.copeakt.prfs.nii.gz']));
+save_nifti(copeakt,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.copeakt.prfs.nii.gz']));
 %var and varpeakt
 varr.vol(srcind) = prfs.var;
-save_nifti(varr,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.var.prfs.nii.gz']));
+save_nifti(varr,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.var.prfs.nii.gz']));
 varpeakt.vol(srcind) = prfs.varpeakt;
-save_nifti(varpeakt,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.varpeakt.prfs.nii.gz']));
+save_nifti(varpeakt,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.varpeakt.prfs.nii.gz']));
 %sig1
 cosig1.vol(srcind) = prfs.cosig(:,1);
-save_nifti(cosig1,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.cosig1.prfs.nii.gz']));
+save_nifti(cosig1,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.cosig1.prfs.nii.gz']));
 %sig2
 cosig2.vol(srcind) = prfs.cosig(:,2);
-save_nifti(cosig2,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.cosig2.prfs.nii.gz']));
+save_nifti(cosig2,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.cosig2.prfs.nii.gz']));
 %sig3
 cosig3.vol(srcind) = prfs.cosig(:,3);
-save_nifti(cosig3,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.cosig3.prfs.nii.gz']));
+save_nifti(cosig3,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.cosig3.prfs.nii.gz']));
 %sig4
 cosig4.vol(srcind) = prfs.cosig(:,4);
-save_nifti(cosig4,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.cosig4.prfs.nii.gz']));
+save_nifti(cosig4,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.cosig4.prfs.nii.gz']));
 % For variance, flip Gaussian params so all correlations are positive
 % Find var_as_co values that are negative (these we will flip)
 flip_sigs_ind = prfs.var_as_co;
@@ -124,19 +124,19 @@ prfs.var_as_co(flip_sigs_ind) = newvar_as_co;
 % Save Gaussian params
 disp('Saving Gaussian parameter maps...');
 var_as_co.vol(srcind) = prfs.var_as_co;
-save_nifti(var_as_co,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.var_as_co.prfs.nii.gz']));
+save_nifti(var_as_co,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.var_as_co.prfs.nii.gz']));
 %sig1
 varsig1.vol(srcind) = prfs.varsig(:,1);
-save_nifti(varsig1,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.varsig1.prfs.nii.gz']));
+save_nifti(varsig1,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.varsig1.prfs.nii.gz']));
 %sig2
 varsig2.vol(srcind) = prfs.varsig(:,2);
-save_nifti(varsig2,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.varsig2.prfs.nii.gz']));
+save_nifti(varsig2,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.varsig2.prfs.nii.gz']));
 %sig3
 varsig3.vol(srcind) = prfs.varsig(:,3);
-save_nifti(varsig3,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.varsig3.prfs.nii.gz']));
+save_nifti(varsig3,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.varsig3.prfs.nii.gz']));
 %sig4
 varsig4.vol(srcind) = prfs.varsig(:,4);
-save_nifti(varsig4,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.varsig4.prfs.nii.gz']));
+save_nifti(varsig4,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.varsig4.prfs.nii.gz']));
 % Save pol and ecc maps
 disp('Saving eccentricity and polar angle maps...');
 mri.vol = nan(size(mri.vol));
@@ -145,24 +145,24 @@ copol = mri;
 varecc = mri;
 varpol = mri;
 coecc.vol(srcind) = prfs.coecc;
-save_nifti(coecc,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.coecc.prfs.nii.gz']));
+save_nifti(coecc,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.coecc.prfs.nii.gz']));
 copol.vol(srcind) = prfs.copol;
-save_nifti(copol,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.copol.prfs.nii.gz']));
+save_nifti(copol,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.copol.prfs.nii.gz']));
 varecc.vol(srcind) = prfs.varecc;
-save_nifti(varecc,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.varecc.prfs.nii.gz']));
+save_nifti(varecc,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.varecc.prfs.nii.gz']));
 varpol.vol(srcind) = prfs.varpol;
-save_nifti(varpol,fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.varpol.prfs.nii.gz']));
+save_nifti(varpol,fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.varpol.prfs.nii.gz']));
 if ~strcmp(srcROI,'cortex');
     % Project to anatomical space
     disp('Projecting maps to anatomical space...');
     maps = {'co' 'copeakt' 'cosig1' 'cosig2' 'cosig3' 'cosig4' 'coecc' 'copol' ...
-            'var' 'varpeakt' 'var_as_co' 'varsig1' 'varsig2' 'varsig3' 'varsig4' 'varecc' 'varpol'};
+        'var' 'varpeakt' 'var_as_co' 'varsig1' 'varsig2' 'varsig3' 'varsig4' 'varecc' 'varpol'};
     for m = 1:length(maps);
-        savename = fullfile(session_dir,[hemi '.' srcROI '.run' num2str(runNum) '.' maps{m} '.prfs']);
-        [~,~] = system(['mri_vol2vol --mov ' savename '.nii.gz ' ...
+        savename = fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.' maps{m} '.prfs']);
+        system(['mri_vol2vol --mov ' savename '.nii.gz ' ...
             '--targ ' fullfile(SUBJECTS_DIR,subject_name,'mri','orig.mgz') ...
             ' --o ' savename '.orig.nii.gz --reg ' ...
-            fullfile(session_dir,d{runNum},'brf_bbreg.dat') ...
+            fullfile(session_dir,d{runNum},'func_bbreg.dat') ...
             ' --interp nearest']);
     end
 end
