@@ -19,25 +19,31 @@ disp('Creating pRF template ROIs...');
 for dd = 1:length(t)
     hemi = t{dd}(1:2);
     % Load in a temporary file to overwrite
-    tmp = load_nifti(fullfile(session_dir,[hemi '.areas.nii.gz']));
+    tmp = load_nifti(fullfile(session_dir,'pRFs','anat_templates',[hemi '.areas.nii.gz']));
     % Load the output from Mathematica
     tmpmgh = load_mgh(fullfile(template_dir,t{dd}));
     % get template name
     endname = strfind(t{dd},'.mgz');
     fname = t{dd}(4:endname-1);
-    % Pol
-    tmp.vol = squeeze(tmpmgh(1,:,1))';
-    tmp.vol(tmp.vol==99999) = nan;
-    tmp.vol = deg2rad(tmp.vol) - pi/2;
-    save_nifti(tmp,fullfile(template_dir,[hemi '.pol.' fname '.nii.gz']));
-    % Ecc
-    tmp.vol = squeeze(tmpmgh(1,:,2))';
-    tmp.vol(tmp.vol==99999) = nan;
-    save_nifti(tmp,fullfile(template_dir,[hemi '.ecc.' fname '.nii.gz']));
     % Areas
-    tmp.vol = squeeze(tmpmgh(1,:,3))';
-    tmp.vol(tmp.vol==99999) = nan;
-    save_nifti(tmp,fullfile(template_dir,[hemi '.areas.' fname '.nii.gz']));
+    Areas = tmp;
+    Areas.vol = squeeze(tmpmgh(1,:,3))';
+    Areas.vol(Areas.vol==99999) = nan;
+    Areas.vol(abs(Areas.vol)>3) = nan;
+    save_nifti(Areas,fullfile(template_dir,[hemi '.areas.' fname '.nii.gz']));
+    % Pol
+    Pol = tmp;
+    Pol.vol = squeeze(tmpmgh(1,:,1))';
+    Pol.vol(Pol.vol==99999) = nan;
+    Pol.vol(abs(Areas.vol)>3) = nan;
+    Pol.vol = deg2rad(Pol.vol) - pi/2;
+    save_nifti(Pol,fullfile(template_dir,[hemi '.pol.' fname '.nii.gz']));
+    % Ecc
+    Ecc = tmp;
+    Ecc.vol = squeeze(tmpmgh(1,:,2))';
+    Ecc.vol(Ecc.vol==99999) = nan;
+    Ecc.vol(abs(Areas.vol)>3) = nan;
+    save_nifti(Ecc,fullfile(template_dir,[hemi '.ecc.' fname '.nii.gz']));
     % RIGHT HEMISPHERE
     if strcmp(hemi,'rh')
         % convert to rh polar angle

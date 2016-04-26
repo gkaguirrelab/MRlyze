@@ -1,4 +1,4 @@
-function decimate_templates(session_dir,subject_name,tdir,src_surf,trg_surf)
+function decimate_templates(subject_name,tdir,src_surf,trg_surf)
 
 % Decimates pRF templates.  Assumes that the following has been done in
 % terminal (must be Linux!).
@@ -8,14 +8,11 @@ function decimate_templates(session_dir,subject_name,tdir,src_surf,trg_surf)
 %   mris_decimate -d 0.1 ./rh.inflated ./rh.0.1.inflated
 %
 %   Usage:
-%   decimate_templates(session_dir,subject_name,tdir,src_surf,trg_surf)
+%   decimate_templates(subject_name,tdir,src_surf,trg_surf)
 %
 %   Written by Andrew S Bock Sep 2015
 
 %% set defaults
-if ~exist('tdir','var')
-    tdir = fullfile(session_dir,'pRFs','model_templates');
-end
 if ~exist(fullfile(tdir,'decimated_templates'),'dir')
     mkdir(fullfile(tdir,'decimated_templates'));
 end
