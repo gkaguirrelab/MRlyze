@@ -1,6 +1,6 @@
 function filterMotionMatFiles(parFile,MatDir,outDir,TR)
 
-% Filters motion parameters at twice the Nyquist frequency, saves as MAT 
+% Filters motion parameters at twice the Nyquist frequency, saves as MAT
 %   files as expected by FSL's mclirt
 %
 %   Usage:
@@ -10,7 +10,7 @@ function filterMotionMatFiles(parFile,MatDir,outDir,TR)
 %   FSL is strange for these params:
 %   https://www.jiscmail.ac.uk/cgi-bin/webadmin?A2=ind1112&L=FSL&D=0&P=7568
 %
-%   Thus, we use the MAT files for the translations, and the .par file for 
+%   Thus, we use the MAT files for the translations, and the .par file for
 %   the rotations.
 %
 %   note:
@@ -19,6 +19,10 @@ function filterMotionMatFiles(parFile,MatDir,outDir,TR)
 %   Based on scripts by Marta Vidorreta Díaz de Cerio
 %   Written by Andrew S Bock Apr 2016
 
+%% set defaults
+if ~exist('outDir','dir')
+    mkdir(outDir);
+end
 %% Read in motion params
 % parfile for rotations
 fid = fopen(parFile,'r');
