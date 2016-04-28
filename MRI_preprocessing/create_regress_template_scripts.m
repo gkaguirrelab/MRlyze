@@ -1,4 +1,4 @@
-function create_regress_template_scripts(session_dir,templateType,outDir,runs,func,saveDir,tcPart,leaveOut,V2V3)
+function create_regress_template_scripts(session_dir,templateType,outDir,runs,func,saveDir,tcPart,leaveOut,V2V3,logDir)
 
 % Creates shell scripts for running 'regress_template' on the UPenn
 % cluster.
@@ -31,6 +31,9 @@ end
 if ~exist('leaveOut','var')
     leaveOut = '0'; % only relevant when "tcPart = 'half'", dictates which run halves to leave out.
 end
+if ~exist('logDir','var')
+    logDir = '/data/jet/abock/LOGS';
+end
 %% Create regress_template scripts
 % psiParams = {...
 %     -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0 ...
@@ -46,16 +49,16 @@ for hh = 1:length(hemis);
     switch templateType
         case 'coarse'
             if strcmp(hemi,'lh')
-                ii = 4:11;% 0.0 - 0.7
-                jj = 4:11; % -0.4 - 0.3
-                kk = 3:10; % -0.6 - 0.1
+                ii = 1:7;% 0.0 - 0.7
+                jj = 1:7; % -0.4 - 0.3
+                kk = 1:7; % -0.6 - 0.1
                 %                 ii = 6:12;%  0.2 <->  0.8
                 %                 jj = 3:9; % -0.5 <->  0.1
                 %                 kk = 3:9; % -0.6 <->  0.0
             else
-                ii = 1:8; % -0.3 - 0.4
-                jj = 3:10; % -0.5 - 0.2
-                kk = 7:14; % -0.2 - 0.5
+                ii = 1:7; % -0.3 - 0.4
+                jj = 1:7; % -0.5 - 0.2
+                kk = 1:7; % -0.2 - 0.5
                 %                 ii = 2:8; % -0.2 <->  0.4
                 %                 jj = 2:8; % -0.6 <->  0.0
                 %                 kk = 8:14;% -0.1 <->  0.5
@@ -92,8 +95,7 @@ for hh = 1:length(hemis);
     hemi = hemis{hh};
     submit_name = ['submit_' hemi '_regress'];
     job_string = listdir(fullfile(outDir,[hemi '*regress*.sh']),'files');
-    cores = 1;
     mem = 5;
-    create_submit_shell(outDir,submit_name,job_string,cores,mem);
+    create_submit_shell(outDir,logDir,submit_name,job_string,mem);
 end
 system(['chmod +x ' fullfile(outDir,'*')]);
