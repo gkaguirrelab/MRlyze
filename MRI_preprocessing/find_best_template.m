@@ -24,14 +24,16 @@ function [varexp,params,sorted_templates] = find_best_template(templateType,tdir
 % template parameters
 if ~exist('psi','var') || isempty(psi)
     if strcmp(templateType,'coarse')
-        psi = [-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0];
+        %psi = [-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0];
+        psi = [0.4 0.5 0.6 0.7 0.8 0.9 1.0];
     elseif strcmp(templateType,'fine')
         psi = [-0.066 -0.033 0.000 0.033 0.066];
     end
 end
 if ~exist('FCx','var') || isempty(FCx)
     if strcmp(templateType,'coarse')
-        FCx = [-0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6];
+        %FCx = [-0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6];
+        FCx = [-0.45 -0.35 -0.25 -0.15 -0.05 0.05 0.15];
     elseif strcmp(templateType,'fine')
         FCx = [-0.066 -0.033 0.000 0.033 0.066];
     end
@@ -39,7 +41,8 @@ if ~exist('FCx','var') || isempty(FCx)
 end
 if ~exist('FCy','var') || isempty(FCy)
     if strcmp(templateType,'coarse')
-        FCy = [-0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5];
+        %FCy = [-0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5];
+        FCy = [-0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1];
     elseif strcmp(templateType,'fine')
         FCy = [-0.066 -0.033 0.000 0.033 0.066];
     end

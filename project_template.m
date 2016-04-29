@@ -36,14 +36,14 @@ for hh = 1:length(hemis)
             case 'lh'
                 system(['mri_surf2surf --hemi lh --srcsubject fsaverage_sym --srcsurfval ' ...
                     template_files{t} ' --trgsubject ' subject_name ' --trgsurfval ' ...
-                    fullfile(outDir,['lh.' maps{t} '.nii.gz'])]);
+                    fullfile(outDir,['lh.' maps{t} '.anat.nii.gz'])]);
             case 'rh'
                 system(['mri_surf2surf --hemi lh --srcsubject fsaverage_sym --srcsurfval ' ...
                     template_files{t} ' --trgsubject ' subject_name '/xhemi --trgsurfval ' ...
-                    fullfile(outDir,['rh.' maps{t} '.nii.gz'])]);
+                    fullfile(outDir,['rh.' maps{t} '.anat.nii.gz'])]);
         end
     end
-    tmp = load_nifti(fullfile(outDir,[hemi '.pol.nii.gz']));
+    tmp = load_nifti(fullfile(outDir,[hemi '.pol.anat.nii.gz']));
     tmp.vol = deg2rad(tmp.vol) - pi/2; % convert to radians
     if strcmp(hemi,'rh')
         upper = tmp.vol>=0;
@@ -51,24 +51,24 @@ for hh = 1:length(hemis)
         tmp.vol(upper) = (-tmp.vol(upper) + pi);
         tmp.vol(lower) = (-tmp.vol(lower) - pi);
     end
-    save_nifti(tmp,fullfile(outDir,[hemi '.pol.nii.gz']));
+    save_nifti(tmp,fullfile(outDir,[hemi '.pol.anat.nii.gz']));
 end
 %% Project from subject surface to volume
 templatevol = fullfile(SUBJECTS_DIR,subject_name,'mri','T1.mgz');
 for hh = 1:length(hemis)
     hemi = hemis{hh};
     for m = 1:length(maps)
-        invol = fullfile(outDir,[hemi '.' maps{m} '.nii.gz']);
-        outvol = fullfile(outDir,[hemi '.' maps{m} '.vol.nii.gz']);
+        invol = fullfile(outDir,[hemi '.' maps{m} '.anat.nii.gz']);
+        outvol = fullfile(outDir,[hemi '.' maps{m} '.anat.vol.nii.gz']);
         system(['mri_surf2vol --surfval ' invol ' --hemi ' hemi ' --fillribbon --identity ' ...
             subject_name ' --template ' templatevol ' --o ' outvol]);
     end
 end
 %% Merge lh and rh into one volume (mh)
 for m = 1:length(maps)
-    lh = load_nifti(fullfile(outDir,['lh.' maps{m} '.vol.nii.gz']));
-    rh = load_nifti(fullfile(outDir,['rh.' maps{m} '.vol.nii.gz']));
-    mhname = fullfile(outDir,['mh.' maps{m} '.vol.nii.gz']);
+    lh = load_nifti(fullfile(outDir,['lh.' maps{m} '.anat.vol.nii.gz']));
+    rh = load_nifti(fullfile(outDir,['rh.' maps{m} '.anat.vol.nii.gz']));
+    mhname = fullfile(outDir,['mh.' maps{m} '.anat.vol.nii.gz']);
     mh = lh;
     mh.vol = zeros(size(mh.vol));
     mh.vol(lh.vol~=0) = lh.vol(lh.vol~=0);
