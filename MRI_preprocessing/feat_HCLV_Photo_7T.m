@@ -1,4 +1,4 @@
-function feat_HCLV_Photo_7T(outFile,funcVol,anatVol,EVs,WA)
+function [commandc] = feat_HCLV_Photo_7T(outFile,funcVol,anatVol,EVs,WA)
 
 % Write a .fsf file for first-level feat for the HCLV_Photo_7T protocol
 %
@@ -9,7 +9,7 @@ function feat_HCLV_Photo_7T(outFile,funcVol,anatVol,EVs,WA)
 %   outFile     = name of output .fsf file (fullpath)
 %   funcVol     = name of input functional volume (fullpath)
 %   anatVol     = name of 'standard' image for registration (fullpath)
-%   EVs         = structure containing EV text files for each condition (fullpath) 
+%   EVs         = structure containing EV text files for each condition (fullpath)
 %   WA          = 1 - wrap around block at beginning of run; 0 - no wrap around
 %
 %   Written by Andrew S Bock Apr 2016
@@ -24,7 +24,7 @@ else
     design_file = fullfile(design_dir,'first-level-template_HCLV_Photo_7T.fsf');
 end
 %% Load functional volume
-tmp = load_nifti(fullfile(funcVol));
+tmp = load_nifti(funcVol);
 %% Set design values
 DESIGN.TR = num2str(tmp.pixdim(5)/1000); % TR is in msec, convert to sec
 if tmp.pixdim(5) < 100 % use 100, in case very short TR is used (i.e. multi-band)
@@ -49,5 +49,6 @@ while(~feof(fin))
     %disp(s)
 end
 fclose(fin);
+% Diplay the feat command
 commandc = ['feat ' outFile];
 disp(commandc);

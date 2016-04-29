@@ -9,7 +9,7 @@ function plot_TTF(means,SEMs,ROI,condName,hemi,func,xlims,ylims,xTick,xLabels)
 %   March 2016: updated to include significant info in title. GF 
 %% set defaults
 if ~exist('condName','var')
-    CondName = '';
+    condName = '';
 end
 if ~exist('hemi','var')
     hemi = '';
