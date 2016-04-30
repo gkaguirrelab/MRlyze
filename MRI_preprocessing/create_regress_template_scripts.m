@@ -44,11 +44,12 @@ end
 % FCyParams = {...
 %     -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5 ...
 %     };
-for hh = 1:length(hemis);
-    hemi = hemis{hh};
+for hhh = 1:length(hemis);
+    hemi = hemis{hhh};
     switch templateType
         case 'coarse'
             if strcmp(hemi,'lh')
+                hh = 1:7;% 0.0 - 0.7
                 ii = 1:7;% 0.0 - 0.7
                 jj = 1:7; % -0.4 - 0.3
                 kk = 1:7; % -0.6 - 0.1
@@ -75,24 +76,27 @@ for hh = 1:length(hemis);
             runs ',''' hemi ''',''' func ''',''' templateType ''',' cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
         create_job_shell(outDir,job_name,matlab_string)
     else
-        for i = ii
-            for j = jj
-                for k = kk
-                    job_name = [hemi '.' num2str(i) '.' num2str(j) '.' num2str(k) '.regress'];
-                    matlab_string = ([...
-                        'regress_template(''' session_dir ''',''' saveDir ''',''' templateType ''',' ...
-                        runs ',''' hemi ''',''' func ''',''' ...
-                        [num2str(i) '.' num2str(j) '.' num2str(k)] ''',' ...
-                        cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
-                    create_job_shell(outDir,job_name,matlab_string)
+        for h = hh
+            for i = ii
+                for j = jj
+                    for k = kk
+                        job_name = [hemi '.' num2str(h) '.' num2str(i) '.' ...
+                            num2str(j) '.' num2str(k) '.regress'];
+                        matlab_string = ([...
+                            'regress_template(''' session_dir ''',''' saveDir ''',''' templateType ''',' ...
+                            runs ',''' hemi ''',''' func ''',''' ...
+                            [num2str(h) '.' num2str(i) '.' num2str(j) '.' num2str(k)] ''',' ...
+                            cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
+                        create_job_shell(outDir,job_name,matlab_string)
+                    end
                 end
             end
         end
     end
 end
 %% Create submit script
-for hh = 1:length(hemis);
-    hemi = hemis{hh};
+for hhh = 1:length(hemis);
+    hemi = hemis{hhh};
     submit_name = ['submit_' hemi '_regress'];
     job_string = listdir(fullfile(outDir,[hemi '*regress*.sh']),'files');
     mem = 5;
