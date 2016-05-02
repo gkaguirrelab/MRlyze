@@ -1,10 +1,10 @@
-function [means,sems] = psc_cope(session_dir,subject_name,runNums,func,ROIind,copeNames)
+function [means,sems] = psc_cope(session_dir,subject_name,runNums,func,ROIind,copeNames,proj2anat)
 
 % Gets the mean and SEM percent signal change for an ROI across runs, for
 %   each cope in a feat directory
 %
 %   Usage:
-%   [means,sems] = psc_cope(session_dir,subject_name,runNums,func,ROIind,copeNames)
+%   [means,sems] = psc_cope(session_dir,subject_name,runNums,func,ROIind,copeNames,proj2anat)
 %
 %   Written by Andrew S Bock Sep 2015
 
@@ -22,6 +22,9 @@ if ~exist('copeNames','var')
         'Hz64' ...
         };
 end    
+if ~exist('proj2anat','var')
+   proj2anat = 1; % project to anatomical space (0 = assumes this was done)
+end
 SUBJECTS_DIR = getenv('SUBJECTS_DIR');
 %% Find bold directories
 b = find_bold(session_dir);
@@ -36,17 +39,21 @@ for i = runNums
         targ_vol = fullfile(SUBJECTS_DIR,subject_name,'mri','T1.mgz');
         tmpreg = listdir(fullfile(session_dir,b{i},'*bbreg.dat'),'files');
         bbreg_out_file = fullfile(session_dir,b{i},tmpreg{1}); % name registration file
-        system(['mri_vol2vol --mov ' copefile ...
-            ' --targ ' targ_vol ' --reg ' bbreg_out_file ...
-            ' --o ' copeout ' --nearest']);
+        if proj2anat
+            system(['mri_vol2vol --mov ' copefile ...
+                ' --targ ' targ_vol ' --reg ' bbreg_out_file ...
+                ' --o ' copeout ' --nearest']);
+        end
         % Project mean functional volume to anatomical space
         meanfile = fullfile(session_dir,b{i},[func '.feat'],'mean_func.nii.gz');
         meanout = fullfile(session_dir,b{i},[func '.feat'],'mean_func.anat.nii.gz');
         tmpreg = listdir(fullfile(session_dir,b{i},'*bbreg.dat'),'files');
         bbreg_out_file = fullfile(session_dir,b{i},tmpreg{1}); % name registration file
-        system(['mri_vol2vol --mov ' meanfile ...
-            ' --targ ' targ_vol ' --reg ' bbreg_out_file ...
-            ' --o ' meanout ' --nearest']);
+        if proj2anat
+            system(['mri_vol2vol --mov ' meanfile ...
+                ' --targ ' targ_vol ' --reg ' bbreg_out_file ...
+                ' --o ' meanout ' --nearest']);
+        end
         % Calculate percent signal change (using copes)
         ctmp = load_nifti(copeout);
         mtmp = load_nifti(meanout);
