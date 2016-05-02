@@ -1,4 +1,4 @@
-function templ2subject (session_dir, subject_name, SUBJECTS_DIR, hemis)
+function templ2subject (session_dir, subject_name, hemis, SUBJECTS_DIR)
 % Projects anatomical templates to subject space for Visual Cortex and LGN.
 % Needs to run before projecting copes and plotting FIR/TTF responses.
 % Requirements: cvs registration for the Freesurfer subject.
@@ -14,8 +14,12 @@ function templ2subject (session_dir, subject_name, SUBJECTS_DIR, hemis)
 %         'rh'...
 %         };
 %
-% templ2subject (session_dir, subject_name, SUBJECTS_DIR, hemis)
+% templ2subject (session_dir, subject_name, hemis, SUBJECTS_DIR)
 %
+%%
+if ~exist('SUBJECTS_DIR','var')
+    SUBJECTS_DIR = getenv('SUBJECTS_DIR');
+end 
 %% Project Visual Cortex anatomical template to subject space
 
 project_template(session_dir,subject_name);
