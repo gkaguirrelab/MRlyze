@@ -10,7 +10,6 @@ function computeFisherChisq(inVols,outDir,outName)
 %   for i = 1:10
 %       inVol{i} = '/some/directory/name{i}/pval.anat.nii.gz';
 %   end
-%
 %   outDir = '/some/out/directory';
 %   outName = 'subjectName_conditionName_funcName';
 %   computeFisherChisq(inVols,outDir,outName);
@@ -34,7 +33,7 @@ disp('done!');
 %% Save the p-value output
 out = tmp;
 out.vol = nan(size(out.vol));
-out.vol = 1 - chi2cdf(sumLogTmp,length(inVsols));
+out.vol = 1 - chi2cdf(sumLogTmp,length(inVols));
 disp(['Saving ' fullfile(outDir,[outName '_Fisher_pval.anat.nii.gz'])]);
-save_nifti(pval,fullfile(outDir,[outName '_Fisher_pval.anat.nii.gz']));
+save_nifti(out,fullfile(outDir,[outName '_Fisher_pval.anat.nii.gz']));
 disp('done!');
