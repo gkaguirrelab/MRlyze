@@ -1,9 +1,12 @@
-function FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, runNums, hemis, ROIs, funcs, condition)
+function FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
 % Saves out FIR responses and means
 
 
 % FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, condition)
 
+if ~exist('startingCope','var')
+    startingCope = 1;
+end 
 
 for hh = 1:length(hemis)
     hemi = hemis{hh};
@@ -33,7 +36,7 @@ for hh = 1:length(hemis)
             func = funcs{ff};
             funcName = funcs{ff};
             condName = condition;
-            [mean,sem] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames);
+            [mean,sem] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames,startingCope);
             % Plot and save figures
             
                 FIR_plot(mean,sem,ROI,condName,hemi,funcName, subj_name, runNums);

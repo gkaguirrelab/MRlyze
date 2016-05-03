@@ -1,16 +1,21 @@
-function [means,sems] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames)
+function [means,sems] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames,startingCope)
 % [means,sems] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames)
 %
 % Adapted from psc_cope
 %
 % 4/5/16    ms, gf  Adapted.
+%% 
+if ~exist('startingCope','var')
+    startingCope = 1;
+end 
+
 %% Find bold directories
 b = find_bold(session_dir);
 
 ct = 0;
 for i = runNums
     ct = ct + 1;
-    for j = 1:length(copeNames)
+    for j = startingCope:length(copeNames)
         fprintf('\n> Run %g: Calculating pct signal change for %s.\n', i, copeNames{j});
         copeout = fullfile(session_dir,b{i},[func '.feat'],'stats',['cope' num2str(j) '.anat.nii.gz']);
         meanout = fullfile(session_dir,b{i},[func '.feat'],'mean_func.anat.nii.gz');
