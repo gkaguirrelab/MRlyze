@@ -6,7 +6,8 @@ function create_submit_shell(outDir,logDir,submit_name,job_string,mem)
 %   create_submit_shell(outDir,logDir,submit_name,job_string,mem)
 %
 %   example:
-%   outDir = '/data/jet/abock/LOGS';
+%   outDir = '/some/directory/for/scripts/'
+%   logDir = '/data/jet/abock/LOGS';
 %   submit_name = 'submit_example'
 %   job_string = 'job_example_1.sh'; % this is a cell, and can contain many
 %       job strings
