@@ -41,7 +41,8 @@ xx = 1:0.01:length(means);
 mm = polyval(Pm,xx);
 ss = polyval(Ps,xx);
 % Plot
-figure;fill([(xx),fliplr(xx)],[(mm+ss),fliplr(mm-ss)],...
+fullFigure;
+fill([(xx),fliplr(xx)],[(mm+ss),fliplr(mm-ss)],...
     [0.75 0.75 0.75],'LineWidth',1,'EdgeColor','none');
 hold on;
 plot(xx,mm,'k','LineWidth',2); hold on;
@@ -57,3 +58,5 @@ ax = gca;
 set(ax,'XTick',xTick);
 set(ax,'XTickLabel',xLabels);
 axis square;
+h = legend('Error bars = SEM','Location','NorthEast');
+set(h,'FontSize',15);

@@ -33,7 +33,7 @@ disp('done!');
 %% Save the p-value output
 out = pval;
 out.vol = nan(size(out.vol));
-out.vol = 1 - chi2cdf(sumLogTmp,length(inVols));
+out.vol = 1 - chi2cdf(sumLogTmp,2*length(inVols));
 disp(['Saving ' fullfile(outDir,[outName '_Fisher_pval.anat.nii.gz'])]);
 save_nifti(out,fullfile(outDir,[outName '_Fisher_pval.anat.nii.gz']));
 disp('done!');
