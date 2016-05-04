@@ -42,13 +42,17 @@ mm = polyval(Pm,xx);
 ss = polyval(Ps,xx);
 % Plot
 fullFigure;
-fill([(xx),fliplr(xx)],[(mm+ss),fliplr(mm-ss)],...
-    [0.75 0.75 0.75],'LineWidth',1,'EdgeColor','none');
+% Plot error
+errorbar(means,SEMs,'.k','MarkerSize',0.001);
+% fill([(xx),fliplr(xx)],[(mm+ss),fliplr(mm-ss)],...
+%     [0.75 0.75 0.75],'LineWidth',1,'EdgeColor','none');
 hold on;
+% Plot fit function
 plot(xx,mm,'k','LineWidth',2); hold on;
 plot([xTick(1) xTick(end)],[0 0],'k'); hold on;
+% Plot data points
 plot(x,means,'.r','MarkerSize',20);
-%figure;errorbar(mm,ss);
+% Titles, labels, etc
 title([hemi ' ' ROI ' ' condName ' ' func],'FontSize',30)
 xlabel('Frequency','FontSize',20);
 ylabel('Percent Signal Change','FontSize',20);
