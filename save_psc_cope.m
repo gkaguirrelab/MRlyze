@@ -9,7 +9,7 @@ function save_psc_cope(session_dir,ROI,hemi,chiSqVol,featDirs,copeNums,outFile,t
 
 %% Set defaults
 if ~exist('threshVal','var')
-    threshVal = 0.0001;
+    threshVal = 0.05;
 end
 %% Load inputs, threshold using chi-squared p-values and ROI mask
 % Get areas and ecc
