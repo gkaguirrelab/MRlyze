@@ -15,8 +15,8 @@ function FIR_first_level_feat(outFile,funcVol,anatVol,EVs,condition)
 %   Written by Andrew S Bock Apr 2016
 
 %% Set defaults
-
-design_dir = fullfile('data/jag/MELA/Matlab/MelanopsinMR/FEAT_templates');
+matlab_path = '/data/jag/MELA/Matlab';
+design_dir = fullfile(matlab_path,'MelanopsinMR/FEAT_templates');
 %% Load in template
 switch condition
     case 'MelPulses_400pct'

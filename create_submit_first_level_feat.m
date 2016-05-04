@@ -10,7 +10,7 @@ end
 fname = fullfile(out_dir, [subj_name 'submit_first_level_feat.sh']);
 fid = fopen(fname,'w');
 fprintf(fid,'#!/bin/bash\n');
-for rr = 1:length(numRuns)
+for rr = 1:numRuns
  fprintf(fid, ['feat ' FSF_dir '/Run_%02d_5mm.fsf\n'],rr);
  fprintf(fid, ['feat ' FSF_dir '/Run_%02d_raw.fsf\n'],rr);
 end
