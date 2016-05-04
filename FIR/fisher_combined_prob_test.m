@@ -59,7 +59,7 @@ fprintf('\t * Saving out Fisher''s test...');
 save_nifti(pval,fullfile(output_dir,[subj_name '_' condition '_' 'Fisher_Chisq.anat.nii.gz']));
 fprintf('done!');
 
-P = 1 - chi2cdf(sumLogTmp,length(runNums));
+P = 1 - chi2cdf(sumLogTmp,2*length(runNums));
 pval.vol = P;
 fprintf('\t * Saving out Fisher''s test as p values...');
 save_nifti(pval,fullfile(output_dir,[subj_name '_' condition '_' 'Fisher_pval.anat.nii.gz']));
