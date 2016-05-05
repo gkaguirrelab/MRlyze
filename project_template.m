@@ -21,7 +21,7 @@ if ~exist('SUBJECTS_DIR','var')
     SUBJECTS_DIR = getenv('SUBJECTS_DIR');
 end
 maps = {'ecc' 'pol' 'areas'};
-outDir = fullfile(session_dir,'pRFs','anat_templates');
+outDir = fullfile(session_dir,'anat_templates');
 if ~exist(outDir,'dir')
     mkdir(outDir);
 end
