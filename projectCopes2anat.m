@@ -20,6 +20,7 @@ for i = runNums
     % Get directory and cope files
     inDir = fullfile(session_dir,b{i},[func '.feat'],'stats');
     copeFiles = listdir(fullfile(inDir,'cope*.nii.gz'),'files');
+    targ_vol = fullfile(SUBJECTS_DIR,subject_name,'mri','T1.mgz');
     % Project mean functional volume to anatomical space
     meanfile = fullfile(session_dir,b{i},[func '.feat'],'mean_func.nii.gz');
     meanout = fullfile(session_dir,b{i},[func '.feat'],'mean_func.anat.nii.gz');
@@ -35,7 +36,6 @@ for i = runNums
             copefile = fullfile(inDir,copeFiles{j});
             extInd = strfind(copeFiles{j},'.nii.gz');
             copeout = fullfile(inDir,[copeFiles{j}(1:extInd) 'anat.nii.gz']);
-            targ_vol = fullfile(SUBJECTS_DIR,subject_name,'mri','T1.mgz');
             tmpreg = listdir(fullfile(session_dir,b{i},'*bbreg.dat'),'files');
             bbreg_out_file = fullfile(session_dir,b{i},tmpreg{1}); % name registration file
             system(['mri_vol2vol --mov ' copefile ...
