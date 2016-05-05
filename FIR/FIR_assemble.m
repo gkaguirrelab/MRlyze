@@ -22,7 +22,7 @@ for hh = 1:length(hemis)
             case 'V2andV3'
                 ROIind = find(abs(areas.vol)==2 | abs(areas.vol)==3);
             case 'LGN'
-                ROIind = find((lgn.vol)>=0);
+                ROIind = find((lgn.vol)>0);
         end
         %% Get means
         for ff = 1:length(funcs)
