@@ -64,7 +64,7 @@ save(fullfile(session_dir,'pRFs',d{runNum},[hemi '.' srcROI '.' func '.prfs.mat'
 %% Plot in src volume
 disp('Making pRF maps...');
 if strcmp(srcROI,'cortex');
-    mri = load_nifti(fullfile(session_dir,'pRFs','anat_templates',[hemi '.ecc.nii.gz']));
+    mri = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.ecc.anat.nii.gz']));
 else
     mri = load_nifti(fullfile(session_dir,d{runNum},'single_TR.nii.gz'));
 end

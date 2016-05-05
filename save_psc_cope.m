@@ -13,10 +13,12 @@ if ~exist('threshVal','var')
 end
 %% Load inputs, threshold using chi-squared p-values and ROI mask
 % Get areas and ecc
-areas = load_nifti(fullfile(session_dir,'pRFs','anat_templates',...
+areas = load_nifti(fullfile(session_dir,'anat_templates',...
     [hemi '.areas.anat.vol.nii.gz']));
-ecc = load_nifti(fullfile(session_dir,'pRFs','anat_templates',...
+ecc = load_nifti(fullfile(session_dir,'anat_templates',...
     [hemi '.ecc.anat.vol.nii.gz']));
+lgn = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.LGN.nii.gz']));
+sc = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.SC.nii.gz']));
 chiSquared = load_nifti(chiSqVol);
 switch ROI
     case 'V1all'
@@ -30,10 +32,8 @@ switch ROI
     case 'V2andV3'
         ROIind = find((abs(areas.vol)==2 | abs(areas.vol)==3) & chiSquared.vol<threshVal);
     case 'LGN'
-        lgn = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.LGN.nii.gz']));
         ROIind = find(lgn.vol & chiSquared.vol<threshVal);
     case 'SC'
-        sc = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.SC.nii.gz']));
         ROIind = find(sc.vol & chiSquared.vol<threshVal);
 end
 %% Run 'psc_cope'

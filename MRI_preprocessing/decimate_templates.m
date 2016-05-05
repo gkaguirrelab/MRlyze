@@ -28,17 +28,19 @@ rhct = 0;
 %%
 disp('Decimating templates...');
 for i = 1:length(templates)
-    hemi = templates{i}(1:2);
-    if strcmp(hemi,'lh');
-        lhct = lhct + 1;
-    elseif strcmp(hemi,'rh')
-        rhct = rhct + 1;
+    if isempty([strfind(templates{i},'LGN'), strfind(templates{i},'SC')]);
+        hemi = templates{i}(1:2);
+        if strcmp(hemi,'lh');
+            lhct = lhct + 1;
+        elseif strcmp(hemi,'rh')
+            rhct = rhct + 1;
+        end
+        if lhct == 1 || rhct == 1
+            [sind] = find_closest_verts(subject_name,hemi,src_surf,trg_surf);
+        end
+        in_name = fullfile(tdir,templates{i});
+        out_name = fullfile(tdir,'decimated_templates',templates{i});
+        project_2_decimate(in_name,out_name,sind);
     end
-    if lhct == 1 || rhct == 1
-        [sind] = find_closest_verts(subject_name,hemi,src_surf,trg_surf);
-    end
-    in_name = fullfile(tdir,templates{i});
-    out_name = fullfile(tdir,'decimated_templates',templates{i});
-    project_2_decimate(in_name,out_name,sind);
 end
 disp('done.');

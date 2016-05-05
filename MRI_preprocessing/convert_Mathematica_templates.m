@@ -19,7 +19,7 @@ disp('Creating pRF template ROIs...');
 for dd = 1:length(t)
     hemi = t{dd}(1:2);
     % Load in a temporary file to overwrite
-    tmp = load_nifti(fullfile(session_dir,'pRFs','anat_templates',[hemi '.areas.nii.gz']));
+    tmp = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.areas.anat.nii.gz']));
     % Load the output from Mathematica
     tmpmgh = load_mgh(fullfile(template_dir,t{dd}));
     % get template name

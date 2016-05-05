@@ -22,7 +22,7 @@ switch templateType
     case 'pRF'
         pRF_dir = fullfile(session_dir,'pRFs','pRF_templates','decimated_templates');
     case 'anat'
-        pRF_dir = fullfile(session_dir,'pRFs','anat_templates','decimated_templates');
+        pRF_dir = fullfile(session_dir,'anat_templates','decimated_templates');
 end
 if ~exist('tcPart','var')
     tcPart = 'full'; % 'H1' = 1st half; 'H2' = 2nd half
