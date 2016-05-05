@@ -4,6 +4,9 @@ function make_LGN_ROI(session_dir,subject_name,thresh,SUBJECTS_DIR)
 % atlas. This function then takes that ROI and projects it to subject
 % native space.
 %
+%   Usage:
+%   make_LGN_ROI(session_dir,subject_name,thresh,SUBJECTS_DIR)
+%
 %   Outputs (in 'session_dir/anat_templates'):
 %       lh.LGN.prob.nii.gz - voxel values reflect the probability of being
 %           in the left LGN
