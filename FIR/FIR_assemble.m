@@ -1,8 +1,8 @@
-function FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
+function FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
 % Saves out FIR responses and means
 
 
-% FIR_assemble(session_dir, subject_name, subj_name, output_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, condition)
+% FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
 
 if ~exist('startingCope','var')
     startingCope = 1;
@@ -18,7 +18,7 @@ for hh = 1:length(hemis)
         lgn = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.LGN.nii.gz']));
         switch ROI
             case 'V1'
-                ROIind = find(abs(areas.vol)==1 & (ecc.vol>5 & ecc.vol<=30));  %%%% CURRENTLY HARD CODED TO MID ECCENTRICITIES %%%%
+                ROIind = find(abs(areas.vol)==1 & (ecc.vol>5 & ecc.vol<=30)); 
             case 'V2andV3'
                 ROIind = find(abs(areas.vol)==2 | abs(areas.vol)==3);
             case 'LGN'

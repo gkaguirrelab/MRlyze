@@ -38,7 +38,7 @@ DESIGN.STANDARD = anatVol;
 DESIGN.TOTAL_VOXELS = num2str(tmp.dim(2)*tmp.dim(3)*tmp.dim(4)*tmp.dim(5));
 DESIGN.FEAT_DIR = funcVol;
 for i = 1:length(EVs)
-    eval(['DESIGN.EV' num2str(i) ' = ''' EVs{i} ''';']);
+    eval(['DESIGN.EV' num2str(i,'%02d') ' = ''' EVs{i} ''';']);
 end
 disp(DESIGN);
 fin = fopen(design_file,'rt');
