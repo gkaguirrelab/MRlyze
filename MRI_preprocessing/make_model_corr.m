@@ -91,13 +91,15 @@ for xx = 1:size(allind,2)
         vtx_area = 'V2';
     end
     center_sig = rf_ecc(allecc(xx),vtx_area);
-    surround_sig = rf_ecc_surround(allecc(xx),vtx_area);
-    surround_index = rf_ecc_surround_index(allecc(xx),vtx_area);
-    surround_amp = surround_index ./ (surround_sig ./ center_sig);
-    surround_amp(surround_amp<0) = 0;
     center_rfKernel = exp(-(xxdists.^2)/(2*center_sig.^2));
-    surround_rfKernel = exp(-(xxdists.^2)/(2*surround_sig.^2));
-    rfKernel = center_rfKernel - surround_rfKernel*surround_amp;
+    rfKernel = center_rfKernel;
+    % add a Gaussian surround (DoG model)
+    %     surround_sig = rf_ecc_surround(allecc(xx),vtx_area);
+    %     surround_index = rf_ecc_surround_index(allecc(xx),vtx_area);
+    %     surround_amp = surround_index ./ (surround_sig ./ center_sig);
+    %     surround_amp(surround_amp<0) = 0;
+    %     surround_rfKernel = exp(-(xxdists.^2)/(2*surround_sig.^2));
+    %     rfKernel = center_rfKernel - surround_rfKernel*surround_amp;
     vertMov(:,xx) = stimMov*rfKernel;
     if ~mod(xx,1000);progBar(xx);end
 end
