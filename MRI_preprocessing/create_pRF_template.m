@@ -28,7 +28,7 @@ end
 for hh = 1:length(hemis)
     hemi = hemis{hh};
     % Load in a temporary file to overwrite
-    tmp = load_nifti(fullfile(session_dir,'lh.areas.nii.gz'));
+    tmp = load_nifti(fullfile(session_dir,'pRFs','anat_templates','lh.areas.anat.nii.gz'));
     % Load the output from Mathematica
     tmpmgh = load_mgh(fullfile(session_dir,'pRFs',[hemi '_template_pRFs.mgz']));
     % Pol
