@@ -1,4 +1,4 @@
-function FIR_plot(means,SEMs,ROI,condName,hemi,func,subj_name,runNums, xlims,ylims,xTick,xLabels)
+function FIR_plot(means,SEMs,ROI,condition,hemi,func,subj_name,runNums, xlims,ylims,xTick,xLabels)
 
 % Plots FIR
 %
@@ -48,7 +48,7 @@ g = errorbar(x,means,SEMs, '.k','MarkerSize',16); hold on;
 set(get(get(g,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
 p = plot(x, means, '.r', 'MarkerSize',16);
 legend (p, ['Mean ' char(177) ' SEM']);
-title({subj_name, [condName ' - ' hemi ' ' ROI ' ' func]},'Interpreter','none')
+title({subj_name, [condition ' - ' hemi ' ' ROI ' ' func]},'Interpreter','none')
 xlabel('Time [sec]');
 ylabel('Amplitude [% signal change]');
 xlim(xlims); ylim(ylims);
