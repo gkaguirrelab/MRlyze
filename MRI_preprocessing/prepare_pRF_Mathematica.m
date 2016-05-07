@@ -16,9 +16,6 @@ function prepare_pRF_Mathematica(session_dir,subject_name,outName)
 %   Written by Andrew S Bock Jun 2015
 
 %% Set defaults
-if ~exist('sym','var')
-    sym = 1;
-end
 hemis = {'lh' 'rh' 'mh'};
 inmaps = {'co' 'copol' 'coecc'};
 outmaps = {'co' 'pol' 'ecc'};
@@ -29,10 +26,10 @@ for m = 1:length(inmaps);
     for hh = 1:length(hemis)
         for sy = 1:2
             if sy == 1 % prepare the data on the fsaverage_sym surface
-                infile = fullfile(session_dir,[hemis{hh} '.cortex.avg.' inmaps{m} '.prfs.sym.nii.gz']);
+                infile = fullfile(session_dir,'pRFs',[hemis{hh} '.cortex.avg.' inmaps{m} '.prfs.sym.nii.gz']);
                 outfile = fullfile(SUBJECTS_DIR,'fsaverage_sym','surf',[hemis{hh} '.' outmaps{m} '.avg.sym.' outName '.mgh']);
             else % prepare the data on the subject's native surface
-                infile = fullfile(session_dir,[hemis{hh} '.cortex.avg.' inmaps{m} '.prfs.nii.gz']);
+                infile = fullfile(session_dir,'pRFs',[hemis{hh} '.cortex.avg.' inmaps{m} '.prfs.nii.gz']);
                 outfile = fullfile(SUBJECTS_DIR,subject_name,'surf',[hemis{hh} '.' outmaps{m} '.avg.mgh']);
             end
             tmpfile = fullfile(session_dir,[hemis{hh} '.tmp.prfs.nii.gz']);
