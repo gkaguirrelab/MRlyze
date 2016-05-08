@@ -78,6 +78,23 @@ for i = 1:length(anatfiles);
     end
 end
 varFiles(anatind) = [];
+% remove the 'extreme' varexp files, if they exist
+exfiles = strfind(varFiles,'1');
+exind = [];
+for i = 1:length(exfiles);
+    if ~isempty(exfiles{i})
+        exind = [exind i];
+    end
+end
+varFiles(exind) = [];
+exfiles = strfind(varFiles,'7');
+exind = [];
+for i = 1:length(exfiles);
+    if ~isempty(exfiles{i})
+        exind = [exind i];
+    end
+end
+varFiles(exind) = [];
 % load in the variance explained text files
 if strcmp(fitType,'V1')
     vals = zeros(length(varFiles),4);
