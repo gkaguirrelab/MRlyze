@@ -56,45 +56,25 @@ if ~exist('FCy','var') || isempty(FCy)
     end
 end
 if ~exist('fitType','var')
-   fitType = 'V1'; % 'V1 = V1<->V2, V1<->V3; 'V2V3' =  V1<->V2, V1<->V3, AND V2<->V3
+    fitType = 'V1'; % 'V1 = V1<->V2, V1<->V3; 'V2V3' =  V1<->V2, V1<->V3, AND V2<->V3
 end
 %% Pull out the variance explained
 varFiles = listdir(fullfile(tdir,[hemi '*varexp.txt']),'files');
-% remove the 'pRF' varexp files, if they exist
-pRFfiles = strfind(varFiles,'pRF');
-pRFind = [];
-for i = 1:length(pRFfiles);
-    if ~isempty(pRFfiles{i})
-        pRFind = [pRFind i];
+badind = [];
+for i = 1:length(varFiles);
+    %     if ~isempty(strfind(varFiles{i},'pRF')) ||...
+    %             ~isempty(strfind(varFiles{i},'anat')) ||...
+    %             ~isempty(strfind(varFiles{i},'1')) ||...
+    %             ~isempty(strfind(varFiles{i},'7')) ||...
+    %             isempty(strfind(varFiles{i}(4),'2'))
+    if ~isempty(strfind(varFiles{i},'pRF')) ||...
+            ~isempty(strfind(varFiles{i},'anat')) ||...
+            ~isempty(strfind(varFiles{i},'1')) ||...
+            ~isempty(strfind(varFiles{i},'7'))
+        badind = [badind i];
     end
 end
-varFiles(pRFind) = [];
-% remove the 'anat' varexp files, if they exist
-anatfiles = strfind(varFiles,'anat');
-anatind = [];
-for i = 1:length(anatfiles);
-    if ~isempty(anatfiles{i})
-        anatind = [anatind i];
-    end
-end
-varFiles(anatind) = [];
-% remove the 'extreme' varexp files, if they exist
-exfiles = strfind(varFiles,'1');
-exind = [];
-for i = 1:length(exfiles);
-    if ~isempty(exfiles{i})
-        exind = [exind i];
-    end
-end
-varFiles(exind) = [];
-exfiles = strfind(varFiles,'7');
-exind = [];
-for i = 1:length(exfiles);
-    if ~isempty(exfiles{i})
-        exind = [exind i];
-    end
-end
-varFiles(exind) = [];
+varFiles(badind) = [];
 % load in the variance explained text files
 if strcmp(fitType,'V1')
     vals = zeros(length(varFiles),4);
