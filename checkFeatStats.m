@@ -1,7 +1,7 @@
 function [statExist] = checkFeatStats(boldDir,featName)
 
 % Checks for the existence of a 'zstat1.nii.gz' file in the stats
-% directory, to serve confirm feat ran correctly
+% directory, to serve as confirmation feat ran correctly
 %
 %   Usage:
 %   [statExist] = checkFeatStats(boldDir,featName);
