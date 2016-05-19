@@ -73,6 +73,10 @@ for i = 1:length(varFiles);
             ~isempty(strfind(varFiles{i},'7'))
         badind = [badind i];
     end
+    %     if ~isempty(strfind(varFiles{i},'pRF')) ||...
+    %             ~isempty(strfind(varFiles{i},'anat'))
+    %         badind = [badind i];
+    %end
 end
 varFiles(badind) = [];
 % load in the variance explained text files
