@@ -3,7 +3,7 @@ function run_pRF(session_dir,subject_name,runNum,hemi,srcROI,func,fieldSize,imFi
 % Run the population receptive field (pRF) pipeline
 %
 %   Usage:
-%   run_pRF(session_dir,subject_name,runNum,hemi,srcROI)
+%   run_pRF(session_dir,subject_name,runNum,hemi,srcROI,func,fieldSize,imFileName,paramsFileName)
 %
 %   Written by Andrew S Bock Jun 2015
 
@@ -28,9 +28,6 @@ end
 if ~exist('paramsFileName','var');
     paramsFileName = 'bars_params.mat';
 end
-%% Add to log
-SaveLogInfo(session_dir,mfilename,session_dir,subject_name,runNum,hemi,srcROI,func,fieldSize,imFileName,paramsFileName)
-
 %% Run pRF fitting on surface
 for rr = runNum;
     switch srcROI
@@ -40,7 +37,6 @@ for rr = runNum;
             srcind = 1:length(areas.vol); % entire cortex
         case 'volume'
             srcfile = fullfile(session_dir,d{rr},[func '.nii.gz']);
-            %binfile = fullfile(session_dir,d{rr},'brf.aseg.gm.nii.gz');
             binfile = fullfile(session_dir,d{rr},'single_TR.nii.gz');
             src = load_nifti(binfile);
             srcind = find(src.vol > 0 & ~isnan(src.vol));
