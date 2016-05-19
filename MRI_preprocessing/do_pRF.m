@@ -55,7 +55,7 @@ saveDir = fullfile(session_dir,'pRFs',func,d{runNum});
 if ~exist(saveDir,'dir')
     mkdir(saveDir);
 end
-save(fullfile(saveDir,[hemi '.' srcROI '.' func '.prfs.mat']),'prfs');
+save(fullfile(saveDir,[hemi '.' srcROI '.prfs.mat']),'prfs');
 %% Plot in src volume
 disp('Making pRF maps...');
 if strcmp(srcROI,'cortex');

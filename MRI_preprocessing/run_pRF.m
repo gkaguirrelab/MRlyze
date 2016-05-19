@@ -32,7 +32,7 @@ end
 for rr = runNum;
     switch srcROI
         case 'cortex'
-            srcfile = fullfile(session_dir,d{rr},[func '.' hemi '.nii.gz']);
+            srcfile = fullfile(session_dir,d{rr},[func '.surf.' hemi '.nii.gz']);
             areas = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.areas.anat.nii.gz']));
             srcind = 1:length(areas.vol); % entire cortex
         case 'volume'
