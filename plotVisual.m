@@ -3,12 +3,10 @@ function plotVisual(inVol,eccVol,polVol,sigVol,roiInd,roiName,axLim)
 % Plots values from an input volume in visual field coordinates
 %
 %   Usage:
-%   plotVisual(inVol,eccVol,polVol,roiInd)
+%   plotVisual(inVol,eccVol,polVol,sigVol,roiInd,roiName,axLim)
 %
 %   See also:
 %   convert_image2surf
-%   todo - make dot sizes actually sigma (if measured) or the Dumoulin
-%   Wandell blah blach (my functions)
 %
 %   Written by Andrew S Bock Mar 2016
 %% set defaults
@@ -73,17 +71,18 @@ for i = 1:length(rLines)
     text(-tX,-tY,num2str(rad2deg( mod(pi+rLines(i),2*pi) )) ,'FontSize', 20,...
         'HorizontalAlignment','center','VerticalAlignment','middle');
 end
-%% Plot data
+% Set lims
 logaxLim = log10(axLim);
-scatter(x,y,sigpix,in,'filled');
 xlim([-logaxLim logaxLim]);
 ylim([-logaxLim logaxLim]);
 axis square;
+%% Plot data
+scatter(x,y,sigpix,in,'filled');
+
 %% Plot legends
 axes('position',[0.85 0.1 0.1 0.8]) ; % inset
 pY = 10*(1:5);
 pX = ones(size(pY));
-%plotsigs = linspace(ceil(min(sig)),ceil(max(sig)),5);
 plotsigs = linspace(ceil(min(sig)),ceil(max(sig)),5);
 plotpix = linspace(min(sigpix),max(sigpix),5);
 scatter(pX,pY,plotpix,'filled');
@@ -97,3 +96,4 @@ axis off;
 % Colorbar
 h=colorbar;
 set(h,'fontsize',20);
+caxis([min(in) max(in)])
