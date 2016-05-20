@@ -22,6 +22,11 @@ end
 if ~exist('subj_name','var')
     subj_name = '';
 end
+if ~exist('runNums','var')
+    runLabel = false;
+else
+    runLabel = true;
+end
 if ~exist('xlims','var')
     xlims = [-1 15];
 end
@@ -54,8 +59,10 @@ ylabel('Amplitude [% signal change]');
 xlim(xlims); ylim(ylims);
 ax = gca;
 
+if runLabel
 str = ['Valid runs = ',num2str(length(runNums))];
 text(0, -0.4, str)
+end
 
 set(ax,'XTick',xTick);
 set(ax,'XTickLabel',xLabels);
