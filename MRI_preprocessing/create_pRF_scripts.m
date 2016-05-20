@@ -44,5 +44,5 @@ end
 %% Create submit script
 submit_name = ['submit_' subject_name '_run_pRF'];
 job_string = listdir(fullfile(outDir,'*.sh'),'files');
-mem = 10;
+mem = 40;
 create_submit_shell(outDir,logDir,submit_name,job_string,mem);
