@@ -18,8 +18,8 @@ if ~exist('axLim','var')
 end
 circPol = 0:pi/50:2*pi; % Polar angle sampling
 circEcc = ones(size(circPol)); % Eccentricity sampling
-cLines = linspace(0,log10(axLim),5); % Eccentricity lines
-rLines = linspace(0,(2*pi) - (2*pi)/5,5); % Polar angle lines (spokes)
+cLines = linspace(0,log10(axLim),6); % Eccentricity lines
+rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
 pLabels = cLines(end) + (cLines(end) - cLines(end-1))/2; % Polar angle label eccentricity
 %% Set display
 [~,screensize] = fullFigure;
@@ -39,6 +39,7 @@ if isempty(sigVol)
     sig = rf_ecc(ecc,roiName);
 else
     sig = load_nifti(sigVol);
+    sig = sig.vol(roiInd);
 end
 % Convert sig (deg) to sig (pixels)
 sigpix = angle2pix(display,sig);
@@ -47,7 +48,8 @@ in = load_nifti(inVol);
 in = in.vol(roiInd);
 %% Convert polar to cartesian
 [x,y] = pol2cart(pol,logecc);
-
+% flip y
+y = -y;
 %% Plot circles and spokes
 % Create circles
 for i = 1:length(cLines)
@@ -86,6 +88,9 @@ pX = ones(size(pY));
 plotsigs = linspace(ceil(min(sig)),ceil(max(sig)),5);
 plotpix = linspace(min(sigpix),max(sigpix),5);
 scatter(pX,pY,plotpix,'filled');
+%th = title('Sigma size','FontSize',20);
+%P = get(th,'Position');
+%set(th,'Position',[P(1),P(2),P(3)]);
 tX = 0*pX;
 tY = pY;
 for i = 1:length(tX)
@@ -96,4 +101,7 @@ axis off;
 % Colorbar
 h=colorbar;
 set(h,'fontsize',20);
+%yl = ylabel(h,'Data value','FontSize',20,'rot',-90);
+%yP = get(yl,'Position');
+%set(yl,'Position',[yP(1),yP(2),yP(3)]);
 caxis([min(in) max(in)])
