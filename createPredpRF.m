@@ -202,4 +202,4 @@ stimY0(badind) = [];
 stimSig(badind,:) = [];
 peakHRF(badind) = [];
 %% Save output
-save(outFile,'predTCs','stimX0','stimY0','stimSig','peakHRF');
+save(outFile,'predTCs','stimX0','stimY0','stimSig','peakHRF','v-7.3');
