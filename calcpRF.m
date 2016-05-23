@@ -22,10 +22,10 @@ end
 tmp_co                  = corr(srctc,predTCs);
 [prfsco,prfscoseed]     = max(tmp_co,[],2);
 prfs.co                 = prfsco;
-prfs.cox                = stimx0mat(prfscoseed);
-prfs.coy                = stimy0mat(prfscoseed);
-prfs.cosig              = stimsigmat(prfscoseed,:);
-prfs.copeakt            = peaktmat(prfscoseed);
+prfs.cox                = stimX0(prfscoseed);
+prfs.coy                = stimY0(prfscoseed);
+prfs.cosig              = stimSig(prfscoseed,:);
+prfs.copeakt            = peakHRF(prfscoseed);
 % Convert from cartesian to polar
 [prfs.copol,prfs.coecc] = cart2pol(prfs.cox,prfs.coy);
 %% Save data

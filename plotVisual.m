@@ -25,12 +25,13 @@ cLines = linspace(0,log10(axLim),6); % Eccentricity lines
 rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
 pLabels = cLines(end) + (cLines(end) - cLines(end-1))/2; % Polar angle label eccentricity
 %% Set display
-[~,screensize] = fullFigure;
+[h,screensize] = fullFigure;
 subplot(1,1,1);%hold on;
 axis off;
 display.distance = 63; % assume 63 cm (average arm length)
 display.width = 32.5; % assume 32.5 cm (laptop width)
 display.resolution = screensize([3 4]);
+foo = impixelinfo(h);
 %% Load in volumes
 ecc = load_nifti(eccVol);
 ecc = ecc.vol(roiInd);
@@ -78,8 +79,8 @@ for i = 1:length(rLines)
     [tX,tY] = pol2cart(rLines(i),pLabels);
     text(tX,tY,num2str(rad2deg( rLines(i) )) , 'FontSize', 20,...
         'HorizontalAlignment','center','VerticalAlignment','middle');
-%     text(-tX,-tY,num2str(rad2deg( mod(pi+rLines(i),2*pi) )) ,'FontSize', 20,...
-%         'HorizontalAlignment','center','VerticalAlignment','middle');
+    %     text(-tX,-tY,num2str(rad2deg( mod(pi+rLines(i),2*pi) )) ,'FontSize', 20,...
+    %         'HorizontalAlignment','center','VerticalAlignment','middle');
 end
 
 % Set lims
@@ -88,8 +89,18 @@ xlim([-logaxLim logaxLim]);
 ylim([-logaxLim logaxLim]);
 axis square;
 %% Plot data
-in(in>caxLims(2)) = caxLims(2);
-scatter(x,y,sigpix,in,'filled');
+switch plotType
+    case 'scatterPlot'
+        in(in>caxLims(2)) = caxLims(2);
+        scatter(x,y,sigpix,in,'filled');
+    case 'fillPlot'
+        [gridX,gridY] = meshgrid((1:screensize(3)) - screensize(3)/2,...
+            (1:screensize(4)) - screensize(4)/2);   
+        for i = 1:numel(gridX)
+            % find closest points
+            
+        end
+end
 
 %% Plot legends
 axes('position',[0.85 0.1 0.1 0.8]) ; % inset
