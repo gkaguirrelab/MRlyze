@@ -1,4 +1,4 @@
-function plotVisual(inVol,eccVol,polVol,sigVol,roiInd,roiName,axLim)
+function plotVisual(inVol,eccVol,polVol,sigVol,roiInd,roiName,axLim,caxLims)
 
 % Plots values from an input volume in visual field coordinates
 %
@@ -15,6 +15,9 @@ if ~exist('roiName','var') || isempty(roiName)
 end
 if ~exist('axLim','var')
     axLim = 90;
+end
+if ~exist('caxLims','var')
+    caxLims = [0 0.05];
 end
 circPol = 0:pi/50:2*pi; % Polar angle sampling
 circEcc = ones(size(circPol)); % Eccentricity sampling
@@ -62,6 +65,11 @@ hold on;
 % Plot circles
 for i = 1:length(cLines)
     plot(cX(i,:),cY(i,:),'k:','LineWidth',1);
+    if cLines(i) ~= 0
+        [tX,tY] = pol2cart(deg2rad(15),cLines(i));
+        text(-tX,tY,num2str(round(10^cLines(i))), 'FontSize', 20,...
+            'HorizontalAlignment','center','VerticalAlignment','middle');
+    end
 end
 % Plot spokes
 for i = 1:length(rLines)
@@ -70,15 +78,17 @@ for i = 1:length(rLines)
     [tX,tY] = pol2cart(rLines(i),pLabels);
     text(tX,tY,num2str(rad2deg( rLines(i) )) , 'FontSize', 20,...
         'HorizontalAlignment','center','VerticalAlignment','middle');
-    text(-tX,-tY,num2str(rad2deg( mod(pi+rLines(i),2*pi) )) ,'FontSize', 20,...
-        'HorizontalAlignment','center','VerticalAlignment','middle');
+%     text(-tX,-tY,num2str(rad2deg( mod(pi+rLines(i),2*pi) )) ,'FontSize', 20,...
+%         'HorizontalAlignment','center','VerticalAlignment','middle');
 end
+
 % Set lims
 logaxLim = log10(axLim);
 xlim([-logaxLim logaxLim]);
 ylim([-logaxLim logaxLim]);
 axis square;
 %% Plot data
+in(in>caxLims(2)) = caxLims(2);
 scatter(x,y,sigpix,in,'filled');
 
 %% Plot legends
@@ -104,4 +114,4 @@ set(h,'fontsize',20);
 %yl = ylabel(h,'Data value','FontSize',20,'rot',-90);
 %yP = get(yl,'Position');
 %set(yl,'Position',[yP(1),yP(2),yP(3)]);
-caxis([min(in) max(in)])
+caxis(caxLims)
