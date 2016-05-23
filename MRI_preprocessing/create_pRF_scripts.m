@@ -1,9 +1,9 @@
-function create_pRF_scripts(outDir,logDir,session_dir,subject_name,runNums,hemis,srcROIs,funcs)
+function create_pRF_scripts(outDir,logDir,session_dir,subject_name,runNums,hemis,srcROIs,funcs,mem)
 
 % Creates shell scripts for running 'run_pRF'
 %
 %   Usage:
-%   create_pRF_scripts(outDir,logDir,session_dir,subject_name,runNums,hemis,srcROIs,funcs)
+%   create_pRF_scripts(outDir,logDir,session_dir,subject_name,runNums,hemis,srcROIs,funcs,mem)
 %
 %   Inputs:
 %   outDir          = output directory for shell scripts
@@ -14,6 +14,7 @@ function create_pRF_scripts(outDir,logDir,session_dir,subject_name,runNums,hemis
 %   hemis           = hemispheres (e.g. hemis = {'lh' 'rh'};)
 %   srcROIs         = source ROIs (e.g. srcROIs = {'cortex' 'volume'};)
 %   funcs           = functional volume (e.g. funcs = 'wdrf.tf';)
+%   mem             = memory for cluster (default = 10)
 %
 %   Written by Andrew S Bock May 2016
 
@@ -23,6 +24,9 @@ if ~exist(outDir,'dir')
 end
 if isempty(logDir)
     logDir = '/data/jet/abock/LOGS';
+end
+if ~exist('mem','var')
+    mem = 10;
 end
 %% Create run_pRF
 for rr = 1:length(runNums)
@@ -44,5 +48,4 @@ end
 %% Create submit script
 submit_name = ['submit_' subject_name '_run_pRF'];
 job_string = listdir(fullfile(outDir,'*.sh'),'files');
-mem = 40;
 create_submit_shell(outDir,logDir,submit_name,job_string,mem);
