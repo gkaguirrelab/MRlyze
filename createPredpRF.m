@@ -19,7 +19,7 @@ function createPredpRF(imFile,paramsFile,outFile,params)
 %     params.gridScale         = 2; % scale the size of the stimulated visual field
 %
 %   Outputs:
-%   'predTCs','stimx0mat','stimy0mat','stimsigmat','peakHRFmat'
+%   'predTCs','stimX0','stimy0','stimsig','peakHRF'
 %
 %   Written by Andrew S Bock May 2016
 
@@ -186,10 +186,10 @@ for h = 1:length(params.peakHRF);
     progBar(h);
 end
 % Create x0, y0, sig, and peak matrices (for multiple peak times)
-stimx0mat = repmat(stim.x0,[length(params.peakHRF) 1]);
-stimy0mat = repmat(stim.y0,[length(params.peakHRF) 1]);
-stimsigmat = repmat(stim.sigs,[length(params.peakHRF) 1]);
-peakHRF = repmat(params.peakHRF,[length(stimx0mat)/length(params.peakHRF) 1]);
+stimX0 = repmat(stim.x0,[length(params.peakHRF) 1]);
+stimY0 = repmat(stim.y0,[length(params.peakHRF) 1]);
+stimSig = repmat(stim.sigs,[length(params.peakHRF) 1]);
+peakHRF = repmat(params.peakHRF,[length(stimX0)/length(params.peakHRF) 1]);
 %% Remove the predictions with very little variation (i.e. flat timecourses)
 predvar = zeros(1,size(predTCs,2));
 for i = 1:size(predTCs,2);
@@ -197,9 +197,9 @@ for i = 1:size(predTCs,2);
 end
 badind = predvar<0.1;
 predTCs(:,badind) = [];
-stimx0mat(badind) = [];
-stimy0mat(badind) = [];
-stimsigmat(badind,:) = [];
+stimX0(badind) = [];
+stimY0(badind) = [];
+stimSig(badind,:) = [];
 peakHRF(badind) = [];
 %% Save output
-save(outFile,'predTCs','stimx0mat','stimy0mat','stimsigmat','peakHRFmat');
+save(outFile,'predTCs','stimX0','stimY0','stimSig','peakHRF');

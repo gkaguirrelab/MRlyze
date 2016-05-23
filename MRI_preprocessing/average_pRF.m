@@ -1,9 +1,9 @@
-function average_pRF(session_dir,subject_name,runs,srcROI,hemis)
+function average_pRF(session_dir,subject_name,runs,srcROI,func,hemis)
 
 %   Average CF maps
 %
 %   Usage:
-%   average_pRF(session_dir,subject_name,runs,srcROI,hemis)
+%   average_pRF(session_dir,subject_name,runs,srcROI,func,hemis)
 %
 %   e.g.
 %   runs = [1,3,5];
@@ -48,7 +48,7 @@ for hh = 1:length(hemis)
         tmp = [];
         % Get the map values for all the runs
         for rr = runs
-            tmpfile = fullfile(session_dir,'pRFs',d{rr},...
+            tmpfile = fullfile(session_dir,'pRFs',func,d{rr},...
                 [hemi '.' srcROI '.' maps{m} '.prfs']);
             if strcmp(srcROI,'cortex')
                 lhtmpvol = load_nifti([tmpfile '.nii.gz']);
@@ -91,12 +91,12 @@ for hh = 1:length(hemis)
             end
         end
         % Save nifti
-        save_nifti(nii,fullfile(session_dir,'pRFs',...
+        save_nifti(nii,fullfile(session_dir,'pRFs',func,...
             [hemi '.' srcROI '.avg.' maps{m} '.prfs.nii.gz']));
         if strcmp(srcROI,'cortex') % Project to fsaverage_sym space
-            sval = fullfile(session_dir,'pRFs',...
+            sval = fullfile(session_dir,'pRFs',func,...
                 [hemi '.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
-            oval = fullfile(session_dir,'pRFs',...
+            oval = fullfile(session_dir,'pRFs',func,...
                 [hemi '.' srcROI '.avg.' maps{m} '.prfs.sym.nii.gz']);
             if strcmp(hemi,'lh')
                 [~,~] = system(['mri_surf2surf --hemi lh --srcsubject ' subject_name ...
@@ -107,9 +107,9 @@ for hh = 1:length(hemis)
                     '/xhemi --sval ' sval ' --trgsubject fsaverage_sym --trgsurfval ' ...
                     oval]);
                 % average lh and rh
-                lhvol = fullfile(session_dir,'pRFs',...
+                lhvol = fullfile(session_dir,'pRFs',func,...
                     ['lh.' srcROI '.avg.' maps{m} '.prfs.sym.nii.gz']);
-                rhvol = fullfile(session_dir,'pRFs',...
+                rhvol = fullfile(session_dir,'pRFs',func,...
                     ['rh.' srcROI '.avg.' maps{m} '.prfs.sym.nii.gz']);
                 lh = load_nifti(lhvol);
                 rh = load_nifti(rhvol);
@@ -132,12 +132,12 @@ for hh = 1:length(hemis)
                     lh.vol = tmpavg;
                 end
                 % Save nifti
-                save_nifti(lh,fullfile(session_dir,'pRFs',...
+                save_nifti(lh,fullfile(session_dir,'pRFs',func,...
                     ['mh.' srcROI '.avg.' maps{m} '.prfs.sym.nii.gz']));
                 % Project back to subject space
-                msval = fullfile(session_dir,'pRFs',...
+                msval = fullfile(session_dir,'pRFs',func,...
                     ['mh.' srcROI '.avg.' maps{m} '.prfs.sym.nii.gz']);
-                moval = fullfile(session_dir,'pRFs',...
+                moval = fullfile(session_dir,'pRFs',func,...
                     ['mh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
                 [~,~] = system(['mri_surf2surf --hemi lh --srcsubject fsaverage_sym ' ...
                     ' --sval ' msval ' --trgsubject ' subject_name ' --trgsurfval ' ...
@@ -145,11 +145,15 @@ for hh = 1:length(hemis)
             end
         else
             if strcmp(hemi,'rh') % need to complete lh first
-                lh_vol_in = fullfile(session_dir,'pRFs',['lh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
-                rh_vol_in = fullfile(session_dir,'pRFs',['rh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
-                mh_vol_out = fullfile(session_dir,'pRFs',['mh.' srcROI '.avg.' maps{m} '.prfs.mni.nii.gz']);
+                lh_vol_in = fullfile(session_dir,'pRFs',func,...
+                    ['lh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
+                rh_vol_in = fullfile(session_dir,'pRFs',func,...
+                    ['rh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
+                mh_vol_out = fullfile(session_dir,'pRFs',func,...
+                    ['mh.' srcROI '.avg.' maps{m} '.prfs.mni.nii.gz']);
                 if strcmp('copol',maps{m}) || strcmp('varpol',maps{m})
-                    rhtmpfile = fullfile(session_dir,'pRFs',['rh.' srcROI '.tmp.nii.gz']);
+                    rhtmpfile = fullfile(session_dir,'pRFs',func,...
+                        ['rh.' srcROI '.tmp.nii.gz']);
                     rh = load_nifti(rh_vol_in);
                     % Put right hemisphere prfs in left hemisphere coordinates
                     upper = rh.vol>0;
@@ -163,15 +167,11 @@ for hh = 1:length(hemis)
                     average_in_cvsMNI(session_dir,subject_name,maps{m},lh_vol_in,rh_vol_in,mh_vol_out)
                 end
                 % Project back to subject space
-                out_vol = fullfile(session_dir,'pRFs',['mh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
-                ref_vol = fullfile(session_dir,'pRFs',['lh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
-                
+                out_vol = fullfile(session_dir,'pRFs',func,...
+                    ['mh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
+                ref_vol = fullfile(session_dir,'pRFs',func,...
+                    ['lh.' srcROI '.avg.' maps{m} '.prfs.nii.gz']);
                 apply_cvs_inverse(mh_vol_out,out_vol,ref_vol,subject_name,SUBJECTS_DIR);
-                
-                %                 system(['mri_vol2vol --inv-morph --targ ' mh_vol_out ...
-                %                     ' --m3z final_CVSmorph_tocvs_avg35_inMNI152.m3z' ...
-                %                     ' --reg ' fullfile(SUBJECTS_DIR,subject_name,'cvs/subj2MNI.dat') ...
-                %                     ' --mov ' ref_vol ' --o ' out_vol ' --inv-morph']);
             end
         end
     end
