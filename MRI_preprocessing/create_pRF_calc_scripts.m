@@ -21,7 +21,7 @@ end
 for i = 1:length(srcInds)
     job_name = sprintf('calcpRF_%06d',i);
     matlab_string = (['calcpRF(''' outFile ''',''' ...
-        predFile ''',''' inFile ''',' num2str(srcInds(i)) ');']);
+        predFile ''',''' inFile ''',[' num2str(srcInds{i}) ']);']);
     create_job_shell(outDir,job_name,matlab_string)
 end
 %% Create submit script
