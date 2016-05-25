@@ -18,6 +18,14 @@ end
 %% Breat up source indices
 [matSrcInds] = break_up_matrix(length(srcInds),1000);
 
+%% Preallocate structure
+prfs(length(srcInds)).co        = [];
+prfs(length(srcInds)).cox       = [];
+prfs(length(srcInds)).coy       = [];
+prfs(length(srcInds)).cosig     = [];
+prfs(length(srcInds)).copeakt   = [];
+prfs(length(srcInds)).copol     = [];
+prfs(length(srcInds)).coecc     = [];
 %% Find best pRF
 progBar = ProgressBar(length(matSrcInds),'finding pRFs...');
 for i = 1:length(matSrcInds)
@@ -26,25 +34,14 @@ for i = 1:length(matSrcInds)
     % Find best pRF
     tmp_co                  = corr(srctc,predTCs);
     [prfsco,prfscoseed]     = max(tmp_co,[],2);
-    prfs.co                 = prfsco;
-    prfs.cox                = stimX0(prfscoseed);
-    prfs.coy                = stimY0(prfscoseed);
-    prfs.cosig              = stimSig(prfscoseed,:);
-    prfs.copeakt            = peakHRF(prfscoseed)';
+    prfs(matSrcInds{i}).co                 = prfsco;
+    prfs(matSrcInds{i}).cox                = stimX0(prfscoseed);
+    prfs(matSrcInds{i}).coy                = stimY0(prfscoseed);
+    prfs(matSrcInds{i}).cosig              = stimSig(prfscoseed,:);
+    prfs(matSrcInds{i}).copeakt            = peakHRF(prfscoseed)';
     % Convert from cartesian to polar
-    [prfs.copol,prfs.coecc] = cart2pol(prfs.cox,prfs.coy);
-    % Save data
-    matObj = matfile(outFile,'Writable',true);
-    % Save into a variable in the file
-    matObj.savedVar(matSrcInds{i},1)   = prfs.co;
-    matObj.savedVar(matSrcInds{i},2)   = prfs.cox;
-    matObj.savedVar(matSrcInds{i},3)   = prfs.coy;
-    matObj.savedVar(matSrcInds{i},4)   = prfs.cosig(1);
-    matObj.savedVar(matSrcInds{i},5)   = prfs.cosig(2);
-    matObj.savedVar(matSrcInds{i},6)   = prfs.cosig(3);
-    matObj.savedVar(matSrcInds{i},7)   = prfs.cosig(4);
-    matObj.savedVar(matSrcInds{i},8)   = prfs.copeakt;
-    matObj.savedVar(matSrcInds{i},9)   = prfs.copol;
-    matObj.savedVar(matSrcInds{i},10)  = prfs.coecc;
+    [prfs(matSrcInds{i}).copol,prfs(matSrcInds{i}).coecc] = cart2pol(prfs.cox,prfs.coy);
     progBar(i);
 end
+%% Save data
+save(outFile,'prfs');
