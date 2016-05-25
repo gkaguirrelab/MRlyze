@@ -33,13 +33,13 @@ for i = 1:length(matSrcInds)
     % Define source indices
     srctc = tmp.vol(matSrcInds{i},:)';
     % Find best pRF
-    tmp_co                              = corr(srctc,predTCs);
-    [prfsco,prfscoseed]                 = max(tmp_co,[],2);
-    prfs.co(matSrcInds{i})              = prfsco;
-    prfs.cox(matSrcInds{i})             = stimX0(prfscoseed);
-    prfs.coy(matSrcInds{i})             = stimY0(prfscoseed);
-    prfs.cosig(matSrcInds{i})           = stimSig(prfscoseed,:);
-    prfs.copeakt(matSrcInds{i})         = peakHRF(prfscoseed)';
+    tmp_co                                  = corr(srctc,predTCs);
+    [prfsco,prfscoseed]                     = max(tmp_co,[],2);
+    prfs.co(matSrcInds{i})                  = prfsco;
+    prfs.cox(matSrcInds{i})                 = stimX0(prfscoseed);
+    prfs.coy(matSrcInds{i})                 = stimY0(prfscoseed);
+    prfs.cosig(matSrcInds{i},:)             = stimSig(prfscoseed,:);
+    prfs.copeakt(matSrcInds{i})             = peakHRF(prfscoseed)';
     % Convert from cartesian to polar
     [prfs.copol(matSrcInds{i}),prfs.coecc(matSrcInds{i})] = cart2pol(prfs.cox,prfs.coy);
     progBar(i);
