@@ -40,9 +40,9 @@ for i = 1:length(matSrcInds)
     prfs.coy(matSrcInds{i})                 = stimY0(prfscoseed);
     prfs.cosig(matSrcInds{i},:)             = stimSig(prfscoseed,:);
     prfs.copeakt(matSrcInds{i})             = peakHRF(prfscoseed)';
-    % Convert from cartesian to polar
-    [prfs.copol(matSrcInds{i}),prfs.coecc(matSrcInds{i})] = cart2pol(prfs.cox,prfs.coy);
     progBar(i);
 end
+%% Convert from cartesian to polar
+[prfs.copol,prfs.coecc] = cart2pol(prfs.cox,prfs.coy);
 %% Save data
 save(outFile,'prfs');
