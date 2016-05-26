@@ -20,8 +20,18 @@ end
 %% Create run_pRF
 for i = 1:length(outFiles)
     job_name = sprintf('calcpRF_%04d',i);
-    matlab_string = (['calcpRF(''' outFiles{i} ''',''' ...
-        predFiles{i} ''',''' inFiles{i} ''',[' (srcInds{i}) ']);']);
+    if ~isempty(strfind(inFiles{i},'split1'))
+        matlab_string = (['calcpRF(''' outFiles{i} ''',''' ...
+            predFiles{i} ''',''' inFiles{i} ''',[' (srcInds{i}) '],''' ...
+            'split1'');']);
+    elseif ~isempty(strfind(inFiles{i},'split2'))
+        matlab_string = (['calcpRF(''' outFiles{i} ''',''' ...
+            predFiles{i} ''',''' inFiles{i} ''',[' (srcInds{i}) '],''' ...
+            'split2'');']);
+    else
+        matlab_string = (['calcpRF(''' outFiles{i} ''',''' ...
+            predFiles{i} ''',''' inFiles{i} ''',[' (srcInds{i}) ']);']);
+    end
     create_job_shell(outDir,job_name,matlab_string)
 end
 %% Create submit script

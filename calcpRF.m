@@ -1,4 +1,4 @@
-function calcpRF(outFile,predFile,inFile,srcInds)
+function calcpRF(outFile,predFile,inFile,srcInds,splitHalf)
 
 % Calcuate the pRF for a given set of fMRI voxels/vertices
 %
@@ -6,6 +6,11 @@ function calcpRF(outFile,predFile,inFile,srcInds)
 %   calcpRF(outFile,predFile,inFile,srcInds)
 %
 %   Written by Andrew S Bock May 2016
+
+%% Set defaults
+if ~exist('splitHalf','var')
+    splitHalf = 'full';
+end
 %% Load prediction pRFs
 load(predFile);
 
@@ -31,7 +36,14 @@ prfs.coecc          = nan(length(srcInds),1);
 progBar = ProgressBar(length(matSrcInds),'finding pRFs...');
 for i = 1:length(matSrcInds)
     % Define source indices
-    srctc = tmp.vol(matSrcInds{i},:)';
+    switch splitHalf
+        case 'split1'
+            srctc = tmp.vol(matSrcInds{i},1:dims(4)/2)';
+        case 'split2'
+            srctc = tmp.vol(matSrcInds{i},(dims(4)/2)+1:dims(4))';
+        case 'full'
+            srctc = tmp.vol(matSrcInds{i},:)';
+    end
     % Find best pRF
     tmp_co                                  = corr(srctc,predTCs);
     [prfsco,prfscoseed]                     = max(tmp_co,[],2);
