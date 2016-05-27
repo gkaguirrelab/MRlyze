@@ -13,7 +13,14 @@ if ~exist('splitHalf','var')
 end
 %% Load prediction pRFs
 load(predFile);
-
+switch splitHalf
+    case 'split1'
+        dims = size(predTCs);
+        predTCs = predTCs(1:dims(1)/2,:);
+    case 'split2'
+        dims = size(predTCs);
+        predTCs = predTCs(dims(1)/2+1:dims(1),:);
+end
 %% Get source time-series
 tmp = load_nifti(inFile);
 dims = size(tmp.vol);
@@ -36,14 +43,7 @@ prfs.coecc          = nan(length(srcInds),1);
 progBar = ProgressBar(length(matSrcInds),'finding pRFs...');
 for i = 1:length(matSrcInds)
     % Define source indices
-    switch splitHalf
-        case 'split1'
-            srctc = tmp.vol(matSrcInds{i},1:dims(4)/2)';
-        case 'split2'
-            srctc = tmp.vol(matSrcInds{i},(dims(4)/2)+1:dims(4))';
-        case 'full'
-            srctc = tmp.vol(matSrcInds{i},:)';
-    end
+    srctc = tmp.vol(matSrcInds{i},:)';
     % Find best pRF
     tmp_co                                  = corr(srctc,predTCs);
     [prfsco,prfscoseed]                     = max(tmp_co,[],2);

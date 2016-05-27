@@ -1,4 +1,4 @@
-function plotVisual(inVol,eccVol,polVol,roiInd,axLim)
+function plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 
 % Plots values from an input volume in visual field coordinates
 %
@@ -18,12 +18,14 @@ function plotVisual(inVol,eccVol,polVol,roiInd,axLim)
 if ~exist('axLim','var')
     axLim = 90;
 end
+if ~exist('vArea','var')
+    vArea = 'V1';
+end
 pscale = 100; % pixel scaling factor
 circPol = 0:pi/50:2*pi; % Polar angle sampling
 cLines = linspace(0,log10(axLim),6); % Eccentricity lines
 rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
 pLabels = pscale*(cLines(end) + (cLines(end) - cLines(end-1))/4); % Polar angle label eccentricity
-pixSig = 10; % number of pixels to use for plotting each data value
 %% Set display
 fullFigure;
 subplot(1,1,1);%hold on;
@@ -31,18 +33,23 @@ axis off;
 %% Load in volumes
 ecc = load_nifti(eccVol);
 ecc = ecc.vol(roiInd);
-logecc = log10(ecc);
-logecc(logecc<0) = 0;
 pol = load_nifti(polVol);
 pol = pol.vol(roiInd);
-% load input volume
 in = load_nifti(inVol);
 in = in.vol(roiInd);
+%% Remove values outside axLim
+badind = ecc>axLim;
+ecc(badind) = [];
+pol(badind) = [];
+in(badind) = [];
+%% Log scale ecc
+logecc = log10(ecc)*pscale;
+logecc(logecc<0) = 0;
 %% Convert polar to cartesian
-[x,y] = pol2cart(pol,logecc*pscale);
+[x,y] = pol2cart(pol,logecc);
 % flip y
 y = -y;
-%% Plot circles and spokes
+%% Create circles and spokes
 % Create circles
 for i = 1:length(cLines)
     [cX(i,:),cY(i,:)] = pol2cart(circPol,cLines(i)*pscale);
@@ -53,12 +60,14 @@ cY = cY - min(cY(:));
 % Get circle x, y
 xCenter = max(cX(:))/2;
 yCenter = max(cY(:))/2;
-% Background
+% Get pixel size by degrees eccentricity
+maxPix = max(cX(:))/2;
+%% Plot Background
 patch('XData',cX(end,:),'YData',cY(end,:),...
-    'FaceColor',[0 0 0],'HandleVisibility', 'off');
+    'FaceColor',[1 1 1],'HandleVisibility', 'off');
 hold on;
 %% Create image
-tmpImage = zeros(ceil(max(cX(:)) - min(cX(:))),ceil(max(cY(:)) - min(cY(:))));
+tmpImage = zeros(ceil(max(cX(:))),ceil(max(cY(:))));
 tmpX = round(x + max(cX(:))/2);
 tmpY = round(y + max(cY(:))/2);
 xMat = repmat(1:size(tmpImage,1),size(tmpImage,2),1);
@@ -68,6 +77,11 @@ weightMat = nan([size(tmpImage,1)*size(tmpImage,2),length(x)]);
 % Make the matrix of values and weights
 progBar = ProgressBar(length(tmpX)','Making image matrices...');
 for i = 1:length(tmpX)
+    eccSig = rf_ecc(ecc(i),vArea);
+    pixSig = (log10(eccSig))*pscale;
+    if pixSig < .1
+        pixSig = .1;
+    end   
     tmpDist = sqrt( (yMat - tmpY(i)).^2 + (xMat - tmpX(i)).^2);
     tmpGauss = exp(-(tmpDist(:).^2)/(2*pixSig.^2));
     valMat(:,i) = tmpGauss*in(i);
@@ -83,7 +97,7 @@ for i = 1:length(weightMat)
     outImage(i) = sum((tmpWeights .* tmpVals)) / sum(tmpWeights);
     if ~mod(i,100);progBar(i);end
 end
-%%
+%% Make Final Image
 finalImage = reshape(outImage,size(tmpImage));
 for i = 1:size(finalImage,1)
     for j = 1:size(finalImage,2)
