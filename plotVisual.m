@@ -16,16 +16,17 @@ function plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 
 %% set defaults
 if ~exist('axLim','var')
-    axLim = 90;
+    axLim = 37;
 end
 if ~exist('vArea','var')
     vArea = 'V1';
 end
-pscale = 100; % pixel scaling factor
-circPol = 0:pi/50:2*pi; % Polar angle sampling
+weightThresh = 1;
+matSize = 501;
+circPol = linspace(0,2*pi,matSize); % Polar angle sampling
 cLines = linspace(0,log10(axLim),6); % Eccentricity lines
 rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
-pLabels = pscale*(cLines(end) + (cLines(end) - cLines(end-1))/4); % Polar angle label eccentricity
+pLabels = matSize*(cLines(end) + (cLines(end) - cLines(end-1))/4); % Polar angle label eccentricity
 %% Set display
 fullFigure;
 subplot(1,1,1);%hold on;
@@ -37,6 +38,111 @@ pol = load_nifti(polVol);
 pol = pol.vol(roiInd);
 in = load_nifti(inVol);
 in = in.vol(roiInd);
+%% Threshold based on axis limit
+badind = ecc>axLim;
+ecc(badind) = [];
+pol(badind) = [];
+in(badind) = [];
+in = icdf('normal',in); % convert p to z-score
+in(in==-inf) = -10;
+in(in==inf) = 10;
+%% Convert polar to cartesian
+[x,y] = pol2cart(pol,ecc);
+% flip y
+y = -y;
+%% Make matrix
+outImage = nan(matSize,matSize);
+centerMat = [round(matSize/2) round(matSize/2)];
+Sig = rf_ecc(ecc,vArea);
+progBar = ProgressBar(matSize,'mixing paint...');
+for i = 1:matSize % row (y)
+    for j = 1:matSize % columns (x)
+        tmpdist = sqrt( (i-centerMat(1))^2 + (j-centerMat(2))^2 );
+        if tmpdist <= centerMat(1)-1
+            eccMat = 10^(tmpdist * log10(axLim)/(centerMat(1)-1)); % log scale the value
+            polMat = cart2pol(j-centerMat(2),i-centerMat(1));
+            [matX,matY] = pol2cart(polMat,eccMat);
+            tmpDist = sqrt( (matY - y).^2 + (matX - x).^2);
+            tmpGauss = exp(-(tmpDist.^2)./(2*Sig.^2));
+            tmpGauss(tmpGauss<0.5) = 0;
+            tmpVals = tmpGauss.*in;
+            if sum(tmpGauss) >= weightThresh
+                outImage(i,j) = sum((tmpGauss .* tmpVals)) / sum(tmpGauss);
+            end
+        end
+    end
+    progBar(i);
+end
+%% Plot image
+% bak = outImage;
+pImage = cdf('normal',outImage);
+% threshImage = pImage;
+% threshImage(threshImage>0.05) = nan;
+% finalImage = log10(threshImage);
+finalImage = log10(pImage);
+pcolor(finalImage);
+shading flat;
+colormap(flipud(hot(2000)));
+axis off
+axis square
+caxis([-5 -0]);
+hold on;
+%% Create circles and spokes
+% Create circles
+for i = 1:length(cLines)
+    [cX(i,:),cY(i,:)] = pol2cart(circPol,cLines(i)*matSize/2);
+end
+% Make all postivie
+cX = cX - min(cX(:));
+cY = cY - min(cY(:));
+% Get circle x, y
+xCenter = max(cX(:))/2;
+yCenter = max(cY(:))/2;
+%% Plot Background
+patch('XData',cX(end,:),'YData',cY(end,:),...
+    'FaceColor',[1 1 1],'HandleVisibility', 'off');
+hold on;
+
+
+
+
+
+
+
+
+%%
+
+
+
+
+%%
+
+
+%%
+
+
+
+%%
+
+
+
+%%
+% scale and move x and y
+x = round(x) + round(size(imageMat,2)/2);
+y = round(y) + round(size(imageMat,1)/2);
+ct = 0;
+for i = 1:length(in)
+    if isnan(imageMat(y(i),x(i)))
+    imageMat(y(i),x(i)) = in(i);
+    else
+        ct = ct + 1;
+    end
+end
+
+
+
+
+%%
 %% Remove values outside axLim
 badind = ecc>axLim;
 ecc(badind) = [];
@@ -49,23 +155,7 @@ logecc(logecc<0) = 0;
 [x,y] = pol2cart(pol,logecc);
 % flip y
 y = -y;
-%% Create circles and spokes
-% Create circles
-for i = 1:length(cLines)
-    [cX(i,:),cY(i,:)] = pol2cart(circPol,cLines(i)*pscale);
-end
-% Make all postivie
-cX = cX - min(cX(:));
-cY = cY - min(cY(:));
-% Get circle x, y
-xCenter = max(cX(:))/2;
-yCenter = max(cY(:))/2;
-% Get pixel size by degrees eccentricity
-maxPix = max(cX(:))/2;
-%% Plot Background
-patch('XData',cX(end,:),'YData',cY(end,:),...
-    'FaceColor',[1 1 1],'HandleVisibility', 'off');
-hold on;
+
 %% Create image
 tmpImage = zeros(ceil(max(cX(:))),ceil(max(cY(:))));
 tmpX = round(x + max(cX(:))/2);
@@ -78,10 +168,10 @@ weightMat = nan([size(tmpImage,1)*size(tmpImage,2),length(x)]);
 progBar = ProgressBar(length(tmpX)','Making image matrices...');
 for i = 1:length(tmpX)
     eccSig = rf_ecc(ecc(i),vArea);
+    if eccSig < 1
+        eccSig = 1;
+    end
     pixSig = (log10(eccSig))*pscale;
-    if pixSig < .1
-        pixSig = .1;
-    end   
     tmpDist = sqrt( (yMat - tmpY(i)).^2 + (xMat - tmpX(i)).^2);
     tmpGauss = exp(-(tmpDist(:).^2)/(2*pixSig.^2));
     valMat(:,i) = tmpGauss*in(i);
@@ -108,11 +198,7 @@ for i = 1:size(finalImage,1)
     end
 end
 finalImage = log10(finalImage);
-%% Plot image
-pcolor(finalImage);
-shading flat;
-colormap(flipud(hot(2000)));
-hold on;
+
 %% Plot polar grid
 % Plot circles
 for i = 1:length(cLines)

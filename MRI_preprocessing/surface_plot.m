@@ -76,7 +76,7 @@ switch map_type
         mycolormap = flipud(jet(200));
         mapres=[3 10 200];
     case 'co'
-%         mycolormap = jet(200);
+        %         mycolormap = jet(200);
         mapres=[-1 1 200];
         mycolormap = make_rbco_colormap(mapres);
     case 'rbco'
@@ -144,6 +144,9 @@ switch map_type
         mapres=[0 pi 200];
         %mycolormap = blue_red_yellow;
         mycolormap = make_ecc_colormap(mapres);
+    case 'logp'
+        mycolormap = flipud(hot(200));
+        mapres=[-5 0 200];
     case 'other'
         mycolormap = make_colormap([1 1 0;1 0 0;0 1 0;0 0 1;1 0 1]);
         mapres=[0 21 size(mycolormap,1)];
