@@ -17,7 +17,7 @@ function prepare_pRF_Mathematica(session_dir,subject_name,outName,func)
 %   Written by Andrew S Bock Jun 2015
 
 %% Set defaults
-hemis = {'lh' 'rh' 'mh'};
+hemis = {'lh' 'rh'};
 inmaps = {'co' 'copol' 'coecc'};
 outmaps = {'co' 'pol' 'ecc'};
 SUBJECTS_DIR = getenv('SUBJECTS_DIR');
@@ -27,11 +27,15 @@ for m = 1:length(inmaps);
     for hh = 1:length(hemis)
         for sy = 1:2
             if sy == 1 % prepare the data on the fsaverage_sym surface
-                infile = fullfile(session_dir,'pRFs',func,[hemis{hh} '.cortex.avg.' inmaps{m} '.prfs.sym.nii.gz']);
-                outfile = fullfile(SUBJECTS_DIR,'fsaverage_sym','surf',[hemis{hh} '.' outmaps{m} '.avg.sym.' outName '.mgh']);
+                infile = fullfile(session_dir,'pRFs',...
+                    [hemis{hh} '.' func '.cortex.' inmaps{m} '.avg.prfs.sym.nii.gz']);
+                outfile = fullfile(SUBJECTS_DIR,'fsaverage_sym','surf',...
+                    [hemis{hh} '.' func '.' outmaps{m} '.avg.' outName '.mgh']);
             else % prepare the data on the subject's native surface
-                infile = fullfile(session_dir,'pRFs',func,[hemis{hh} '.cortex.avg.' inmaps{m} '.prfs.nii.gz']);
-                outfile = fullfile(SUBJECTS_DIR,subject_name,'surf',[hemis{hh} '.' outmaps{m} '.avg.mgh']);
+                infile = fullfile(session_dir,'pRFs',...
+                    [hemis{hh} '.' func '.cortex.' inmaps{m} '.avg.prfs.nii.gz']);
+                outfile = fullfile(SUBJECTS_DIR,subject_name,'surf',...
+                    [hemis{hh} '.' func '.' outmaps{m} '.avg.mgh']);
             end
             tmpfile = fullfile(session_dir,[hemis{hh} '.tmp.prfs.nii.gz']);
             % Convert radians to degrees (and Mathematica convention 0 - 180)
