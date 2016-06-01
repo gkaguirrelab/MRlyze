@@ -1,23 +1,13 @@
-function create_pRF_template(session_dir,subject_name,hemis)
+function create_pRF_template(session_dir)
 % Takes the .mgz output from Mathematica, convertes to nii.gz and separates
 %   out the pol, ecc, and areas maps into individual volumes.
 %
-%   Usage: create_pRF_template(session_dir,subject_name,hemi)
+%   Usage: create_pRF_template(session_dir)
 %
 %   Written by Andrew S Bock Apr 2015
 
 %% Set default parameters
-if ~exist('session_dir','var')
-    error('No ''session_dir'' defined')
-end
-if ~exist('subject_name','var')
-    error('No ''subject_name'' defined')
-end
-if ~exist('hemi','var')
-    hemis = {'lh' 'rh'};
-end
-%% Add to log
-SaveLogInfo(session_dir,mfilename,session_dir,subject_name,hemis)
+hemis = {'lh' 'rh'};
 
 %% Template fit to pRF ROI
 disp('Creating pRF template ROIs...');
@@ -45,18 +35,6 @@ for hh = 1:length(hemis)
     tmp.vol(tmp.vol==99999) = nan;
     save_nifti(tmp,fullfile(outDir,[hemi '.areas.pRF.nii.gz']));
     if strcmp(hemi,'rh')
-        %         [~,~] = system(['mri_surf2surf --srcsubject ' subject_name ' --sval ' ...
-        %             fullfile(session_dir,'rh.pol_pRF.nii.gz') ' ' ...
-        %             '--trgsubject ' subject_name '/xhemi --tval ' ...
-        %             fullfile(session_dir,'rh.pol_pRF.nii.gz') ' --hemi lh']);
-        %         [~,~] = system(['mri_surf2surf --srcsubject ' subject_name ' --sval ' ...
-        %             fullfile(session_dir,'rh.ecc_pRF.nii.gz') ' ' ...
-        %             '--trgsubject ' subject_name '/xhemi --tval ' ...
-        %             fullfile(session_dir,'rh.ecc_pRF.nii.gz') ' --hemi lh']);
-        %         [~,~] = system(['mri_surf2surf --srcsubject ' subject_name ' --sval ' ...
-        %             fullfile(session_dir,'rh.areas_pRF.nii.gz') ' ' ...
-        %             '--trgsubject ' subject_name '/xhemi --tval ' ...
-        %             fullfile(session_dir,'rh.areas_pRF.nii.gz') ' --hemi lh']);
         % convert to rh polar angle
         polname = fullfile(outDir,[hemi '.pol.pRF.nii.gz']);
         tmp = load_nifti(polname);
