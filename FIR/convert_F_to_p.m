@@ -42,6 +42,6 @@ for i = runNums
         invol = fullfile(statsDir,[volnames{v} '.nii.gz']);
         targvol = fullfile(SUBJECTS_DIR,subject_name,'mri','T1.mgz');
         outvol = fullfile(statsDir,[volnames{v} '.anat.nii.gz']);
-        mri_vol2vol(invol,targvol,outvol,reg);
+        mri_vol2vol(invol,targvol,outvol,reg,'trilin');
     end
 end
