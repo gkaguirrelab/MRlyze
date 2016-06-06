@@ -28,7 +28,7 @@ for i = runNums
     bbreg_out_file = fullfile(session_dir,b{i},tmpreg{1}); % name registration file
     system(['mri_vol2vol --mov ' meanfile ...
         ' --targ ' targ_vol ' --reg ' bbreg_out_file ...
-        ' --o ' meanout ' --nearest']);
+        ' --o ' meanout ' --trilin']);
     % Project cope files to anatomical space
     for j = 1:length(copeFiles)
         if isempty(strfind(copeFiles{j},'anat'))
@@ -40,7 +40,7 @@ for i = runNums
             bbreg_out_file = fullfile(session_dir,b{i},tmpreg{1}); % name registration file
             system(['mri_vol2vol --mov ' copefile ...
                 ' --targ ' targ_vol ' --reg ' bbreg_out_file ...
-                ' --o ' copeout ' --nearest']);
+                ' --o ' copeout ' --trilin']);
         end
     end
 end
