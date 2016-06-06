@@ -16,21 +16,18 @@ function plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 
 %% set defaults
 if ~exist('axLim','var')
-    axLim = 37;
+    axLim = 90;
 end
 if ~exist('vArea','var')
     vArea = 'V1';
 end
-weightThresh = 1;
 matSize = 501;
 circPol = linspace(0,2*pi,matSize); % Polar angle sampling
 cLines = linspace(0,log10(axLim),6); % Eccentricity lines
 rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
 pLabels = matSize*(cLines(end) + (cLines(end) - cLines(end-1))/4); % Polar angle label eccentricity
-%% Set display
-fullFigure;
-subplot(1,1,1);%hold on;
-axis off;
+outImage = nan(matSize,matSize);
+centerMat = [round(matSize/2) round(matSize/2)];
 %% Load in volumes
 ecc = load_nifti(eccVol);
 ecc = ecc.vol(roiInd);
@@ -43,16 +40,14 @@ badind = ecc>axLim;
 ecc(badind) = [];
 pol(badind) = [];
 in(badind) = [];
-in = icdf('normal',in); % convert p to z-score
-in(in==-inf) = -10;
-in(in==inf) = 10;
+% in = icdf('normal',in); % convert p to z-score
+% in(in==-inf) = -10;
+% in(in==inf) = 10;
 %% Convert polar to cartesian
 [x,y] = pol2cart(pol,ecc);
 % flip y
 y = -y;
 %% Make matrix
-outImage = nan(matSize,matSize);
-centerMat = [round(matSize/2) round(matSize/2)];
 Sig = rf_ecc(ecc,vArea);
 progBar = ProgressBar(matSize,'mixing paint...');
 for i = 1:matSize % row (y)
@@ -74,18 +69,22 @@ for i = 1:matSize % row (y)
     progBar(i);
 end
 %% Plot image
+fullFigure;
+subplot(1,1,1);%hold on;
+axis off;
 % bak = outImage;
-pImage = cdf('normal',outImage);
+%pImage = cdf('normal',outImage);
 % threshImage = pImage;
 % threshImage(threshImage>0.05) = nan;
 % finalImage = log10(threshImage);
-finalImage = log10(pImage);
-pcolor(finalImage);
+%finalImage = log10(pImage);
+pcolor(outImage);
 shading flat;
 colormap(flipud(hot(2000)));
 axis off
 axis square
-caxis([-5 -0]);
+%caxis([-5 -0]);
+colorbar
 hold on;
 %% Create circles and spokes
 % Create circles
