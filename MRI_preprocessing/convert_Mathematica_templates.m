@@ -3,7 +3,7 @@ function convert_Mathematica_templates(session_dir,template_dir)
 % Takes the .mgz output from Mathematica, convertes to nii.gz and separates
 %   out the pol, ecc, and areas maps into individual volumes.
 %
-%   Usage: convert_Mathematica_templates(session_dir)
+%   Usage: convert_Mathematica_templates(session_dir,template_dir)
 %
 %   Written by Andrew S Bock Jul 2015
 

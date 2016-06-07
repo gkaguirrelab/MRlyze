@@ -1,14 +1,14 @@
-function convert_Mathematica_fine_templates(session_dir,tdir)
+function convert_Mathematica_fine_templates(session_dir,template_dir)
 
 % Takes the .mgz output from Mathematica, convertes to nii.gz and separates
 %   out the pol, ecc, and areas maps into individual volumes.
 %
-%   Usage: convert_Mathematica_fine_templates(session_dir,tdir)
+%   Usage: convert_Mathematica_templates(session_dir,template_dir)
 %
 %   Written by Andrew S Bock Jul 2015
 
 %% Find template files
-t = listdir(fullfile(tdir,'*.mgz'),'files');
+t = listdir(fullfile(template_dir,'*.mgz'),'files');
 %% Template fit to pRF ROI
 disp('Creating pRF template ROIs...');
 for dd = 1:length(t)
