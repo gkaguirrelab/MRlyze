@@ -44,7 +44,7 @@ sampleRate                  = maxXY./GridPoints; % sample rate in visual angle
 I = load(imFile);
 P = load(paramsFile);
 % Binarize images (i.e. 1 if image, 0 if background)
-bk = P.params.display.backColorIndex; % find 'black' value
+bk = P.params.display.backColorIndex; % find 'background' value
 I.images = I.images ~= bk;
 %% Make sigma list
 tmps = params.cntrSig(1):params.cntrSig(2):params.sigBorder;
