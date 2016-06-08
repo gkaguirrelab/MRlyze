@@ -14,11 +14,7 @@ switch templateType
     case 'coarse'
         pRF_dir = fullfile(session_dir,'pRFs','coarse_model_templates','decimated_templates');
     case 'fine'
-        if V2V3
-            pRF_dir = fullfile(session_dir,'pRFs','fine_model_templates','V2V3','decimated_templates');
-        else
-            pRF_dir = fullfile(session_dir,'pRFs','fine_model_templates','V1','decimated_templates');
-        end
+        pRF_dir = fullfile(session_dir,'pRFs','fine_model_templates','decimated_templates');
     case 'pRF'
         pRF_dir = fullfile(session_dir,'pRFs','pRF_templates','decimated_templates');
     case 'anat'

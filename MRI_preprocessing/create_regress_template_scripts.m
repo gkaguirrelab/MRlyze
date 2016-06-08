@@ -68,6 +68,7 @@ for hhh = 1:length(hemis);
                 %                 kk = 8:14;% -0.1 <->  0.5
             end
         case 'fine'
+            hh = 1:5;
             ii = 1:5;
             jj = 1:5;
             kk = 1:5;
@@ -78,7 +79,7 @@ for hhh = 1:length(hemis);
             'regress_template(''' session_dir ''',''' saveDir ''',''' templateType ''',' ...
             runs ',''' hemi ''',''' func ''',''' templateType ''',' cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
         create_job_shell(outDir,job_name,matlab_string);
-    else
+    elseif strcmp(templateType,'coarse')
         for h = hh
             for i = ii
                 for j = jj
@@ -93,6 +94,23 @@ for hhh = 1:length(hemis);
                                 cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
                             create_job_shell(outDir,job_name,matlab_string);
                         end
+                    end
+                end
+            end
+        end
+    elseif strcmp(templateType,'fine')
+        for h = hh
+            for i = ii
+                for j = jj
+                    for k = kk
+                        job_name = [hemi '.' num2str(h) '.' num2str(i) '.' ...
+                            num2str(j) '.' num2str(k) '.regress'];
+                        matlab_string = ([...
+                            'regress_template(''' session_dir ''',''' saveDir ''',''' templateType ''',' ...
+                            runs ',''' hemi ''',''' func ''',''' ...
+                            [num2str(h) '.' num2str(i) '.' num2str(j) '.' num2str(k)] ''',' ...
+                            cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
+                        create_job_shell(outDir,job_name,matlab_string);
                     end
                 end
             end
