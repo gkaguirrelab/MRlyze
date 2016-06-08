@@ -71,15 +71,18 @@ end
 varFiles = listdir(fullfile(tdir,[hemi '*varexp.txt']),'files');
 badind = [];
 for i = 1:length(varFiles);
-    if ~isempty(strfind(varFiles{i},'pRF')) || ...
-            ~isempty(strfind(varFiles{i},'anat')) || ...
-            isempty(strfind(varFiles{i}(6),'2'))
-        badind = [badind i];
+    if strcmp(templateType,'coarse')
+        if ~isempty(strfind(varFiles{i},'pRF')) || ...
+                ~isempty(strfind(varFiles{i},'anat')) || ...
+                isempty(strfind(varFiles{i}(6),'2'))
+            badind = [badind i];
+        end
+    elseif strcmp(templateType,'fine')
+        if ~isempty(strfind(varFiles{i},'pRF')) || ...
+                ~isempty(strfind(varFiles{i},'anat'))
+            badind = [badind i];
+        end
     end
-    %     if ~isempty(strfind(varFiles{i},'pRF')) ||...
-    %             ~isempty(strfind(varFiles{i},'anat'))
-    %         badind = [badind i];
-    %end
 end
 varFiles(badind) = [];
 % load in the variance explained text files
@@ -104,10 +107,17 @@ varexp = flipud(varexp);
 sortind = flipud(sortind);
 for i = 1:length(sortind)
     dotinds = strfind(varFiles{sortind(i)},'.');
-    params(i).V1 = V1(str2double(varFiles{sortind(i)}(dotinds(1)+1:dotinds(2)-1)));
-    params(i).V2 = V2(str2double(varFiles{sortind(i)}(dotinds(2)+1:dotinds(3)-1)));
-    params(i).psi = psi(str2double(varFiles{sortind(i)}(dotinds(3)+1:dotinds(4)-1)));
-    params(i).FCx = FCx(str2double(varFiles{sortind(i)}(dotinds(4)+1:dotinds(5)-1)));
-    params(i).FCy = FCy(str2double(varFiles{sortind(i)}(dotinds(5)+1:dotinds(6)-1)));
+    if strcmp(templateType,'coarse')
+        params(i).V1 = V1(str2double(varFiles{sortind(i)}(dotinds(1)+1:dotinds(2)-1)));
+        params(i).V2 = V2(str2double(varFiles{sortind(i)}(dotinds(2)+1:dotinds(3)-1)));
+        params(i).psi = psi(str2double(varFiles{sortind(i)}(dotinds(3)+1:dotinds(4)-1)));
+        params(i).FCx = FCx(str2double(varFiles{sortind(i)}(dotinds(4)+1:dotinds(5)-1)));
+        params(i).FCy = FCy(str2double(varFiles{sortind(i)}(dotinds(5)+1:dotinds(6)-1)));
+    elseif strcmp(templateType,'fine')
+        params(i).V1 = V1(str2double(varFiles{sortind(i)}(dotinds(1)+1:dotinds(2)-1)));
+        params(i).psi = psi(str2double(varFiles{sortind(i)}(dotinds(2)+1:dotinds(3)-1)));
+        params(i).FCx = FCx(str2double(varFiles{sortind(i)}(dotinds(3)+1:dotinds(4)-1)));
+        params(i).FCy = FCy(str2double(varFiles{sortind(i)}(dotinds(4)+1:dotinds(5)-1)));
+    end
     sorted_templates{i} = varFiles{sortind(i)};
 end
