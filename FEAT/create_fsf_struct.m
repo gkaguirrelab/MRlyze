@@ -40,7 +40,14 @@ fsf.brain_thresh = 0;
 fsf.critical_z = 0;
 fsf.noise = 0;
 fsf.noisear = 0;
-
+fsf.mc = 0;
+fsf.sh_yn = 0;
+fsf.regunwarp_yn = 0;
+fsf.dwell = 0;
+fsf.te = 0;
+fsf.signallossthresh = 10;
+fsf.unwarp_dir = 0;
+fsf.st = 0;
 
 %% create a precompiled fsf_struct (default values + fields to design template)
 
@@ -112,10 +119,28 @@ fsf.noisear = 0;
  % Noise AR(1)
  fsf.noisear = 0.34;
  
- % Post-stats-only directory copying
- % 0 : Overwrite original post-stats results
- % 1 : Copy original FEAT directory for new Contrasts, Thresholding, Rendering
- fsf.newdir_yn=0;
+ % Motion correction
+ % 0 : None
+ % 1 : MCFLIRT
+ fsf.mc = 0;
+ 
+ % Spin-history (currently obsolete)
+ fsf.sh_yn = 0;
+ 
+ % B0 fieldmap unwarping?
+ fsf.regunwarp_yn = 0;
+ 
+ % EPI dwell time (ms)
+ fsf.dwell = 0.7;
+ 
+ % EPI TE (ms)
+ fsf.te = 35;
+ 
+ % Signal loss threshold
+ fsf.signallossthresh = 10;
+ 
+ % Unwarp direction
+ fsf.unwarp_dir = 'y-';
  
  % Slice timing correction
  % 0 : None
@@ -124,18 +149,35 @@ fsf.noisear = 0;
  % 3 : Use slice order file
  % 4 : Use slice timings file
  % 5 : Interleaved (0, 2, 4 ... 1, 3, 5 ... )
- fsf.st=0;
+ fsf.st = 0;
+  
+ % Slice timings file
+ fsf.st_file='';
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ % Post-stats-only directory copying
+ % 0 : Overwrite original post-stats results
+ % 1 : Copy original FEAT directory for new Contrasts, Thresholding, Rendering
+ fsf.newdir_yn=0;
+ 
+
  
  % Slice timings file
  fsf.st_file='';
  
- % Motion correction
- % 0 : None
- % 1 : MCFLIRT
- fsf.mc=1;
+
  
- % Spin-history (currently obsolete)
- fsf.sh_yn=0;
+
  
  % BET brain extraction
  fsf.bet_yn=1;
@@ -229,8 +271,7 @@ fsf.noisear = 0;
  % Registration?
  fsf.reg_yn=1;
  
- % B0 fieldmap unwarping?
- fsf.regunwarp_yn=0;
+
  
  % Dwell/Asymmetry ratio
  fsf.dwellasym=-1;
