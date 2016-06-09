@@ -48,26 +48,13 @@ for hhh = 1:length(hemis);
     hemi = hemis{hhh};
     switch templateType
         case 'coarse'
-            if strcmp(hemi,'lh')
-                hh = 1:7;
-                ii = 1:7;
-                jj = 1:7;
-                %                 ii = 6:12;%  0.2 <->  0.8
-                %                 jj = 3:9; % -0.5 <->  0.1
-                %                 kk = 3:9; % -0.6 <->  0.0
-            else
-                hh = 1:7;
-                ii = 1:7;
-                jj = 1:7;
-                %                 ii = 2:8; % -0.2 <->  0.4
-                %                 jj = 2:8; % -0.6 <->  0.0
-                %                 kk = 8:14;% -0.1 <->  0.5
-            end
+            hh = 1:7;
+            ii = 1:7;
+            jj = 1:7;
         case 'fine'
             hh = 1:5;
             ii = 1:5;
             jj = 1:5;
-            kk = 1:5;
     end
     if strcmp(templateType,'pRF') || strcmp(templateType,'anat');
         job_name = [hemi '.' templateType '.regress'];
@@ -75,7 +62,7 @@ for hhh = 1:length(hemis);
             'regress_template(''' session_dir ''',''' saveDir ''',''' templateType ''',' ...
             runs ',''' hemi ''',''' func ''',''' templateType ''',' cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
         create_job_shell(outDir,job_name,matlab_string);
-    elseif strcmp(templateType,'coarse')
+    else
         for h = hh
             for i = ii
                 for j = jj
@@ -87,23 +74,6 @@ for hhh = 1:length(hemis);
                         [num2str(h) '.' num2str(i) '.' num2str(j)] ''',' ...
                         cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
                     create_job_shell(outDir,job_name,matlab_string);
-                end
-            end
-        end
-    elseif strcmp(templateType,'fine')
-        for h = hh
-            for i = ii
-                for j = jj
-                    for k = kk
-                        job_name = [hemi '.' num2str(h) '.' num2str(i) '.' ...
-                            num2str(j) '.' num2str(k) '.regress'];
-                        matlab_string = ([...
-                            'regress_template(''' session_dir ''',''' saveDir ''',''' templateType ''',' ...
-                            runs ',''' hemi ''',''' func ''',''' ...
-                            [num2str(h) '.' num2str(i) '.' num2str(j) '.' num2str(k)] ''',' ...
-                            cluster ',''' tcPart ''',' leaveOut ',' V2V3 ');']);
-                        create_job_shell(outDir,job_name,matlab_string);
-                    end
                 end
             end
         end
