@@ -48,6 +48,55 @@ fsf.te = 0;
 fsf.signallossthresh = 10;
 fsf.unwarp_dir = 0;
 fsf.st = 0;
+fsf.bet_yn = 0;
+fsf.smooth = 0;
+fsf.norm_yn = 0;
+fsf.perfsub_yn = 0;
+fsf.temphp_yn = 0;
+fsf.templp_yn=0;
+fsf.melodic_yn = 0;
+fsf.stats_yn = 0;
+fsf.prewhiten_yn = 0;
+fsf.motionevs = 0;
+fsf.motionevbeta = 0;
+fsf.scriptevsbeta = 0;
+fsf.robust_yn = 0;
+fsf.mixed_yn = 0;
+fsf.evs_orig = 0;
+fsf.evs_real = 0;
+fsf.evs_vox = 0;
+fsf.ncon_orig = 0;
+fsf.ncon_real = 0;
+fsf.nftests_orig= 0;
+fsf.nftests_real= 0;
+fsf.constcol = 0;
+fsf.poststats_yn = 0;
+fsf.threshmask = 0;
+fsf.thresh = 0;
+fsf.prob_thresh = 0;
+fsf.z_thresh = 0;
+fsf.zdisplay = 0;
+fsf.zmin = 0;
+fsf.zmax = 0;
+fsf.rendertype = 0;
+fsf.bgimage = 0;
+fsf.tsplot_yn = 0;
+fsf.reginitial_highres_yn = 0;
+fsf.reginitial_highres_search = 0;
+fsf.reginitial_highres_dof = 0;
+fsf.reghighres_yn = 0;
+fsf.reghighres_search = 0;
+fsf.reghighres_dof = 0;
+fsf.regstandard_yn = 0;
+fsf.alternateReference_yn = 0;
+fsf.regstandard = 0;
+fsf.regstandard_search = 0;
+fsf.regstandard_dof = 6;
+ fsf.regstandard_nonlinear_yn = 0;
+ fsf.regstandard_nonlinear_warpres = 0;
+ fsf.paradigm_hp = 0;
+ fsf.totalVoxels = 0 ;
+     
 
 %% create a precompiled fsf_struct (default values + fields to design template)
 
@@ -154,175 +203,168 @@ fsf.st = 0;
  % Slice timings file
  fsf.st_file='';
  
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- 
- % Post-stats-only directory copying
- % 0 : Overwrite original post-stats results
- % 1 : Copy original FEAT directory for new Contrasts, Thresholding, Rendering
- fsf.newdir_yn=0;
- 
-
- 
- % Slice timings file
- fsf.st_file='';
- 
-
- 
-
- 
  % BET brain extraction
- fsf.bet_yn=1;
+ fsf.bet_yn = 0;
  
  % Spatial smoothing FWHM (mm)
- fsf.smooth=5;
+ fsf.smooth = 0;
  
  % Intensity normalization
- fsf.norm_yn=0;
+ fsf.norm_yn = 0;
+ 
+ % Perfusion subtraction
+ fsf.perfsub_yn = 0;
  
  % Highpass temporal filtering
- fsf.temphp_yn=0;
+ fsf.temphp_yn = 0;
  
  % Lowpass temporal filtering
  fsf.templp_yn=0;
  
  % MELODIC ICA data exploration
- fsf.melodic_yn=0;
+ fsf.melodic_yn = 0;
  
  % Carry out main stats?
- fsf.stats_yn=1;
+ fsf.stats_yn = 1;
  
  % Carry out prewhitening?
- fsf.prewhiten_yn=1;
+ fsf.prewhiten_yn = 1;
+ 
+ % Add motion parameters to model
+ % 0 : No
+ % 1 : Yes
+ fsf.motionevs = 0;
+ fsf.motionevbeta = '';
+ fsf.scriptevsbeta = '';
+ 
+ % Robust outlier detection in FLAME?
+ fsf.robust_yn = 0;
  
  % Higher-level modelling
  % 3 : Fixed effects
  % 0 : Mixed Effects: Simple OLS
- % 2 : Mixed Effects: FLAME (stage 1 only)
- % 1 : Mixed Effects: FLAME (full)
- fsf.mixed_yn=1;
+ % 2 : Mixed Effects: FLAME 1
+ % 1 : Mixed Effects: FLAME 1+2
+ fsf.mixed_yn = 2;
  
  % Number of EVs
- fsf.evs_orig=0;
- fsf.evs_real=0;
+ fsf.evs_orig = 28; %%%%%%%%%%%%%%%%%
+ fsf.evs_real = 28; %%%%%%%%%%%%%%%%%%%
+ fsf.evs_vox = 0;
  
  % Number of contrasts
- fsf.ncon_orig=0;
- fsf.ncon_real=0;
+ fsf.ncon_orig = 28; %%%%%%%%%%%%%%%%%%%%%
+ fsf.ncon_real = 28; %%%%%%%%%%%%%%%%%%%%%
  
  % Number of F-tests
- fsf.nftests_orig=0;
- fsf.nftests_real=0;
+ fsf.nftests_orig= 2; %%%%%%%%%%%%%%%%%%%
+ fsf.nftests_real= 2; %%%%%%%%%%%%%%%%%%%%
  
  % Add constant column to design matrix? (obsolete)
- fsf.constcol=0;
+ fsf.constcol = 0;
  
  % Carry out post-stats steps?
- fsf.poststats_yn=1;
+ fsf.poststats_yn = 1;
  
  % Pre-threshold masking?
- fsf.threshmask='';
+ fsf.threshmask = '';
  
  % Thresholding
  % 0 : None
  % 1 : Uncorrected
  % 2 : Voxel
  % 3 : Cluster
- fsf.thresh=3;
+ fsf.thresh = 3;
 
  % P threshold
- fsf.prob_thresh=0.05;
+ fsf.prob_thresh = 0.05;
  
 % Z threshold
- fsf.z_thresh=2.3;
+ fsf.z_thresh = 2.3;
 
  % Z min/max for colour rendering
  % 0 : Use actual Z min/max
  % 1 : Use preset Z min/max
- fsf.zdisplay=0;
+ fsf.zdisplay = 0;
  
  % Z min in colour rendering
- fsf.zmin=1;
+ fsf.zmin = 2;
  
  % Z max in colour rendering
- fsf.zmax=15;
+ fsf.zmax = 8;
  
  % Colour rendering type
  % 0 : Solid blobs
  % 1 : Transparent blobs
- fsf.rendertype=1;
+ fsf.rendertype = 1;
  
- % Background image for higher-level stats overlays
+  % Background image for higher-level stats overlays
  % 1 : Mean highres
  % 2 : First highres
  % 3 : Mean functional
  % 4 : First functional
  % 5 : Standard space template
- fsf.bgimage=1;
+ fsf.bgimage = 1;
  
- % Registration?
- fsf.reg_yn=1;
- 
+ % Create time series plots' ...
+ fsf.tsplot_yn = 1;
 
- 
- % Dwell/Asymmetry ratio
- fsf.dwellasym=-1;
- 
  % Registration to initial structural
- fsf.reginitial_highres_yn=0;
+ fsf.reginitial_highres_yn = 0;
  
  % Search space for registration to initial structural
  % 0   : No search
  % 90  : Normal search
  % 180 : Full search
- fsf.reginitial_highres_search=90;
+ fsf.reginitial_highres_search = 90;
  
  % Degrees of Freedom for registration to initial structural
- fsf.reginitial_highres_dof=12;
+ fsf.reginitial_highres_dof = 3;
  
  % Registration to main structural
- fsf.reghighres_yn=0;
+ fsf.reghighres_yn = 0;
 
  % Search space for registration to main structural
  % 0   : No search
  % 90  : Normal search
  % 180 : Full search
- fsf.reghighres_search=90;
+ fsf.reghighres_search = 90;
  
  % Degrees of Freedom for registration to main structural
- fsf.reghighres_dof=12;
+ fsf.reghighres_dof = BBR;
  
  % Registration to standard image?
  fsf.regstandard_yn=1;
  
- % Standard image
- fsf.regstandard='/usr/local/fsl/etc/standard/avg152T1_brain.hdr';
+% Use alternate reference images?
+fsf.alternateReference_yn = 0;
+ 
+% Standard image
+ fsf.regstandard = ''; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
  
  % Search space for registration to standard space
  % 0   : No search
  % 90  : Normal search
  % 180 : Full search
- fsf.regstandard_search=90;
+ fsf.regstandard_search = 90; 
  
- % Degrees of Freedom for registration to standard space
- fsf.regstandard_dof=12;
+  % Degrees of Freedom for registration to standard space
+ fsf.regstandard_dof = 6;
  
  % Do nonlinear registration to standard space?
- fsf.regstandard_nonlinear_yn=0;
+ fsf.regstandard_nonlinear_yn = 0;
  
- % High pass filter cutoff
- fsf.paradigm_hp=-1;
+ % Control nonlinear warp field resolution
+ fsf.regstandard_nonlinear_warpres = 10;
  
- % Number of lower-level copes feeding into higher-level analysis
- fsf.ncopeinputs=0;
+  % High pass filter cutoff
+ fsf.paradigm_hp = 100;
  
- % 4D AVW data or FEAT directory (1)
- fsf.feat_files={};
+% Total voxels
+ fsf.totalVoxels = 1111 ; %%%%%%%%%%%%%%%%%%%%%%%%%
+ 
+ 
+ 
+ 
+ 
+ 
