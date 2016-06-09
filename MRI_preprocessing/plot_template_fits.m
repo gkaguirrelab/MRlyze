@@ -17,7 +17,7 @@ function [varexp,params,dists,newx,newy,newz] = plot_template_fits(tdir,template
 
 %% Set defaults
 if ~exist('fitType','var')
-    fitType = 'V1';
+    fitType = 'V2V3';
 end
 if ~exist('makeplot','var')
     makeplot = 0;

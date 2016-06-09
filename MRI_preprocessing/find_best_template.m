@@ -42,6 +42,7 @@ end
 if ~exist('psi','var') || isempty(psi)
     if strcmp(templateType,'coarse')
         %psi = [-0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1.0];
+        %psi = [0.4 0.5 0.6 0.7 0.8 0.9 1.0];
         psi = [0.5 0.6 0.7 0.8 0.9];
     elseif strcmp(templateType,'fine')
         psi = [-0.066 -0.033 0.000 0.033 0.066];
@@ -50,6 +51,7 @@ end
 if ~exist('FCx','var') || isempty(FCx)
     if strcmp(templateType,'coarse')
         %FCx = [-0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5 0.6];
+        %FCx = [-0.45 -0.35 -0.25 -0.15 -0.05 0.05 0.15];
         FCx = [-0.35 -0.25 -0.15 -0.05 0.05];
     elseif strcmp(templateType,'fine')
         FCx = [-0.066 -0.033 0.000 0.033 0.066];
@@ -59,24 +61,36 @@ end
 if ~exist('FCy','var') || isempty(FCy)
     if strcmp(templateType,'coarse')
         %FCy = [-0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0 0.1 0.2 0.3 0.4 0.5];
+        %FCy = [-0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1];
         FCy = [-0.6 -0.5 -0.4 -0.3 -0.2];
     elseif strcmp(templateType,'fine')
         FCy = [-0.066 -0.033 0.000 0.033 0.066];
     end
 end
 if ~exist('fitType','var')
-    fitType = 'V1'; % 'V1 = V1<->V2, V1<->V3; 'V2V3' =  V1<->V2, V1<->V3, AND V2<->V3
+    fitType = 'V2V3'; % 'V1 = V1<->V2, V1<->V3; 'V2V3' =  V1<->V2, V1<->V3, AND V2<->V3
 end
 %% Pull out the variance explained
 varFiles = listdir(fullfile(tdir,[hemi '*varexp.txt']),'files');
 badind = [];
 for i = 1:length(varFiles);
     if strcmp(templateType,'coarse')
+        %         if ~isempty(strfind(varFiles{i},'pRF')) || ...
+        %                 ~isempty(strfind(varFiles{i},'anat')) || ...
+        %                 isempty(strfind(varFiles{i}(4),'3'))
+        %             badind = [badind i];
+        %         end
+        % % Hold V1 and V2 fixed (same as anat template)
         if ~isempty(strfind(varFiles{i},'pRF')) || ...
                 ~isempty(strfind(varFiles{i},'anat')) || ...
+                isempty(strfind(varFiles{i}(4),'3')) || ...
                 isempty(strfind(varFiles{i}(6),'2'))
             badind = [badind i];
         end
+        %         if ~isempty(strfind(varFiles{i},'pRF')) || ...
+        %                 ~isempty(strfind(varFiles{i},'anat'))
+        %             badind = [badind i];
+        %         end
     elseif strcmp(templateType,'fine')
         if ~isempty(strfind(varFiles{i},'pRF')) || ...
                 ~isempty(strfind(varFiles{i},'anat'))

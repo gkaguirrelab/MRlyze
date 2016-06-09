@@ -49,7 +49,8 @@ end
 hemis = {'lh' 'rh'};
 numComps = length(session_dirs)*length(hemis);
 % Plot defaults
-varexpLims = [0 0.15];
+varexpLims = [0.1 0.25];
+yTicks = [0 0.05 0.10 0.15 0.2 0.25];
 aLims = {[vals(1) vals(end)],[vals(1) vals(end)],varexpLims};
 MSize = 10; % point marker size
 LWidth = 1; % error bar line width
@@ -63,8 +64,14 @@ if strcmp(template,'coarse') || strcmp(template,'fine')
         for ss = 1:length(session_dirs)
             ct = ct + 1;
             session_dir = session_dirs{ss};
-            tdir = fullfile(session_dir,'pRFs',template,func,cond,'V1');
-            [varexp,~,~,x,y,z] = plot_template_fits(tdir,template,hemi);
+            if V2V3
+                fitType = 'V2V3';
+                tdir = fullfile(session_dir,'pRFs',template,func,cond,'V2V3');
+            else
+                fitType = 'V1';
+                tdir = fullfile(session_dir,'pRFs',template,func,cond,'V1');
+            end
+            [varexp,~,~,x,y,z] = plot_template_fits(tdir,template,hemi,fitType);
             varAll(ct,:) = varexp';
             X(ct,:) = x;
             Y(ct,:) = y;
@@ -123,10 +130,11 @@ for i = 1:length(hemis)*length(session_dirs)
 end
 %% Average values
 avgAll = squeeze(nanmean(sumAll,1));
+avgAll = avgAll(:);
 %avgAll(avgAll == 0) = nan;
 semAll  = squeeze(nanstd(sumAll,0,1)) ./ sqrt(sumCt);
 %% Create 3D meshgrid
-[sumX,sumY,sumZ] = meshgrid(vals,vals,vals);
+[sumY,sumX,sumZ] = meshgrid(vals,vals,vals);
 sumX = sumX(:);
 sumY = sumY(:);
 sumZ = sumZ(:);
@@ -152,8 +160,9 @@ grid off
 view(2)
 axis square
 cbh=colorbar;
+colormap(hot(100));
 caxis(varexpLims);
-set(cbh,'YTick',[0 0.05 0.075 0.10 0.125 0.15]);
+set(cbh,'YTick',yTicks);
 set(gca,'XLim',[min(tickVals) max(tickVals)]);
 set(gca,'XTick',tickVals);
 set(gca,'XTickLabel',vLabels);
@@ -179,8 +188,9 @@ grid off
 view(2)
 axis square
 cbh=colorbar;
+colormap(hot(100));
 caxis(varexpLims);
-set(cbh,'YTick',[0 0.05 0.075 0.10 0.125 0.15]);
+set(cbh,'YTick',yTicks);
 set(gca,'XLim',[min(tickVals) max(tickVals)]);
 set(gca,'XTick',tickVals);
 set(gca,'XTickLabel',vLabels);
@@ -206,8 +216,9 @@ grid off
 view(2)
 axis square
 cbh=colorbar;
+colormap(hot(100));
 caxis(varexpLims);
-set(cbh,'YTick',[0 0.05 0.075 0.10 0.125 0.15]);
+set(cbh,'YTick',yTicks);
 set(gca,'XLim',[min(tickVals) max(tickVals)]);
 set(gca,'XTick',tickVals);
 set(gca,'XTickLabel',vLabels);

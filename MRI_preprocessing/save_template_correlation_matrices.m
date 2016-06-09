@@ -10,7 +10,7 @@ if ~exist('hemi','var')
     hemi = 'lh';
 end
 if ~exist('func','var')
-    func = 's5.dbrf.tf';
+    func = 'wdrf.tf';
 end
 if ~exist('cond','var')
     cond = 'Movie';
@@ -27,19 +27,10 @@ else
     saveName = 'V1';
 end
 %% Define variables
-templates{1} = {...
-    'pRF'};
-templates{2} = {'8.8.5' '4.4.5' '8.11.5' '9.5.10'}; % last two are 'best' and 'worst', repsectively for GKA lh
-%templates{3} = {'3.5.4' '1.2.1'}; % last two are 'best' and 'worst', repsectively
-% templates{2} = {...
-%     '4.4.3' '4.4.10' '4.11.3' '4.11.10' ...
-%     '11.4.3' '11.4.10' '11.11.3' '11.11.10' ...
-%     '7.7.6' '8.8.7' '9.9.8' '8.8.5' '4.4.5'}; % last two are 'best' and 'worst', repsectively
-% templates{3} = {...
-%     '1.1.1' '1.1.5' '1.5.1' '1.5.5' ...
-%     '5.1.1' '5.1.5' '5.5.1' '5.5.5' ...
-%     '2.2.2' '3.3.3' '4.4.4' '3.5.4' '1.2.1'}; % last two are 'best' and 'worst', repsectively
-templateTypes = {'pRF' 'coarse'};
+% templates{1} = {...
+%     'pRF'};
+templates{1} = {'3.2.3.5.3' '3.2.5.2.5'}; % last two are 'best' and 'worst', repsectively for GKA lh
+templateTypes = {'coarse'};
 %templateTypes = {'pRF' 'coarse' 'fine'};
 % Create custome white -> blue color scale
 blueScale = zeros(100,3);
