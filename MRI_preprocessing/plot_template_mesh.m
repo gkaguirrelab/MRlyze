@@ -49,8 +49,8 @@ end
 hemis = {'lh' 'rh'};
 numComps = length(session_dirs)*length(hemis);
 % Plot defaults
-varexpLims = [0.1 0.25];
-yTicks = [0 0.05 0.10 0.15 0.2 0.25];
+varexpLims = [0.1 0.2];
+yTicks = [0 0.025 0.05 0.075 0.10 0.125 0.15 0.175 0.2 0.225 0.25];
 aLims = {[vals(1) vals(end)],[vals(1) vals(end)],varexpLims};
 MSize = 10; % point marker size
 LWidth = 1; % error bar line width
@@ -160,7 +160,7 @@ grid off
 view(2)
 axis square
 cbh=colorbar;
-colormap(hot(100));
+colormap(viridis);
 caxis(varexpLims);
 set(cbh,'YTick',yTicks);
 set(gca,'XLim',[min(tickVals) max(tickVals)]);
@@ -188,7 +188,7 @@ grid off
 view(2)
 axis square
 cbh=colorbar;
-colormap(hot(100));
+colormap(viridis);
 caxis(varexpLims);
 set(cbh,'YTick',yTicks);
 set(gca,'XLim',[min(tickVals) max(tickVals)]);
@@ -216,7 +216,7 @@ grid off
 view(2)
 axis square
 cbh=colorbar;
-colormap(hot(100));
+colormap(viridis);
 caxis(varexpLims);
 set(cbh,'YTick',yTicks);
 set(gca,'XLim',[min(tickVals) max(tickVals)]);
