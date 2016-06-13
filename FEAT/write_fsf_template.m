@@ -441,8 +441,9 @@ fsf_str = sprintf([...
  
  %%%%% HERE STARTS THE PART WITH EVs, contrast and F-tests on the text file.
  
- % This part will be managed with a specific "write_EVs" function
+ fsf_str = write_EVs ; %function to be written
  
+ fprintf(fid,'%s', fsf_str);
  %%%%% Here ends the part with EVs, contrasts and F-tests on the text file.
  
  
