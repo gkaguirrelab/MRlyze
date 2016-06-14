@@ -140,10 +140,10 @@ switch condition
         fsf.outputdir = '';
         
         % TR(s)
-        fsf.tr = DESIGN_TR; %%%%%%%%%%%%%%%%%%%%% Specified in design
+        fsf.tr = 'DESIGN_TR'; %%%%%%%%%%%%%%%%%%%%% Specified in design
         
         % Total volumes
-        fsf.npts = DESIGN_VOLS; %%%%%%%%%%%%%%%%%%%%%%%%% specified in design
+        fsf.npts = 'DESIGN_VOLS'; %%%%%%%%%%%%%%%%%%%%%%%%% specified in design
         
         % Delete volumes
         fsf.ndelete = 0;
@@ -254,17 +254,17 @@ switch condition
         fsf.mixed_yn = 2;
         
         % Number of EVs
-        fsf.evs_orig = DESIGN_N_EVS_ORIG; %%%%%%%%%%%%%%%%%% find in design file
-        fsf.evs_real = DESIGN_N_EVS_REAL; %%%%%%%%%%%%%%%%%%% find in design
-        fsf.evs_vox = DESIGN_EVS_VOX; %%%%%%%%%%%%%% find in design
+        fsf.evs_orig = 'DESIGN_N_EVS_ORIG'; %%%%%%%%%%%%%%%%%% find in design file
+        fsf.evs_real = 'DESIGN_N_EVS_REAL'; %%%%%%%%%%%%%%%%%%% find in design
+        fsf.evs_vox = 'DESIGN_EVS_VOX'; %%%%%%%%%%%%%% find in design
         
         % Number of contrasts
-        fsf.ncon_orig = DESIGN_N_CON_ORIG; %%%%%%%%%%%%%%%%%%%%%
-        fsf.ncon_real = DESIGN_N_CON_REAL; %%%%%%%%%%%%%%%%%%%%%
+        fsf.ncon_orig = 'DESIGN_N_CON_ORIG'; %%%%%%%%%%%%%%%%%%%%%
+        fsf.ncon_real = 'DESIGN_N_CON_REAL'; %%%%%%%%%%%%%%%%%%%%%
         
         % Number of F-tests
-        fsf.nftests_orig= DESIGN_N_FTESTS_ORIG; %%%%%%%%%%%%%%%%%%%
-        fsf.nftests_real= DESIGN_N_FTESTS_REAL; %%%%%%%%%%%%%%%%%%%%
+        fsf.nftests_orig= 'DESIGN_N_FTESTS_ORIG'; %%%%%%%%%%%%%%%%%%%
+        fsf.nftests_real= 'DESIGN_N_FTESTS_REAL'; %%%%%%%%%%%%%%%%%%%%
         
         % Add constant column to design matrix? (obsolete)
         fsf.constcol = 0;
