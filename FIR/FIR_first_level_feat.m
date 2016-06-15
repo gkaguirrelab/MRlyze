@@ -1,18 +1,6 @@
 function FIR_first_level_feat(outFile,funcVol,anatVol,EVs,condition)
 
-% Write a .fsf file for first-level feat for the HCLV_Photo_7T protocol
-%
-%   Usage:
-%   feat_HCLV_Photo_7T(outFile,funcVol,anatVol,EVs,WA)
-%
-%   Inputs:
-%   outFile     = name of output .fsf file (fullpath)
-%   funcVol     = name of input functional volume (fullpath)
-%   anatVol     = name of 'standard' image for registration (fullpath)
-%   EVs         = structure containing EV text files for each condition (fullpath)
-%   WA          = 1 - wrap around block at beginning of run; 0 - no wrap around
-%
-%   Written by Andrew S Bock Apr 2016
+% Write a .fsf file for first-level feat for the MelanopsinMR Protocol
 
 %% Set defaults
 matlab_path = '/data/jag/MELA/Matlab';
@@ -38,7 +26,7 @@ DESIGN.STANDARD = anatVol;
 DESIGN.TOTAL_VOXELS = num2str(tmp.dim(2)*tmp.dim(3)*tmp.dim(4)*tmp.dim(5));
 DESIGN.FEAT_DIR = funcVol;
 for i = 1:length(EVs)
-    eval(['DESIGN.EV' num2str(i,'%02d') ' = ''' EVs{i} ''';']);
+    eval(['DESIGN.EV' num2str(i,'%03d') ' = ''' EVs{i} ''';']);
 end
 disp(DESIGN);
 fin = fopen(design_file,'rt');
