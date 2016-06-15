@@ -367,7 +367,7 @@ switch condition
         fsf.paradigm_hp = 100;
         
         % Total voxels
-        fsf.totalVoxels = 'DESIGN_TOTAL_VOXEL' ; %%%%%%%%%%%%%%%%%%%%%%%%%
+        fsf.totalVoxels = 'DESIGN_TOTAL_VOXELS' ; %%%%%%%%%%%%%%%%%%%%%%%%%
         
         
         % Number of lower-level copes feeding into higher-level analysis
