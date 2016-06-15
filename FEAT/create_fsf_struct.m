@@ -1,4 +1,4 @@
-function fsf = create_fsf_struct (condition, templateDir, templateName)
+function fsf = create_fsf_struct (EVs_number, Contrasts_number, Ftests_number, condition, templateDir, templateName)
 % creates a struct file used to feed parameters into the fsf file generated
 % in write_fsf.
 
@@ -254,17 +254,17 @@ switch condition
         fsf.mixed_yn = 2;
         
         % Number of EVs
-        fsf.evs_orig = 'DESIGN_N_EVS_ORIG'; %%%%%%%%%%%%%%%%%% find in design file
-        fsf.evs_real = 'DESIGN_N_EVS_REAL'; %%%%%%%%%%%%%%%%%%% find in design
-        fsf.evs_vox = 'DESIGN_EVS_VOX'; %%%%%%%%%%%%%% find in design
+        fsf.evs_orig = EVs_number; %%%%%%%%%%%%%%%%%% find in design file
+        fsf.evs_real = EVs_number; %%%%%%%%%%%%%%%%%%% find in design
+        fsf.evs_vox = 0; %%%%%%%%%%%%%% find in design
         
         % Number of contrasts
-        fsf.ncon_orig = 'DESIGN_N_CON_ORIG'; %%%%%%%%%%%%%%%%%%%%%
-        fsf.ncon_real = 'DESIGN_N_CON_REAL'; %%%%%%%%%%%%%%%%%%%%%
+        fsf.ncon_orig = Contrasts_number; %%%%%%%%%%%%%%%%%%%%%
+        fsf.ncon_real = Contrasts_number; %%%%%%%%%%%%%%%%%%%%%
         
         % Number of F-tests
-        fsf.nftests_orig= 'DESIGN_N_FTESTS_ORIG'; %%%%%%%%%%%%%%%%%%%
-        fsf.nftests_real= 'DESIGN_N_FTESTS_REAL'; %%%%%%%%%%%%%%%%%%%%
+        fsf.nftests_orig= Ftests_number; %%%%%%%%%%%%%%%%%%%
+        fsf.nftests_real= Ftests_number; %%%%%%%%%%%%%%%%%%%%
         
         % Add constant column to design matrix? (obsolete)
         fsf.constcol = 0;
@@ -337,7 +337,7 @@ switch condition
         fsf.reghighres_search = 90;
         
         % Degrees of Freedom for registration to main structural
-        fsf.reghighres_dof = BBR;
+        fsf.reghighres_dof = 'BBR';
         
         % Registration to standard image?
         fsf.regstandard_yn=1;
@@ -367,7 +367,7 @@ switch condition
         fsf.paradigm_hp = 100;
         
         % Total voxels
-        fsf.totalVoxels = DESIGN_TOTAL_VOXEL ; %%%%%%%%%%%%%%%%%%%%%%%%%
+        fsf.totalVoxels = 'DESIGN_TOTAL_VOXEL' ; %%%%%%%%%%%%%%%%%%%%%%%%%
         
         
         % Number of lower-level copes feeding into higher-level analysis

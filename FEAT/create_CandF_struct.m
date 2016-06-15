@@ -10,13 +10,13 @@ function [Contrasts, Ftests] = create_CandF_struct (Contrasts_number,Ftests_numb
 %%
 switch condition
     case 'blank'
-       Contrasts.con_mode_old = 0;
-       Contrasts.con_mode = 0;
+       Contrasts.con_mode_old = '';
+       Contrasts.con_mode = '';
         
         % portion for 'real EVs'
         for ct = 1:(Contrasts_number)
             Contrasts.conpic_real(ct) = 0;
-            Contrasts.conname_real{ct} = ['DESING_CON_TITLE' (num2str(ev,'%03d'))];
+            Contrasts.conname_real{ct} = ['DESING_CON_TITLE' (num2str(ct,'%03d'))];
             % contrasts matrix
             for nn = 1:(Contrasts_number)
                 Contrasts.con_real(ct,nn) = 0;
@@ -30,7 +30,7 @@ switch condition
         % portion for 'original EVs'
         for ct = 1:(Contrasts_number)
             Contrasts.conpic_orig(ct) = 0;
-            Contrasts.conname_orig{ct} = ['DESING_CON_TITLE' (num2str(ev,'%03d'))];
+            Contrasts.conname_orig{ct} = ['DESING_CON_TITLE' (num2str(ct,'%03d'))];
             % contrasts matrix
             for nn = 1:(Contrasts_number)
                 Contrasts.con_orig(ct,nn) = 0;
@@ -56,7 +56,7 @@ switch condition
         % portion for 'real EVs'
         for ct = 1:(Contrasts_number)
             Contrasts.conpic_real(ct) = 0;
-            Contrasts.conname_real{ct} = ['DESING_EV_TITLE' (num2str(ev,'%03d'))];
+            Contrasts.conname_real{ct} = ['DESING_EV_TITLE' (num2str(ct,'%03d'))];
             % contrasts matrix
             for nn = 1:(Contrasts_number)
                 Contrasts.con_real(ct,nn) = 0;
@@ -70,7 +70,7 @@ switch condition
         % portion for 'original EVs'
         for ct = 1:(Contrasts_number)
             Contrasts.conpic_orig(ct) = 0;
-            Contrasts.conname_orig{ct} = ['DESING_EV_TITLE' (num2str(ev,'%03d'))];
+            Contrasts.conname_orig{ct} = ['DESING_EV_TITLE' (num2str(ct,'%03d'))];
             % contrasts matrix
             for nn = 1:(Contrasts_number)
                 Contrasts.con_orig(ct,nn) = 0;

@@ -11,13 +11,13 @@ function EVs = create_EVs_struct (EVs_number,condition,templateDir, templateName
 switch condition
     case 'blank'
         for ev = 1:(EVs_number)
-            EVs.title{ev} = 0;
+            EVs.title{ev} = ['DESING_EV_TITLE' (num2str(ev,'%03d'))];
             EVs.shape(ev) = 0;
             EVs.convolve(ev) = 0;
             EVs.convolve_phase(ev) = 0;
             EVs.tempfilt_yn(ev) = 0;
             EVs.deriv_yn(ev) = 0;
-            EVs.custom{ev} = 0;
+            EVs.custom{ev} = ['DESING_EV' (num2str(ev,'%03d'))];
             
             %ortogonalization
             for nn = 1:(EVs_number+1)
