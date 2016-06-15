@@ -1,4 +1,4 @@
-function [Contrasts, Ftests] = create_CandF_struct (Contrasts_number,Ftests_number,condition)
+function [Contrasts, Ftests] = create_CandF_struct (Contrasts_number,Ftests_number,condition,templateDir,templateName)
 
 % creates a struct file that is used to generate the contrasts and Ftests portion of a fsf
 % file for FEAT analysis in FSL.
@@ -7,7 +7,7 @@ function [Contrasts, Ftests] = create_CandF_struct (Contrasts_number,Ftests_numb
 
 % June 2016 - written (GF)
 
-
+%%
 switch condition
     case 'blank'
        Contrasts.con_mode_old = 0;
@@ -96,3 +96,7 @@ switch condition
     otherwise
         fprintf ('\nThis condition does not exist yet. Use''blank'' to obtain a blank fsf stuct to fill manually.');
 end
+
+%% save out the structs as mat files
+save(fullfile(templateDir, [templateName '_Contrasts.mat']), 'Contrasts');
+save(fullfile(templateDir, [templateName '_Ftests.mat']), 'Ftests');

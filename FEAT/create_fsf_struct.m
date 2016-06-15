@@ -1,4 +1,4 @@
-function fsf = create_fsf_struct (condition)
+function fsf = create_fsf_struct (condition, templateDir, templateName)
 % creates a struct file used to feed parameters into the fsf file generated
 % in write_fsf.
 
@@ -401,4 +401,7 @@ switch condition
     otherwise
         fprintf ('\nThis condition does not exist yet. Run create_fsf_struct(''blank'') to obtain a blank fsf stuct to fill manually.');
 end
+
+%% save out the structs as mat files
+save(fullfile(templateDir, [templateName '_fsf.mat']), 'fsf');
 

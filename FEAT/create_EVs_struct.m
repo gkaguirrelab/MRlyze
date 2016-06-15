@@ -1,4 +1,4 @@
-function EVs = create_EVs_struct (EVs_number,condition)
+function EVs = create_EVs_struct (EVs_number,condition,templateDir, templateName)
 
 % creates a struct file that is used to generate the EVs portion of a fsf
 % file for FEAT analysis in FSL.
@@ -7,7 +7,7 @@ function EVs = create_EVs_struct (EVs_number,condition)
 
 % June 2016 - written (GF)
 
-
+%%
 switch condition
     case 'blank'
         for ev = 1:(EVs_number)
@@ -46,4 +46,8 @@ switch condition
         
     otherwise
         fprintf ('\nThis condition does not exist yet. Use''blank'' to obtain a blank fsf stuct to fill manually.');
+return
 end
+
+%% save out the struct as mat files
+save(fullfile(templateDir, [templateName '_EVs.mat']), 'EVs');
