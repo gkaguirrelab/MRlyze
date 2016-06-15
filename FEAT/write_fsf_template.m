@@ -1,13 +1,13 @@
-function write_fsf_template (fsf, EVs, Contrasts, Ftests)
+function write_fsf_template (templateDir,templateName, fsf, EVs, Contrasts, Ftests)
 
 % requires fsf struct (create_fsf_struct), EVs struct (create_EVs_struct),
 % Contrasts struct and Ftests struct.
 
-
+% June 2016 - written (GF)
 
 %% Open fsf file 
 % Open the .fsf file based on information in the structure
-fid = fopen(fullfile(fsf.templateDir,fsf.templateName),'wt');
+fid = fopen(fullfile(templateDir,templateName),'wt');
 
 %% Part 1 - 'static' parameters
 fsf_str = sprintf([ ...
@@ -611,8 +611,31 @@ fsf_str = sprintf([...
            fprintf(fid,'%s', fsf_str);
        end
    end
- 
+   
    % portion for contrast masking
+   fsf_str = sprintf([...
+       '# Contrast masking - use >0 instead of thresholding?\n' ...
+       'set fmri(conmask_zerothresh_yn) %d\n'...
+       '\n'] , ...
+       Contrasts.zerothresh_yn);
+   fprintf(fid,'%s', fsf_str);
+   
+   for mm = 1:(fsf.ncon_real +nftests_real)
+       for kk = 2:(fsf.ncon_real +nftests_real)
+           fsf_str = sprintf([...
+               '# Mask real contrast/F-test %d with real contrast/F-test %d?\n'...
+               'set fmri(conmask%d_%d) %d\n'...
+               '\n'] , ...
+               mm, kk, mm, kk, Contrasts.conmask(mm,kk));
+           fprintf(fid,'%s', fsf_str);
+       end
+   end
+   fsf_str = sprintf([...
+       '# Do contrast masking at all?\n'...
+       'set fmri(conmask1_1) %d\n'...
+       '\n'] , ...
+       Contrasts.conmask(1,1));
+   fprintf(fid,'%s', fsf_str);
    
  %% Part 4 - Static parameters (not on GUI)
  
