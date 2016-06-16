@@ -33,9 +33,16 @@ for i = 1:NSegments
     end
     
     % Subject key press responses
-    if ~isempty(params.responseStruct.events(i).buffer) & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, '=') )  & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, 't') )
-        responseDetection(i) = 1;
+    if  isfield(params.responseStruct.events(i).buffer, 'keyCode') 
+         if ~isempty(params.responseStruct.events(i).buffer) & any(~strcmp({params.responseStruct.events(i).buffer.keyCode}, '25') )  & any(~strcmp({params.responseStruct.events(i).buffer.keyCode}, '18') )
+            responseDetection(i) = 1;
+        end
+    else
+        if ~isempty(params.responseStruct.events(i).buffer) & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, '=') )  & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, 't') )
+            responseDetection(i) = 1;
+        end
     end
+    
     % Hits
     if (attentionTaskFlag(i) == 1) && (responseDetection(i) == 1)
         hit(i) = 1;
