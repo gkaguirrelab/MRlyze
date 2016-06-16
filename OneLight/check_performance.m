@@ -33,7 +33,7 @@ for i = 1:NSegments
     end
     
     % Subject key press responses
-    if ~isempty(params.responseStruct.events(i).buffer) & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, '='))
+    if ~isempty(params.responseStruct.events(i).buffer) & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, '=') )  & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, 't') )
         responseDetection(i) = 1;
     end
     % Hits
