@@ -90,7 +90,7 @@ switch protocolName
                         regressorValues = ones(NRelevantSegments, 1);
                         for ii = 1:NIntervals
                             % Define the regressor name
-                            regressorFileName = [fileName '-cov_' directionLabel{1} '_' num2str(100*theContrast) 'Pct_delta_' num2str(theIntervals(ii), '%02.f') 'Sec_valid.txt'];
+                            regressorFileName = [fileName '-cov_' directionLabel{1} '_' num2str(100*theContrast, '%03g') 'Pct_delta_' num2str(theIntervals(ii), '%02.f') 'Sec_valid.txt'];
                             for jj = 1:NRelevantSegments
                                 % Extract the time of stimulus onset.
                                 t0(jj) = params.responseStruct.events(theRelevantSegments(jj)).tTrialStart+phaseOffsetSec(theRelevantSegments(jj))-params.responseStruct.tBlockStart;
