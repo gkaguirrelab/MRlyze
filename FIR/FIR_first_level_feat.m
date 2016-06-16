@@ -13,6 +13,10 @@ switch condition
         design_file = fullfile(design_dir,'FIR_MaxLMS_template.fsf');
     case 'SplatterControl'
         design_file = fullfile(design_dir,'FIR_SplatterControl_template.fsf');
+    case 'MaxMelCRF'
+        design_file = fullfile(design_dir,'MaxMelCRF_template.fsf');
+    case 'MaxLMSCRF'
+        design_file = fullfile(design_dir,'MaxLMSCRF_template.fsf');
 end
 %% Load functional volume
 tmp = load_nifti(funcVol);
