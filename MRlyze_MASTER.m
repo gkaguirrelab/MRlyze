@@ -182,11 +182,21 @@ for ss = 1:length(sessions)
     d = find_bold(sessions{ss});
     for j = 1:length(d)
         for ff = 1:length(funcs)
+            % make outDir
+            outDir = fullfile(sessions{ss},d{j},'stats');
+            if ~exist(outDir,'dir')
+                mkdir(outDir);
+            end
             % load functional volume
             funcVol = fullfile(sessions{ss},d{j},[funcs{ff} '.nii.gz']);
             tmpV = load_nifti(funcVol);
             allTCs = reshape(tmpV.vol,size(tmpV.vol,1)*size(tmpV.vol,2)*size(tmpV.vol,3),size(tmpV.vol,4));
             TR = tmpV.pixdim(5); % TR in msec
+            % load (and make) single TR volume
+            singleTR = fullfile(sessions{ss},d{j},'single_TR.nii.gz');
+            if ~exist(singleTR,'file')
+                system(['fslroi ' funcVol ' ' singleTR ' 0 1']);
+            end
             % Get the stimulus timing files to be used as regressors
             stimuli_dirs = listdir(outStimuli{ss},'dirs');
             tmpFiles = listdir(fullfile(outStimuli{ss},stimuli_dirs{j},'*_valid.txt'),'files');
@@ -223,6 +233,14 @@ for ss = 1:length(sessions)
             outEVs = [ones(size(allTCs,2),1),downEVs];
             % Run the regression
             betaWeights = outEVs\allTCs';
+            % Save the output volume(s)
+            out = load_nifti(singleTR);
+            for ee = 1:length(EVs)
+                tmp = betaWeights(ee+1,:); % add one, given first beta is the mean
+                out.vol = reshape(tmp,size(tmpV.vol,1),size(tmpV.vol,2),size(tmpV.vol,3),1);
+                sprintf(['Run_%02d_' func],rr)
+                save_nifti(out,fullfile(outDir,sprintf([funcs{ff} '.beta%02.nii.gz'],ee)));
+            end
         end
     end
 end
