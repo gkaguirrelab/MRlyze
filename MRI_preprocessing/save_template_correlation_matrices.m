@@ -29,8 +29,11 @@ end
 %% Define variables
 % templates{1} = {...
 %     'pRF'};
-templates{1} = {'4.6.4' '5.2.7'}; % last two are 'best' and 'worst', repsectively for GKA lh
-templateTypes = {'coarse'};
+% templates{1} = {'4.6.4' '5.2.7'}; % last two are 'best' and 'worst', repsectively for GKA lh
+% templateTypes = {'coarse'};
+templateTypes = {'pRF' 'coarse'};
+templates{1} = {'pRF'}; 
+templates{2} = {'4.6.4' '5.2.7'}; % 'best' and 'worst', repsectively for GKA lh
 %templateTypes = {'pRF' 'coarse' 'fine'};
 % Create custome white -> blue color scale
 blueScale = zeros(100,3);
