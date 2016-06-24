@@ -177,6 +177,58 @@ for ss = 1:length(sessions)
         100*(sum(falseAlarms)/sum(fTotal)));
     fclose(fid);
 end
+%% Create the matrix of regressors
+% Convolve the text files above with an HRF, or anything else we want to do
+% prior to running our regression
+% Get the stimulus timing files to be used as regressors
+for ss = 1:length(sessions)
+    d = find_bold(sessions{ss});
+    for j = 1:length(d)
+        stimuli_dirs = listdir(outStimuli{ss},'dirs');
+        tmpFiles = listdir(fullfile(outStimuli{ss},stimuli_dirs{j},'*_valid.txt'),'files');
+        % Pull out the regressor files for each frequency
+        for fq = 1:length(freqs)
+            freqName = freqs{fq};
+            for i = 1:length(tmpFiles)
+                tmp = strfind(tmpFiles{i},['_' freqName '_']);
+                if ~isempty(tmp)
+                    EVs{fq} = fullfile(outStimuli{ss},stimuli_dirs{j},tmpFiles{i});
+                end
+            end
+        end
+        % Add the attention task regressor
+        taskFile = listdir(fullfile(outStimuli{ss},stimuli_dirs{j},'*attentionTask.txt'),'files');
+        EVs{length(EVs)+1} = fullfile(outStimuli{ss},stimuli_dirs{j},taskFile{1});
+        % Determine if run started with a 'wraparound' block
+        WA = wrapAround{ss}(j);
+        if WA
+            WAFile = listdir(fullfile(outStimuli{ss},stimuli_dirs{j},'*wrapAround.txt'),'files');
+            EVs{length(EVs)+1} = fullfile(outStimuli{ss},stimuli_dirs{j},WAFile{1});
+        end
+        % Make the EVs for regression
+        tmpEV = zeros(TR*size(allTCs,2),1); % time in msec
+        allEVs = repmat(tmpEV,1,length(EVs));
+        for ee = 1:length(EVs)
+            evTimes = 1000*load(EVs{ee}); % convert to msec
+            for bb = 1:size(evTimes,1)
+                allEVs(evTimes(bb,1):evTimes(bb,1)+evTimes(bb,2),ee) = 1;
+            end
+        end
+        % Convolve with HRF
+        hrf =  doubleGammaHrf(0.001,[6 16]); % HRF at msec precision
+        allEVsHRF = filter(hrf,1,allEVs);
+        % Downsample
+        downEVs = downsample(allEVsHRF,TR);
+        outEVs = [ones(size(allTCs,2),1),downEVs];
+        % Save an output matrix as a text file
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        %%% Need to decide on names and locations %%%
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    end
+end
+
+
 %% Run stats
 for ss = 1:length(sessions)
     d = find_bold(sessions{ss});
@@ -197,43 +249,14 @@ for ss = 1:length(sessions)
             if ~exist(singleTR,'file')
                 system(['fslroi ' funcVol ' ' singleTR ' 0 1']);
             end
-            % Get the stimulus timing files to be used as regressors
-            stimuli_dirs = listdir(outStimuli{ss},'dirs');
-            tmpFiles = listdir(fullfile(outStimuli{ss},stimuli_dirs{j},'*_valid.txt'),'files');
-            % Pull out the regressor files for each frequency
-            for fq = 1:length(freqs)
-                freqName = freqs{fq};
-                for i = 1:length(tmpFiles)
-                    tmp = strfind(tmpFiles{i},['_' freqName '_']);
-                    if ~isempty(tmp)
-                        EVs{fq} = fullfile(outStimuli{ss},stimuli_dirs{j},tmpFiles{i});
-                    end
-                end
-            end
-            % Add the attention task regressor
-            taskFile = listdir(fullfile(outStimuli{ss},stimuli_dirs{j},'*attentionTask.txt'),'files');
-            EVs{length(EVs)+1} = fullfile(outStimuli{ss},stimuli_dirs{j},taskFile{1});
-            % Determine if run started with a 'wraparound' block
-            WA = wrapAround{ss}(j);
-            if WA
-                WAFile = listdir(fullfile(outStimuli{ss},stimuli_dirs{j},'*wrapAround.txt'),'files');
-                EVs{length(EVs)+1} = fullfile(outStimuli{ss},stimuli_dirs{j},WAFile{1});
-            end
-            % Make the EVs for regression
-            tmpEV = zeros(TR*size(allTCs,2),1); % time in msec
-            allEVs = repmat(tmpEV,1,length(EVs));
-            for ee = 1:length(EVs)
-                evTimes = 1000*load(EVs{ee}); % convert to msec
-                for bb = 1:size(evTimes,1)
-                    allEVs(evTimes(bb,1):evTimes(bb,1)+evTimes(bb,2),ee) = 1;
-                end
-            end
-            downEVs = downsample(allEVs,TR);
-            downEVs = downEVs - repmat(mean(downEVs),size(downEVs,1),1); % mean center
-            outEVs = [ones(size(allTCs,2),1),downEVs];
-            % Run the regression
+            
             betaWeights = outEVs\allTCs';
             % Save the output volume(s)
+            
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%% Need to decide on names and locations %%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            
             out = load_nifti(singleTR);
             for ee = 1:length(EVs)
                 tmp = betaWeights(ee+1,:); % add one, given first beta is the mean
