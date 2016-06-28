@@ -1,4 +1,14 @@
 function map = viridis
+
+% Create the colormap 'viridis'
+%
+%   Usage:
+%   map = viridis;
+%
+%   Based on colormap found in http://matplotlib.org/
+%
+%   Written by Andrew S Bock Jun 2016
+
 map = [[0.267004, 0.004874, 0.329415],
     [0.268510, 0.009605, 0.335427],
     [0.269944, 0.014625, 0.341379],
