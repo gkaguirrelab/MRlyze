@@ -12,7 +12,7 @@ function plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 
 %% to do
 % get the visual angle by eccentricity function for the pixels
-%   combine ^ with the sigma by eccentricity function 
+%   combine ^ with the sigma by eccentricity function
 
 %% set defaults
 if ~exist('axLim','var')
@@ -21,19 +21,31 @@ end
 if ~exist('vArea','var')
     vArea = 'V1';
 end
-matSize = 501;
+matSize = 200;
 circPol = linspace(0,2*pi,matSize); % Polar angle sampling
 cLines = linspace(0,log10(axLim),6); % Eccentricity lines
 rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
-pLabels = matSize*(cLines(end) + (cLines(end) - cLines(end-1))/4); % Polar angle label eccentricity
 outImage = nan(matSize,matSize);
-centerMat = [round(matSize/2) round(matSize/2)];
+centerMat = [matSize/2 matSize/2];
 %% Load in volumes
 ecc = load_nifti(eccVol);
 ecc = ecc.vol(roiInd);
 pol = load_nifti(polVol);
 pol = pol.vol(roiInd);
-in = load_nifti(inVol);
+if ischar(inVol)
+    if exist(inVol,'file')
+        [~,~,ext] = fileparts(inVol);
+        if strcmp(ext,'.gz')
+            in = load_nifti(inVol);
+        elseif strcmp(ext,'.mgh') || strcmp(ext,'.mgz')
+            in.vol = load_mgh(inVol);
+        end
+    else
+        error('data input does not correspond to an existing file');
+    end
+else
+    in.vol = double(inVol);
+end
 in = in.vol(roiInd);
 %% Threshold based on axis limit
 badind = ecc>axLim;
@@ -54,19 +66,16 @@ for i = 1:matSize % row (y)
     for j = 1:matSize % columns (x)
         tmpdist = sqrt( (i-centerMat(1))^2 + (j-centerMat(2))^2 );
         if tmpdist <= centerMat(1)-1
-            eccMat = 10^(tmpdist * log10(axLim)/(centerMat(1)-1)); % log scale the value
+            eccMat = 10^(tmpdist * log10(axLim)/(centerMat(1))); % log scale the value
             polMat = cart2pol(j-centerMat(2),i-centerMat(1));
             [matX,matY] = pol2cart(polMat,eccMat);
             tmpDist = sqrt( (matY - y).^2 + (matX - x).^2);
             tmpGauss = exp(-(tmpDist.^2)./(2*Sig.^2));
-            tmpGauss(tmpGauss<0.5) = 0;
             tmpVals = tmpGauss.*in;
-            if sum(tmpGauss) >= weightThresh
-                outImage(i,j) = sum((tmpGauss .* tmpVals)) / sum(tmpGauss);
-            end
+            outImage(i,j) = sum((tmpGauss .* tmpVals)) / sum(tmpGauss);
         end
     end
-    progBar(i);
+    if ~mod(i,10);progBar(i);end
 end
 %% Plot image
 fullFigure;
@@ -80,143 +89,40 @@ axis off;
 %finalImage = log10(pImage);
 pcolor(outImage);
 shading flat;
-colormap(flipud(hot(2000)));
+colormap(viridis);
 axis off
 axis square
-%caxis([-5 -0]);
 colorbar
 hold on;
 %% Create circles and spokes
+clear cX cY
 % Create circles
 for i = 1:length(cLines)
-    [cX(i,:),cY(i,:)] = pol2cart(circPol,cLines(i)*matSize/2);
+    [cX(i,:),cY(i,:)] = pol2cart(circPol,(cLines(i)/max(cLines))*(matSize-1)/2);
 end
-% Make all postivie
-cX = cX - min(cX(:));
-cY = cY - min(cY(:));
+% Move to center, fix indexing
+cX = cX + centerMat(2)+0.5;
+cY = cY + centerMat(1)+0.5;
 % Get circle x, y
 xCenter = max(cX(:))/2;
 yCenter = max(cY(:))/2;
-%% Plot Background
-patch('XData',cX(end,:),'YData',cY(end,:),...
-    'FaceColor',[1 1 1],'HandleVisibility', 'off');
-hold on;
-
-
-
-
-
-
-
-
-%%
-
-
-
-
-%%
-
-
-%%
-
-
-
-%%
-
-
-
-%%
-% scale and move x and y
-x = round(x) + round(size(imageMat,2)/2);
-y = round(y) + round(size(imageMat,1)/2);
-ct = 0;
-for i = 1:length(in)
-    if isnan(imageMat(y(i),x(i)))
-    imageMat(y(i),x(i)) = in(i);
-    else
-        ct = ct + 1;
-    end
-end
-
-
-
-
-%%
-%% Remove values outside axLim
-badind = ecc>axLim;
-ecc(badind) = [];
-pol(badind) = [];
-in(badind) = [];
-%% Log scale ecc
-logecc = log10(ecc)*pscale;
-logecc(logecc<0) = 0;
-%% Convert polar to cartesian
-[x,y] = pol2cart(pol,logecc);
-% flip y
-y = -y;
-
-%% Create image
-tmpImage = zeros(ceil(max(cX(:))),ceil(max(cY(:))));
-tmpX = round(x + max(cX(:))/2);
-tmpY = round(y + max(cY(:))/2);
-xMat = repmat(1:size(tmpImage,1),size(tmpImage,2),1);
-yMat = repmat(1:size(tmpImage,2),size(tmpImage,1),1)';
-valMat = nan([size(tmpImage,1)*size(tmpImage,2),length(x)]);
-weightMat = nan([size(tmpImage,1)*size(tmpImage,2),length(x)]);
-% Make the matrix of values and weights
-progBar = ProgressBar(length(tmpX)','Making image matrices...');
-for i = 1:length(tmpX)
-    eccSig = rf_ecc(ecc(i),vArea);
-    if eccSig < 1
-        eccSig = 1;
-    end
-    pixSig = (log10(eccSig))*pscale;
-    tmpDist = sqrt( (yMat - tmpY(i)).^2 + (xMat - tmpX(i)).^2);
-    tmpGauss = exp(-(tmpDist(:).^2)/(2*pixSig.^2));
-    valMat(:,i) = tmpGauss*in(i);
-    weightMat(:,i) = tmpGauss;
-    if ~mod(i,100);progBar(i);end
-end
-%% Get weighted average
-outImage = nan(size(weightMat,1),1);
-progBar = ProgressBar(length(weightMat),'Calculating weighted average...');
-for i = 1:length(weightMat)
-    tmpVals = valMat(i,:);
-    tmpWeights = weightMat(i,:);
-    outImage(i) = sum((tmpWeights .* tmpVals)) / sum(tmpWeights);
-    if ~mod(i,100);progBar(i);end
-end
-%% Make Final Image
-finalImage = reshape(outImage,size(tmpImage));
-for i = 1:size(finalImage,1)
-    for j = 1:size(finalImage,2)
-        matDist = sqrt((i-xCenter)^2 + (j-yCenter)^2);
-        if matDist >= xCenter-1
-            finalImage(i,j) = nan;
-        end
-    end
-end
-finalImage = log10(finalImage);
-
-%% Plot polar grid
+%% Plot circles and spokes
 % Plot circles
 for i = 1:length(cLines)
     plot(cX(i,:),cY(i,:),'k:','LineWidth',1);
     if cLines(i) ~= 0
-        [tX,tY] = pol2cart(deg2rad(15),cLines(i)*pscale);
+        [tX,tY] = pol2cart(deg2rad(15),(cLines(i)/max(cLines))*(matSize-1)/2);
         text(-tX + max(cX(:))/2,tY + max(cY(:))/2,num2str(round(10^cLines(i))), 'FontSize', 20,...
-            'HorizontalAlignment','center','VerticalAlignment','middle','BackgroundColor','white');
+            'HorizontalAlignment','center','VerticalAlignment','middle');
     end
 end
 % Plot spokes
 for i = 1:length(rLines)
-    [sX,sY] = pol2cart(rLines(i),cLines(end)*pscale);
+    [sX,sY] = pol2cart(rLines(i),(matSize-1)/2);
     plot([sX -sX] + max(cX(:))/2,[sY -sY] + max(cY(:))/2,'k:','LineWidth',1);
-    [tX,tY] = pol2cart(rLines(i),pLabels);
+    [tX,tY] = pol2cart(rLines(i),(matSize-1)/2+5);
     text(tX + max(cX(:))/2,tY + max(cY(:))/2,num2str(rad2deg( rLines(i) )) , 'FontSize', 20,...
         'HorizontalAlignment','center','VerticalAlignment','middle');
-    %     text(-tX,-tY,num2str(rad2deg( mod(pi+rLines(i),2*pi) )) ,'FontSize', 20,...
-    %         'HorizontalAlignment','center','VerticalAlignment','middle');
 end
 axis square;
 colorbar('EastOutside');

@@ -16,11 +16,12 @@ function [means,stds,sems] = psc_cope(featDirs,ROIind,copeNums)
 
 %% Compute percent signal change
 pscCope = nan(length(copeNums),length(featDirs));
+progBar = ProgressBar(length(featDirs),'Calculating percent signal change...');
 for i = 1:length(featDirs)
     % mean functional volume in anatomical space
     meanout = fullfile(featDirs{i},'mean_func.anat.nii.gz');
     mtmp = load_nifti(meanout);
-    for j = 1:length(copeNums)
+    for j = copeNums
         % copes in anatomical space
         copeout = fullfile(featDirs{i},'stats',['cope' num2str(copeNums(j)) '.anat.nii.gz']);
         % Calculate percent signal change (using copes)
@@ -29,6 +30,7 @@ for i = 1:length(featDirs)
         psctmp(psctmp==inf | psctmp==-inf) = nan; % set inf/-inf to nan
         pscCope(j,i) = nanmean(psctmp(ROIind));
     end
+    progBar(i);
 end
 %% Create TTF
 means = nan(1,length(copeNums));
