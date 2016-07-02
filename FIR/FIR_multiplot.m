@@ -22,11 +22,10 @@ function FIR_multiplot (output_dir,dataFiles, dataExt, legendTexts, titleText, s
 %     };
 % titleText = 'All subjects MaxMel_mh_V1';
 % saveName = 'HEROES_MaxMel_mh_V1' ;
-%
 
 
 %% set axes
-figure('units','normalized','position',[0 0 1 1]);
+firFig = figure('units','normalized','position',[0 0 1 1]);
 hold on
 xlabel('Time [sec]');
 ylabel('Signal change [%]');
@@ -50,7 +49,6 @@ for ff = 1:length(dataFiles)
             YData=get(D,'YData');
             y(ff) = YData(1);
             close (H);
-            
             dataP = y(ff);
             dataP = transpose (dataP{:});
         case 'csv' % Get datapoints from csv files
@@ -70,6 +68,6 @@ if ~exist(output_dir,'dir')
     mkdir(output_dir);
 end
 
-adjustPlot(gcf);
-saveas(gcf, fullfile(output_dir, saveName), 'pdf');
-close all;
+adjustPlot(firFig);
+saveas(firFig, fullfile(output_dir, saveName), 'pdf');
+close(firFig);

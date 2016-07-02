@@ -1,5 +1,6 @@
 function FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
-% FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
+% FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeNames, ...
+% runNums, hemis, ROIs, funcs, condition, startingCope)
 %
 % Saves out FIR responses and means
 
@@ -31,7 +32,7 @@ for hh = 1:length(hemis)
             [mean,sem] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames,startingCope);
             
             % Plot and save figures
-            FIR_plot(mean,sem,ROI,condition,hemi,funcName, subj_name, runNums);
+            firFig = FIR_plot(mean,sem,ROI,condition,hemi,funcName, subj_name, runNums);
             if ~exist (fullfile(session_dir, 'FIR_figures'),'dir')
                 mkdir (session_dir, 'FIR_figures');
             end
@@ -41,9 +42,9 @@ for hh = 1:length(hemis)
             savefig(fullfile(session_dir, 'FIR_figures', [subj_name '_' condition '_' hemi '_' ROI '_' func '.fig'])); %save .fig on cluster
             
             % Adjust the figure
-            adjustPlot(gcf);
-            saveas(gcf, fullfile(output_dir,'FIR_figures', [subj_name '_' condition '_' hemi '_' ROI '_' func '.pdf']), 'pdf');%save .pdf on dropbox
-            close all;
+            adjustPlot(firFig);
+            saveas(firFig, fullfile(output_dir,'FIR_figures', [subj_name '_' condition '_' hemi '_' ROI '_' func '.pdf']), 'pdf');%save .pdf on dropbox
+            close(firFig);
             
             % save means
             if ~exist (fullfile(session_dir, 'CSV_datafiles'),'dir')
@@ -54,11 +55,10 @@ for hh = 1:length(hemis)
             end
             fileNameM = [subj_name '_' condition '_' hemi '_' ROI '_' func '_mean.csv'];
             fileNameS = [subj_name '_' condition '_' hemi '_' ROI '_' func '_SEM.csv'];
-            csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameM)), mean);
-            csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameS)), sem);
-            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameM)), mean);
-            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameS)), sem);
-            
+            csvwrite(fullfile(output_dir, 'CSV_datafiles', fileNameM), mean);
+            csvwrite(fullfile(output_dir, 'CSV_datafiles', fileNameS), sem);
+            csvwrite(fullfile(session_dir, 'CSV_datafiles', fileNameM), mean);
+            csvwrite(fullfile(session_dir, 'CSV_datafiles', fileNameS), sem);
         end
     end
 end

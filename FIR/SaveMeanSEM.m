@@ -1,14 +1,17 @@
 function SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
-% SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
+% SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, ...
+% SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
+%
 
+% Iterate over hemis
 for hh = 1:length(hemis)
     hemi = hemis{hh};
     %LGN variables
     in_vol = fullfile('~/data/' , [hemi '.LGN.prob.nii.gz']);
     out_vol =  fullfile(session_dir, [hemi '.LGN.prob.nii.gz']);
     ref_vol = fullfile (SUBJECTS_DIR , subject_name, '/mri/T1.mgz');
-
-
+    
+    % Iterate over ROIs
     for jj = 1:length(ROIs)
         ROI = ROIs{jj};
         % Get ROIind
@@ -36,7 +39,7 @@ for hh = 1:length(hemis)
                 end
             case 'V1'
                 ROIind = find(abs(areas.vol)==1 & (ecc.vol>5 & ecc.vol<=30));
-        end        
+        end
         
         %% Get means
         for ff = 1:length(funcs)
@@ -47,19 +50,19 @@ for hh = 1:length(hemis)
                 runNums = Runs{i};
                 fileNameM = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'mean.csv'];
                 fileNameS = [subj_name '_' condName '_' hemi '_' ROI '_' func '_' 'SEM.csv'];
-                 if ~exist (fullfile(session_dir, 'CSV_datafiles'),'dir')
+                if ~exist (fullfile(session_dir, 'CSV_datafiles'),'dir')
                     mkdir (session_dir, 'CSV_datafiles');
                 end
                 if ~exist (fullfile(dropbox_dir, 'CSV_datafiles'),'dir')
                     mkdir (dropbox_dir, 'CSV_datafiles');
                 end
                 
-                [means{i},sems{i}] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind, copeNames);  
+                [means{i},sems{i}] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind, copeNames);
             end
-            csvwrite ((fullfile(dropbox_dir,'CSV_datafiles', fileNameM)), means);
-            csvwrite ((fullfile(dropbox_dir, 'CSV_datafiles', fileNameS)), sems);
-            csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameM)), means);
-            csvwrite ((fullfile(session_dir, 'CSV_datafiles', fileNameS)), sems);
+            csvwrite(fullfile(dropbox_dir,'CSV_datafiles', fileNameM), means);
+            csvwrite(fullfile(dropbox_dir, 'CSV_datafiles', fileNameS), sems);
+            csvwrite(fullfile(session_dir,'CSV_datafiles', fileNameM), means);
+            csvwrite(fullfile(session_dir, 'CSV_datafiles', fileNameS), sems);
             
         end
         

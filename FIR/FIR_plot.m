@@ -1,4 +1,4 @@
-function FIR_plot(means,SEMs,ROI,condition,hemi,func,subj_name,runNums, xlims,ylims,xTick,xLabels)
+function firFig = FIR_plot(means,SEMs,ROI,condition,hemi,func,subj_name,runNums, xlims,ylims,xTick,xLabels)
 
 % Plots FIR
 %
@@ -45,7 +45,7 @@ end
 % SEMS = cell2mat(sems);
 x = 0:1:(length(means)-1);
 
-figure('units','normalized','position',[0 0 1 1]);
+firFig = figure('units','normalized','position',[0 0 1 1]);
 plot([xlims(1) xlims(end)],[0 0],'k'); hold on;
 h = plot(x, means, ':k'); hold on;
 set(get(get(h,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
@@ -66,6 +66,3 @@ end
 
 set(ax,'XTick',xTick);
 set(ax,'XTickLabel',xLabels);
-pbaspect([1 1 1]);
-set(gca, 'TickDir', 'out'); 
-box off;

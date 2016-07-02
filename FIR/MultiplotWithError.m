@@ -2,7 +2,7 @@ function MultiplotWithError(output_dir,dataFiles, errorFiles, legendTexts, title
 % MultiplotWithError(output_dir,dataFiles, errorFiles, legendTexts, titleText, saveName)
 
 %% set axes
-theFig = figure('units','normalized','position',[0 0 1 1]);
+firFig = figure('units','normalized','position',[0 0 1 1]);
 hold on;
 xlabel('Time [sec]');
 ylabel('Signal change [%]');
@@ -40,6 +40,6 @@ if ~exist(output_dir,'dir')
 end
 
 % Adjust the figure
-adjustPlot(theFig);
-saveas(theFig, fullfile(output_dir, saveName), 'pdf');
+adjustPlot(firFig);
+saveas(firFig, fullfile(output_dir, saveName), 'pdf');
 close all;
