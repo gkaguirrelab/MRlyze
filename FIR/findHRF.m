@@ -21,6 +21,7 @@ tp(2) = p(1)+p(2);
 beta(1) = 1;
 beta(2) = 1;
 rt = p(3);
+
 %% Calc HRF
 [hrf] = doubleGammaHrf(TR,tp,beta,rt);
 dataL = length(obsData);

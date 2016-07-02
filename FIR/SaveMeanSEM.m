@@ -1,5 +1,5 @@
 function SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
-% FIR_assemble(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
+% SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
 
 for hh = 1:length(hemis)
     hemi = hemis{hh};
@@ -8,8 +8,7 @@ for hh = 1:length(hemis)
     out_vol =  fullfile(session_dir, [hemi '.LGN.prob.nii.gz']);
     ref_vol = fullfile (SUBJECTS_DIR , subject_name, '/mri/T1.mgz');
 
-    %%
-    
+
     for jj = 1:length(ROIs)
         ROI = ROIs{jj};
         % Get ROIind

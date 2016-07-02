@@ -1,5 +1,7 @@
 function project_copes(session_dir, subject_name, copeNames, hemis, ROIs, funcs)
-%%
+% project_copes(session_dir, subject_name, copeNames, hemis, ROIs, funcs)
+
+% Iterate over the hemis and ROIs
 for hh = 1:length(hemis)
     for jj = 1:length(ROIs)
         ROI = ROIs{jj};
@@ -25,7 +27,6 @@ for hh = 1:length(hemis)
         % Projects copes
         for ff = 1:length(funcs)
             func = funcs{ff};
-            
             psc_cope(session_dir,subject_name,runNums,func,ROIind, copeNames);
         end
     end

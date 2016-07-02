@@ -1,13 +1,13 @@
 function FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
-% Saves out FIR responses and means
-
-
 % FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeNames, runNums, hemis, ROIs, funcs, condition, startingCope)
+%
+% Saves out FIR responses and means
 
 if ~exist('startingCope','var')
     startingCope = 1;
 end
 
+% Iterate over hemis and ROIs
 for hh = 1:length(hemis)
     hemi = hemis{hh};
     for jj = 1:length(ROIs)
@@ -29,8 +29,8 @@ for hh = 1:length(hemis)
             func = funcs{ff};
             funcName = funcs{ff};
             [mean,sem] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames,startingCope);
-            % Plot and save figures
             
+            % Plot and save figures
             FIR_plot(mean,sem,ROI,condition,hemi,funcName, subj_name, runNums);
             if ~exist (fullfile(session_dir, 'FIR_figures'),'dir')
                 mkdir (session_dir, 'FIR_figures');
@@ -39,8 +39,9 @@ for hh = 1:length(hemis)
                 mkdir (output_dir, 'FIR_figures');
             end
             savefig(fullfile(session_dir, 'FIR_figures', [subj_name '_' condition '_' hemi '_' ROI '_' func '.fig'])); %save .fig on cluster
-            set(gcf, 'PaperPosition', [0 0 7 7]);
-            set(gcf, 'PaperSize', [7 7]);
+            
+            % Adjust the figure
+            adjustPlot(gcf);
             saveas(gcf, fullfile(output_dir,'FIR_figures', [subj_name '_' condition '_' hemi '_' ROI '_' func '.pdf']), 'pdf');%save .pdf on dropbox
             close all;
             
@@ -51,8 +52,8 @@ for hh = 1:length(hemis)
             if ~exist (fullfile(output_dir, 'CSV_datafiles'),'dir')
                 mkdir (output_dir, 'CSV_datafiles');
             end
-            fileNameM = [subj_name '_' condition '_' hemi '_' ROI '_' func '_' 'mean.csv'];
-            fileNameS = [subj_name '_' condition '_' hemi '_' ROI '_' func '_' 'SEM.csv'];
+            fileNameM = [subj_name '_' condition '_' hemi '_' ROI '_' func '_mean.csv'];
+            fileNameS = [subj_name '_' condition '_' hemi '_' ROI '_' func '_SEM.csv'];
             csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameM)), mean);
             csvwrite ((fullfile(output_dir,'CSV_datafiles', fileNameS)), sem);
             csvwrite ((fullfile(session_dir,'CSV_datafiles', fileNameM)), mean);

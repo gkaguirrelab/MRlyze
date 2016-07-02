@@ -1,14 +1,15 @@
 function [means,sems] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames,startingCope)
-% [means,sems] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames)
+% [means,sems] = psc_cope_get_means(session_dir,subject_name,runNums,func,ROIind,copeNames,starting Cope)
 %
 % Adapted from psc_cope
 %
 % 4/5/16    ms, gf  Adapted.
-%% 
+
+%%
 if ~exist('startingCope','var')
     startingCope = 1;
 end
-    cc = startingCope:startingCope+length(copeNames)-1;
+cc = startingCope:startingCope+length(copeNames)-1;
 
 %% Find bold directories
 b = find_bold(session_dir);
