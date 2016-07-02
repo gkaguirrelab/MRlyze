@@ -3,6 +3,22 @@ function FIR_assemble(session_dir, subject_name, subj_name, output_dir, copeName
 % runNums, hemis, ROIs, funcs, condition, startingCope)
 %
 % Saves out FIR responses and means
+%
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 7/2/2016  gf, ms      Written and commented.
 
 if ~exist('startingCope','var')
     startingCope = 1;

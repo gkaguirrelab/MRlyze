@@ -1,11 +1,30 @@
 function fisher_combined_prob_test(output_dir, session_dir,subject_name,subj_name, condition, runNums,func,thresh,inAnatomicalSpace, SUBJECTS_DIR)
+% fisher_combined_prob_test(output_dir, session_dir,subject_name,subj_name, condition, runNums,func,thresh,inAnatomicalSpace, SUBJECTS_DIR)
+%
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 3/17/16   ms, gf      Written.
+% 7/2/2016  gf, ms      Commented.
 
+%
 % Loads pval.nii.gz or pval.anat.nii.gz from feat/stats directory 
 %
 %   Usage:
 %   fisher_combined_prob_test(session_dir,subject_name,runNums,func,thresh,SUBJECTS_DIR,inAnatomicalSpace)
 %
-% 3/17/16   ms, gf      Written.
+
 
 %% set defaults
 if ~exist('thresh','var')

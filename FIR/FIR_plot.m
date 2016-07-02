@@ -1,11 +1,26 @@
-function firFig = FIR_plot(means,SEMs,ROI,condition,hemi,func,subj_name,runNums, xlims,ylims,xTick,xLabels)
+function firFig = FIR_plot(means, SEMs, ROI, condition, hemi, func, subj_name, runNums, xlims,ylims,xTick,xLabels)
+% firFig = FIR_plot(means, SEMs, ROI, condition, hemi, func, subj_name, runNums, ...
+% xlims,ylims,xTick,xLabels)
+%
+% Plots FIR.
+%
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 3/1/2016    gf, ms Based on plot_TTF, Written by Andrew S Bock Sep 2015
+% 7/2/2016    ms Commented.
 
-% Plots FIR
-%
-%  
-%
-%   Based on plot_TTF, Written by Andrew S Bock Sep 2015
-%   
 %% set defaults
 if ~exist('condName','var')
     CondName = '';
@@ -52,7 +67,7 @@ set(get(get(h,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
 g = errorbar(x,means,SEMs, '.k','MarkerSize',16); hold on;
 set(get(get(g,'Annotation'),'LegendInformation'),'IconDisplayStyle','off');
 p = plot(x, means, '.r', 'MarkerSize',16);
-legend (p, ['Mean ' char(177) ' SEM']);
+legend (p, ['Mean\pmSEM']);
 title({subj_name, [condition ' - ' hemi ' ' ROI ' ' func]},'Interpreter','none')
 xlabel('Time [sec]');
 ylabel('Amplitude [% signal change]');

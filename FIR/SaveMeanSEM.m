@@ -2,6 +2,21 @@ function SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, SUBJECTS
 % SaveMeanSEM(session_dir, subject_name, subj_name, dropbox_dir, ...
 % SUBJECTS_DIR, copeNames, hemis, ROIs, funcs, funcNames, Conditions, Runs)
 %
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 7/2/2016  gf, ms      Written and commented.
 
 % Iterate over hemis
 for hh = 1:length(hemis)

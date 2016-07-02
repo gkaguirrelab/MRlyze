@@ -4,6 +4,22 @@ function FIR_multiplot (output_dir,dataFiles, dataExt, legendTexts, titleText, s
 %  plots multiple FIR responses on the same graph. Gets data values from either
 %  .fig files or .csv files.
 %
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 7/2/2016  gf, ms      Written and commented.
+%
 % Example:
 %
 % output_dir ='/Users/giulia/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/MelanopsinMR/MelPulses_400%/All_subjects';

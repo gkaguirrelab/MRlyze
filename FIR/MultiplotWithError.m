@@ -1,5 +1,21 @@
 function MultiplotWithError(output_dir,dataFiles, errorFiles, legendTexts, titleText, saveName)
 % MultiplotWithError(output_dir,dataFiles, errorFiles, legendTexts, titleText, saveName)
+%
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 7/2/2016  gf, ms      Written and commented.
 
 %% set axes
 firFig = figure('units','normalized','position',[0 0 1 1]);

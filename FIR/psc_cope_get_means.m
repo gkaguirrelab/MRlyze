@@ -3,6 +3,21 @@ function [means,sems] = psc_cope_get_means(session_dir,subject_name,runNums,func
 %
 % Adapted from psc_cope
 %
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+%
 % 4/5/16    ms, gf  Adapted.
 
 %%

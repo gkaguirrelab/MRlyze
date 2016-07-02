@@ -1,6 +1,23 @@
 function FIR_first_level_feat(outFile,funcVol,anatVol,EVs,condition)
-
-% Write a .fsf file for first-level feat for the MelanopsinMR Protocol
+% FIR_first_level_feat(outFile,funcVol,anatVol,EVs,condition)
+%
+% % Write a .fsf file for first-level feat for the MelanopsinMR Protoco
+%
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 7/2/2016  gf, ms      Written and commented.
 
 %% Set defaults
 matlab_path = '/data/jag/MELA/Matlab';

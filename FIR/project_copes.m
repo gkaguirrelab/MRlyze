@@ -1,5 +1,20 @@
 function project_copes(session_dir, subject_name, copeNames, hemis, ROIs, funcs)
 % project_copes(session_dir, subject_name, copeNames, hemis, ROIs, funcs)
+% <GF> Please add input arguments and usage here
+%
+% Input arguments:
+% ================
+%
+%   session_dir : 
+%   ...
+%
+% Usage:
+% ======
+%
+% <GF>
+%
+%
+% 7/2/2016  gf, ms      Written and commented.
 
 % Iterate over the hemis and ROIs
 for hh = 1:length(hemis)
