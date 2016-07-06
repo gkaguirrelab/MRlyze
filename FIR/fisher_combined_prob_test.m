@@ -1,29 +1,48 @@
 function fisher_combined_prob_test(output_dir, session_dir,subject_name,subj_name, condition, runNums,func,thresh,inAnatomicalSpace, SUBJECTS_DIR)
 % fisher_combined_prob_test(output_dir, session_dir,subject_name,subj_name, condition, runNums,func,thresh,inAnatomicalSpace, SUBJECTS_DIR)
+% Loads pval.nii.gz or pval.anat.nii.gz from feat/stats directory and
+% performs the Fisher's probability test.
 %
-% <GF> Please add input arguments and usage here
 %
 % Input arguments:
 % ================
 %
-%   session_dir : 
-%   ...
+%   output_dir : path to the output directory;
+%   session_dir : path to the session directory;
+%   subject_name : Freesurfer subject name;
+%   subj_name : subject name;
+%   condition : condition to include in the analysis;
+%   runNums : number of bold runs to include in the analysis (must be in the same
+%   session_dir);
+%   func : smoothed functional data to include in the analysis (e.g.
+%   wdrf.tf);
+%   thresh : threshold for p-values
+%   inAnatomicalSpace : if set to 'true' will apply Fisher's test in anatomical
+%   space. Otherwise, Fisher's test will be applied in functional space 
+%   SUBJECTS_DIR: Freesurfer subject Directory.
 %
 % Usage:
 % ======
 %
-% <GF>
+%   output_dir = '/data/jag/MELA/MelanopsinMR/Results';
+%   session_dir = '/data/jag/MELA/MelanopsinMR/HERO_xxx1/060616'';
+%   subject_name = 'HERO_xxx1_MaxMel';
+%   subj_name = 'HERO_xxx1';
+%   condition = 'MelPulses_400pct';
+%   runNums = 1:9;
+%   funcs = 'wdrf.tf';
+%   inAnatomicalSpace = true;
+%   fisher_combined_prob_test(output_dir, ...
+%   session_dir,subject_name,subj_name, condition, ...
+%   runNums,func,thresh,inAnatomicalSpace);
 %
 %
 % 3/17/16   ms, gf      Written.
 % 7/2/2016  gf, ms      Commented.
 
 %
-% Loads pval.nii.gz or pval.anat.nii.gz from feat/stats directory 
 %
-%   Usage:
-%   fisher_combined_prob_test(session_dir,subject_name,runNums,func,thresh,SUBJECTS_DIR,inAnatomicalSpace)
-%
+%  
 
 
 %% set defaults
@@ -53,19 +72,6 @@ for i = runNums
     pval = load_nifti(fullfile(statsDir,pvalVolumeName));
     
     tmp(:, :, :, i) = pval.vol;
-
-    
-%     pval = fstat;
-%     % Convert Fstats to p-values
-%     pval.vol = 1-fcdf(fstat.vol,1,dof);
-%     
-%     
-%     % Save volumes
-%     save_nifti(pval,fullfile(statsDir,'pval.nii.gz'));
-%     sigind = pval.vol<thresh;
-%     pval.vol = zeros(size(pval.vol));
-%     pval.vol(sigind) = 1;
-%     save_nifti(pval,fullfile(statsDir,'pval.mask.nii.gz'));
 
 end
 

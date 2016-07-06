@@ -1,20 +1,26 @@
 function FIR_first_level_feat(outFile,funcVol,anatVol,EVs,condition)
 % FIR_first_level_feat(outFile,funcVol,anatVol,EVs,condition)
 %
-% % Write a .fsf file for first-level feat for the MelanopsinMR Protoco
+% Writes a .fsf file for first-level feat for the MelanopsinMR Protocols
+% based of pregenerated template files.
 %
-% <GF> Please add input arguments and usage here
 %
 % Input arguments:
 % ================
 %
-%   session_dir : 
-%   ...
-%
+%   outFile : name of the fsf output file;
+%   funcVol : functional volume to use in the analysis;
+%   anatVol : anatomical volume to use in the analysis;
+%   EVs : path to the EV files to use in the analysis.
+%   condition : name of the condition for the analysis. The fsf template
+%   wil be selected accordingly.
+% 
 % Usage:
 % ======
-%
-% <GF>
+%   This function is better used in a script , looping through different
+%   bold runs. An example is shown in
+%   'MelanopsinMR/analysis/MelanopsinMR_FeatStatAnalysis.m' lines 125-179.
+% 
 %
 %
 % 7/2/2016  gf, ms      Written and commented.
@@ -34,6 +40,8 @@ switch condition
         design_file = fullfile(design_dir,'MaxMelCRF_template.fsf');
     case 'MaxLMSCRF'
         design_file = fullfile(design_dir,'MaxLMSCRF_template.fsf');
+    otherwise
+        error('No template for this condition. Try using: ''MelPulses_400pct'', ''LMSPulses_400pct'', ''SplatterControl'', ''MaxMelCRF'' or ''MaxLMSCRF''');
 end
 %% Load functional volume
 tmp = load_nifti(funcVol);

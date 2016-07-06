@@ -1,7 +1,6 @@
 function project_copes(session_dir, subject_name, copeNames, hemis, ROIs, funcs)
 % project_copes(session_dir, subject_name, copeNames, hemis, ROIs, funcs)
-% <GF> Please add input arguments and usage here
-%
+% 
 % Input arguments:
 % ================
 %
@@ -11,7 +10,7 @@ function project_copes(session_dir, subject_name, copeNames, hemis, ROIs, funcs)
 % Usage:
 % ======
 %
-% <GF>
+% 
 %
 %
 % 7/2/2016  gf, ms      Written and commented.

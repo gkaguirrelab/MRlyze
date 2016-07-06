@@ -1,26 +1,24 @@
 function FIR_multiplot (output_dir,dataFiles, dataExt, legendTexts, titleText, saveName)
 % FIR_multiplot (output_dir,dataFiles, dataExt, legendTexts, titleText, saveName)
 %
-%  plots multiple FIR responses on the same graph. Gets data values from either
-%  .fig files or .csv files.
+%  plots multiple FIR responses on the same graph. The plots are saved as
+%  pdf files. Gets data values from either .fig files or .csv files.
 %
-% <GF> Please add input arguments and usage here
 %
 % Input arguments:
 % ================
 %
-%   session_dir : 
-%   ...
+%   output_dir: path to the folder in which the plot will be saved;
+%   dataFiles: paths to each datafile;
+%   dataExt: extention of the datafiles. It can be either 'fig' or 'csv';
+%   legendTexts: strings for the legend text of each plot;
+%   titleText: string for the plot title;
+%   saveName: string for the name of the pdf file (it will be saved in
+%   output_dir).
+%   
 %
 % Usage:
 % ======
-%
-% <GF>
-%
-%
-% 7/2/2016  gf, ms      Written and commented.
-%
-% Example:
 %
 % output_dir ='/Users/giulia/Dropbox (Aguirre-Brainard Lab)/MELA_analysis/MelanopsinMR/MelPulses_400%/All_subjects';
 % dataFiles = { ...
@@ -38,6 +36,10 @@ function FIR_multiplot (output_dir,dataFiles, dataExt, legendTexts, titleText, s
 %     };
 % titleText = 'All subjects MaxMel_mh_V1';
 % saveName = 'HEROES_MaxMel_mh_V1' ;
+%
+%
+% 7/2/2016  gf, ms      Written and commented.
+
 
 
 %% set axes
@@ -70,6 +72,8 @@ for ff = 1:length(dataFiles)
         case 'csv' % Get datapoints from csv files
             y(:,ff) = csvread(dataFiles{ff});
             dataP = y(:,ff);
+        otherwise
+            error('Unknown file extention. Allowed extentions are ''fig'' and ''csv'''); 
     end
     dataL = length(dataP);
     x = 0:1:dataL-1;
