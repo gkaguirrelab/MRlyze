@@ -3,10 +3,8 @@ function adjustPlot(theFig)
 %
 % Makes cosmetic adjustments to a figure.
 
-% Gather all the axis handles
-axesHandles = get(theFig,'children');
-
 % Ticks are going out
+axesHandles = findobj(theFig, 'type', 'axes')
 set(axesHandles, 'TickDir', 'out');
 
 % Make the axes square and turns the bounding box off
