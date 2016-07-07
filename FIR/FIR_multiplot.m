@@ -49,7 +49,7 @@ xlabel('Time [sec]');
 ylabel('Signal change [%]');
 title (titleText,'Interpreter','none')
 xlims = [-1 15];
-ylims = [-0.5 1.2];
+ylims = [-0.5 1.4];
 xTick = [0 1 2 3 4 5 6 7 8 9 10 11 12 13];
 xLabels = xTick;
 h = plot([xlims(1) xlims(end)],[0 0],'k');
