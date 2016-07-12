@@ -119,7 +119,8 @@ switch protocolName
                 attentionTaskFlag(i) = 1;
             end
             % Subject key press responses
-            if ~isempty(params.responseStruct.events(i).buffer) & any(~strcmp({params.responseStruct.events(i).buffer.charCode}, '='))
+            if ~isempty(params.responseStruct.events(i).buffer) && ...
+                    any(~strcmp({params.responseStruct.events(i).buffer.charCode}, '='))
                 responseDetection(i) = 1;
             end
             % Hits
