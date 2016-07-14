@@ -32,7 +32,7 @@ end
 % templates{1} = {'4.6.4' '5.2.7'}; % last two are 'best' and 'worst', repsectively for GKA lh
 % templateTypes = {'coarse'};
 templateTypes = {'pRF' 'coarse'};
-templates{1} = {'pRF'}; 
+templates{1} = {'pRF'};
 templates{2} = {'4.6.4' '5.2.7'}; % 'best' and 'worst', repsectively for GKA lh
 %templateTypes = {'pRF' 'coarse' 'fine'};
 % Create custome white -> blue color scale
@@ -93,6 +93,7 @@ for tt = 1:length(templateTypes)
                     size(obs_all,1) - median(rowV2inds),...
                     size(obs_all,1) - median(rowV1inds)]);
                 set(gca,'XTickLabel',{'V3','V2','V1'},'FontSize',15);
+                set(gca,'TickLength',[ 0 0 ])
                 axis square
             case 'V2_V3'
                 if V2V2
@@ -102,6 +103,7 @@ for tt = 1:length(templateTypes)
                 else
                     set(gca,'XTick',median(rowV1inds));
                     set(gca,'XTickLabel',{'V1'},'FontSize',15);
+                    set(gca,'TickLength',[ 0 0 ])
                 end
         end
         ylabel('Visual Areas','FontSize',20);
@@ -109,9 +111,11 @@ for tt = 1:length(templateTypes)
             case 'full'
                 set(gca,'YTick',[median(colV1inds),median(colV2inds),median(colV3inds)]);
                 set(gca,'YTickLabel',{'V1','V2','V3'},'FontSize',15);
+                set(gca,'TickLength',[ 0 0 ])
             case 'V2_V3'
                 set(gca,'YTick',[median(colV2inds),median(colV3inds)]);
                 set(gca,'YTickLabel',{'V2','V3'},'FontSize',15);
+                set(gca,'TickLength',[ 0 0 ])
         end
         hcb=colorbar;
         hL = ylabel(hcb,'Correlation (fisher-z)','FontSize',20);
@@ -132,15 +136,18 @@ for tt = 1:length(templateTypes)
                     size(obs_all,1) - median(rowV2inds),...
                     size(obs_all,1) - median(rowV1inds)]);
                 set(gca,'XTickLabel',{'V3','V2','V1'},'FontSize',15);
+                set(gca,'TickLength',[ 0 0 ])
                 axis square
             case 'V2_V3'
                 if V2V3
                     set(gca,'XTick',[size(obs_all,1) - median(rowV2inds),...
                         size(obs_all,1) - median(rowV1inds)]);
                     set(gca,'XTickLabel',{'V2','V1'},'FontSize',15);
+                    set(gca,'TickLength',[ 0 0 ])
                 else
                     set(gca,'XTick',median(rowV1inds));
                     set(gca,'XTickLabel',{'V1'},'FontSize',15);
+                    set(gca,'TickLength',[ 0 0 ])
                 end
         end
         ylabel('Visual Areas','FontSize',20);
@@ -148,9 +155,11 @@ for tt = 1:length(templateTypes)
             case 'full'
                 set(gca,'YTick',[median(colV1inds),median(colV2inds),median(colV3inds)]);
                 set(gca,'YTickLabel',{'V1','V2','V3'},'FontSize',15);
+                set(gca,'TickLength',[ 0 0 ])
             case 'V2_V3'
                 set(gca,'YTick',[median(colV2inds),median(colV3inds)]);
                 set(gca,'YTickLabel',{'V2','V3'},'FontSize',15);
+                set(gca,'TickLength',[ 0 0 ])
         end
         hcb=colorbar;
         hL = ylabel(hcb,'Correlation (fisher-z)','FontSize',20);

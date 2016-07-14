@@ -1,9 +1,9 @@
-function plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
+function [outImage] = plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 
 % Plots values from an input volume in visual field coordinates
 %
 %   Usage:
-%   plotVisual(inVol,eccVol,polVol,sigVol,roiInd,roiName,axLim)
+%   [outImage] = plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 %
 %   See also:
 %   convert_image2surf
@@ -26,12 +26,41 @@ circPol = linspace(0,2*pi,matSize); % Polar angle sampling
 cLines = linspace(0,log10(axLim),6); % Eccentricity lines
 rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
 outImage = nan(matSize,matSize);
-centerMat = [matSize/2 matSize/2];
+centerMat = (matSize+1)/2;
 %% Load in volumes
-ecc = load_nifti(eccVol);
+% eccentricity data
+if ischar(eccVol)
+    if exist(eccVol,'file')
+        [~,~,ext] = fileparts(eccVol);
+        if strcmp(ext,'.gz')
+            ecc = load_nifti(eccVol);
+        elseif strcmp(ext,'.mgh') || strcmp(ext,'.mgz')
+            ecc.vol = load_mgh(eccVol);
+        end
+    else
+        error('data input does not correspond to an existing file');
+    end
+else
+    ecc.vol = double(eccVol);
+end
 ecc = ecc.vol(roiInd);
-pol = load_nifti(polVol);
+% polar angle data
+if ischar(polVol)
+    if exist(polVol,'file')
+        [~,~,ext] = fileparts(polVol);
+        if strcmp(ext,'.gz')
+            pol = load_nifti(polVol);
+        elseif strcmp(ext,'.mgh') || strcmp(ext,'.mgz')
+            pol.vol = load_mgh(polVol);
+        end
+    else
+        error('data input does not correspond to an existing file');
+    end
+else
+    pol.vol = double(polVol);
+end
 pol = pol.vol(roiInd);
+% input data
 if ischar(inVol)
     if exist(inVol,'file')
         [~,~,ext] = fileparts(inVol);
@@ -64,10 +93,10 @@ Sig = rf_ecc(ecc,vArea);
 progBar = ProgressBar(matSize,'mixing paint...');
 for i = 1:matSize % row (y)
     for j = 1:matSize % columns (x)
-        tmpdist = sqrt( (i-centerMat(1))^2 + (j-centerMat(2))^2 );
-        if tmpdist <= centerMat(1)-1
-            eccMat = 10^(tmpdist * log10(axLim)/(centerMat(1))); % log scale the value
-            polMat = cart2pol(j-centerMat(2),i-centerMat(1));
+        tmpdist = sqrt( (i-centerMat)^2 + (j-centerMat)^2 );
+        if tmpdist <= centerMat
+            eccMat = 10^(tmpdist * log10(axLim)/(centerMat)); % log scale the value
+            polMat = cart2pol(j-centerMat,i-centerMat);
             [matX,matY] = pol2cart(polMat,eccMat);
             tmpDist = sqrt( (matY - y).^2 + (matX - x).^2);
             tmpGauss = exp(-(tmpDist.^2)./(2*Sig.^2));
@@ -92,20 +121,16 @@ shading flat;
 colormap(viridis);
 axis off
 axis square
-colorbar
 hold on;
 %% Create circles and spokes
 clear cX cY
 % Create circles
 for i = 1:length(cLines)
-    [cX(i,:),cY(i,:)] = pol2cart(circPol,(cLines(i)/max(cLines))*(matSize-1)/2);
+    [cX(i,:),cY(i,:)] = pol2cart(circPol,(cLines(i)/max(cLines))*centerMat);
 end
 % Move to center, fix indexing
-cX = cX + centerMat(2)+0.5;
-cY = cY + centerMat(1)+0.5;
-% Get circle x, y
-xCenter = max(cX(:))/2;
-yCenter = max(cY(:))/2;
+cX = cX + centerMat + 0.5;
+cY = cY + centerMat + 0.5;
 %% Plot circles and spokes
 % Plot circles
 for i = 1:length(cLines)
@@ -125,4 +150,4 @@ for i = 1:length(rLines)
         'HorizontalAlignment','center','VerticalAlignment','middle');
 end
 axis square;
-colorbar('EastOutside');
+colorbar('NorthEastOutside');

@@ -26,7 +26,7 @@ load(matFile);
 NSegments = length(params.responseStruct.events);
 % Make a 'covariates' folder
 covDir = fullfile(outDir,fileName);
-if ~exist(covDir,'dir');
+if ~exist(covDir,'dir')
     mkdir(covDir);
 end
 
