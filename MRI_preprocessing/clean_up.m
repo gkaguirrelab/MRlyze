@@ -1,50 +1,117 @@
-function clean_up(session_dir)
+function clean_up(session_dir,filesToKeep,dirsToKeep)
 
-% Cleans up temporary files following the MRI preprocessing scripts.
-%   
-% WARNING: only the files needed for the following processing steps are kept,
-% everything else is deleted.
+% Removes unwanted files and directories
 %
-% Written by Andrew S Bock Jan 2015
-% Updated on July 2016 by ASB, GF 
+%   Usage:
+%   clean_up(session_dir,filesToKeep,dirsToKeep)
+%
+%   Only the files and folders in 'filesToKeep' and 'foldersToKeep' will
+%   remain.  All other files/folders will be deleted, with the exception of
+%   bold directories in 'session_dir'.
+%
+%   Defaults:
+%     filesToKeep = { ...
+%         'README.md' ...
+%         'LOG' ...
+%         'LOGS' ...
+%         'wdrf.tf.nii.gz' ...
+%         'wdrf.tf.surf.rh.nii.gz' ...
+%         'wdrf.tf.surf.lh.nii.gz' ...
+%         's5.wdrf.tf.nii.gz' ...
+%         's5.wdrf.tf.surf.rh.nii.gz' ...
+%         's5.wdrf.tf.surf.lh.nii.gz' ...
+%         };
+%     dirsToKeep = { ...
+%         'DICOMS' ...
+%         'PulseOx' ...
+%         'Protocols' ...
+%         'MatFiles' ...
+%         'Stimuli' ...
+%         'wdrf.tf.feat' ...
+%         's5.wdrf.tf.feat' ...
+%         };
+%
+%   Written by Andrew S Bock Jan 2015
+%   Updated on July 2016 by ASB, GF
 
-%% define variable names to keep in each bold dir
-fprintf ('\n>>>> Cleaning up %s \n', session_dir)
-fprintf ('These files and folder will be kept: \n')
-filesToKeep = { ...
-    's5.wdrf.tf.nii.gz' ...
-    's5.wdrf.tf.surf.rh.nii.gz' ...
-    's5.wdrf.tf.surf.lh.nii.gz' ...
-    'wdrf.tf.nii.gz' ...
-    }
-foldersToKeep = { ...
-    'wdrf.tf.feat' ...
-    's5.wdrf.tf.feat' ...
-    }
-
+%% set defaults
+if ~exist('filesToKeep','var') || isempty(filesToKeep)
+    filesToKeep = { ...
+        'README.md' ...
+        'LOG' ...
+        'LOGS' ...
+        'wdrf.tf.nii.gz' ...
+        'wdrf.tf.surf.rh.nii.gz' ...
+        'wdrf.tf.surf.lh.nii.gz' ...
+        's5.wdrf.tf.nii.gz' ...
+        's5.wdrf.tf.surf.rh.nii.gz' ...
+        's5.wdrf.tf.surf.lh.nii.gz' ...
+        };
+end
+if ~exist('dirsToKeep','var') || isempty(dirsToKeep)
+    dirsToKeep = { ...
+        'DICOMS' ...
+        'PulseOx' ...
+        'Protocols' ...
+        'MatFiles' ...
+        'Stimuli' ...
+        'wdrf.tf.feat' ...
+        's5.wdrf.tf.feat' ...
+        };
+end
+sprintf('\n>>>> Cleaning up %s <<<<\n', session_dir)
+disp('These files will be kept:');
+disp(filesToKeep');
+disp('These folders will be kept:');
+disp(dirsToKeep');
 %% find bold directories
 b = find_bold(session_dir);
-%% remove all files and folders other than those to keep
-for nn = 1:length(b)
-    % check all files
-    allFiles = listdir(fullfile(session_dir,b{nn}),'files');
-    toKeep = ismember(allFiles,filesToKeep);
-    for kk = 1:length(toKeep)
-        if toKeep(kk) == 0
-            fprintf ('\n Removing %s', fullfile(session_dir,b{nn},allFiles{kk}))
-            system(['rm -rf ' fullfile(session_dir,b{nn},allFiles{kk})])
-        end
+
+%% Remove all files and directories from session directory
+% get all files
+allFiles = listdir(session_dir,'files');
+keepFiles = ismember(allFiles,filesToKeep);
+for j = 1:length(allFiles)
+    % delete those files not in 'filesToKeep'
+    if ~keepFiles(j)
+        disp(['Removing file ' fullfile(session_dir,allFiles{j})]);
+        system(['rm -rf ' fullfile(session_dir,allFiles{j})]);
     end
-    clear ('toKeep');
-    % check all folders
-    allFolders = listdir(fullfile(session_dir,b{nn}),'dirs');
-    toKeep = ismember(allFolders,foldersToKeep);
-    for jj = 1:length(toKeep)
-        if toKeep(jj) == 0
-            fprintf ('\n Removing %s', fullfile(session_dir,b{nn},allFolders{jj}))
-            system(['rm -rf ' fullfile(session_dir,b{nn},allFolders{jj})])
-        end
-    end
-    clear ('toKeep');
 end
-fprintf ('\n>>>> %s cleanup completed \n', session_dir);
+% get all directories
+allDirs = listdir(session_dir,'dirs');
+keepDirs = ismember(allDirs,dirsToKeep);
+for j = 1:length(allDirs)
+    % ignore bold directories
+    if ~ismember(allDirs{j},b)
+        % delete those directories not in 'dirsToKeep'
+        if ~keepDirs(j)
+            disp(['Removing directory ' fullfile(session_dir,allDirs{j})]);
+            system(['rm -rf ' fullfile(session_dir,allDirs{j})]);
+        end
+    end
+end
+%% remove all files and directories from bold directories
+for i = 1:length(b)
+    % get all files
+    allFiles = listdir(fullfile(session_dir,b{i}),'files');
+    keepFiles = ismember(allFiles,filesToKeep);
+    for j = 1:length(allFiles)
+        % delete those files not in 'filesToKeep'
+        if ~keepFiles(j)
+            disp(['Removing file ' fullfile(session_dir,b{i},allFiles{j})]);
+            system(['rm -rf ' fullfile(session_dir,b{i},allFiles{j})]);
+        end
+    end
+    % get all directories
+    allDirs = listdir(fullfile(session_dir,b{i}),'dirs');
+    keepDirs = ismember(allDirs,dirsToKeep);
+    for j = 1:length(allDirs)
+        % delete those directories not in 'dirsToKeep'
+        if ~keepDirs(j)
+            disp(['Removing directory ' fullfile(session_dir,b{i},allDirs{j})]);
+            system(['rm -rf ' fullfile(session_dir,b{i},allDirs{j})]);
+        end
+    end
+end
+disp(['>>>> Cleanup completed ' session_dir ' <<<<']);
