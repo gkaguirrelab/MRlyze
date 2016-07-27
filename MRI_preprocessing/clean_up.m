@@ -9,16 +9,18 @@ function clean_up(session_dir)
 % Updated on July 2016 by ASB, GF 
 
 %% define variable names to keep in each bold dir
+fprintf ('\n>>>> Cleaning up %s \n', session_dir)
+fprintf ('These files and folder will be kept: \n')
 filesToKeep = { ...
     's5.wdrf.tf.nii.gz' ...
     's5.wdrf.tf.surf.rh.nii.gz' ...
     's5.wdrf.tf.surf.lh.nii.gz' ...
     'wdrf.tf.nii.gz' ...
-    };
+    }
 foldersToKeep = { ...
     'wdrf.tf.feat' ...
     's5.wdrf.tf.feat' ...
-    };
+    }
 
 %% find bold directories
 b = find_bold(session_dir);
@@ -45,4 +47,4 @@ for nn = 1:length(b)
     end
     clear ('toKeep');
 end
-
+fprintf ('\n>>>> %s cleanup completed \n', session_dir);
