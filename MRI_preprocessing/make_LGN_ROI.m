@@ -13,9 +13,9 @@ function make_LGN_ROI(session_dir,subject_name,thresh,SUBJECTS_DIR)
 %       rh.LGN.prob.nii.gz - voxel values reflect the probability of being
 %           in the right LGN
 %       lh.LGN.nii.gz - binary mask volume, threshold using the input
-%           'thresh' <default = 5>
+%           'thresh' <default = 25>
 %       rh.LGN.nii.gz - binary mask volume, threshold using the input
-%           'thresh' <default = 5>
+%           'thresh' <default = 25>
 %
 %   Written by Andrew S Bock Sep 2015
 
