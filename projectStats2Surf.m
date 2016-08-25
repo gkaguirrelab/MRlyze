@@ -1,4 +1,4 @@
-function project_stats_to_surf(session_dir,subject_name,sentDirName,locDirName,sentNum,locNum,sentOutDir,locOutDir,sentNames,locNames)
+function projectStats2Surf(featDir)
 
 %% Projects sentence and localizer volumetric data to the cortical surface
 %
