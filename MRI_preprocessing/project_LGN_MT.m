@@ -1,6 +1,6 @@
-function project_LGN_MT(session_dir,subject_name,thresh,template_files,hemis,SUBJECTS_DIR,FSLDIR)
+function project_LGN_MT(session_dir,subject_name,thresh,template_files,hemis,SUBJECTS_DIR)
 
-% Projects anatomical template files in MNI space to subject
+% Projects anatomical template files in cvs MNI space to subject
 %   native space, using FSL's flirt and fnirt
 %
 %   Usage: project_LGN_MT(session_dir,subject_name,template_files,hemis,thresh,SUBJECTS_DIR,FSLDIR)
@@ -25,13 +25,10 @@ end
 if ~exist('SUBJECTS_DIR','var')
     SUBJECTS_DIR = getenv('SUBJECTS_DIR');
 end
-if ~exist('FSLDIR','var')
-    FSLDIR = getenv('FSLDIR');
-end
 maps = {'LGN' 'MT'};
 %% Setup files
 % T1 files
-MNIT1 = fullfile(FSLDIR,'data/standard/MNI152_T1_1mm_brain.nii.gz');
+MNIT1 = fullfile(SUBJECTS_DIR,'cvs_avg35_inMNI152/mri/T1.mgz');
 SUBJT1 = fullfile(SUBJECTS_DIR,subject_name,'mri/brain.nii.gz');
 flirtout = fullfile(SUBJECTS_DIR,subject_name,'mri/MNI_flirt_brain.nii.gz');
 fnirtout = fullfile(SUBJECTS_DIR,subject_name,'mri/MNI_fnirt_brain.nii.gz');
