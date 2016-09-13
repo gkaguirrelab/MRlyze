@@ -28,7 +28,11 @@ end
 maps = {'LGN' 'MT'};
 %% Setup files
 % T1 files
-MNIT1 = fullfile(SUBJECTS_DIR,'cvs_avg35_inMNI152/mri/T1.mgz');
+MNIT1 = fullfile(SUBJECTS_DIR,'cvs_avg35_inMNI152/mri/T1.nii.gz');
+if ~exist(MNIT1,'file')
+    MNIT1mgz = fullfile(SUBJECTS_DIR,'cvs_avg35_inMNI152/mri/T1.mgz');
+    system(['mri_convert ' MNIT1mgz ' ' MNIT1]);
+end
 SUBJT1 = fullfile(SUBJECTS_DIR,subject_name,'mri/brain.nii.gz');
 flirtout = fullfile(SUBJECTS_DIR,subject_name,'mri/MNI_flirt_brain.nii.gz');
 fnirtout = fullfile(SUBJECTS_DIR,subject_name,'mri/MNI_fnirt_brain.nii.gz');
