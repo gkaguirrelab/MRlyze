@@ -253,7 +253,7 @@ figure('units','normalized','position',[0 0 1 1]);
 if strcmp(map_type,'image')
 else
     % make legend first, so that brain surface is active last
-    subplot(4,4,4);
+    subplot(4,4,3);
     if strcmp(map_type,'ecc') || strcmp(map_type,'pol')
         x = linspace(-1,+1,mapres(3)); [xx,yy] = meshgrid(x);
         [th,r] = cart2pol(xx,yy);
@@ -309,7 +309,7 @@ end
 smp = brain;
 smp.facevertexcdata = cmap_vals;
 set(gcf,'name',data);
-subplot(1,3,2); hold on
+subplot(1,2,1); hold on
 hbrain = patch(brain,'EdgeColor','none','facecolor','interp','FaceAlpha',1);
 hmap = patch(smp,'EdgeColor','none','facecolor','interp','FaceAlpha','flat'...
     ,'FaceVertexAlphaData',alpha_vals,'AlphaDataMapping','none');
@@ -323,5 +323,5 @@ view(view_angle(1),view_angle(2)); % ASB/AEK (45,-10); GKA (55,-5)
 %lightangle(light_angle(1),light_angle(2));
 hcamlight = camlight('headlight');
 axis tight off
-zoom(2)
+%zoom(2)
 % note - to delete light, type 'delete(findall(gcf,'Type','light'))'
