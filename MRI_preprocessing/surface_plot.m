@@ -59,7 +59,7 @@ end
 %% Define color map
 switch map_type
     case 'ecc'
-        mapres=[0 15 200];
+        mapres=[0 30 200];
         %mycolormap = blue_red_yellow;
         mycolormap = make_ecc_colormap(mapres);
     case 'pol'
