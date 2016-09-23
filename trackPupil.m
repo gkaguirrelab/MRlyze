@@ -11,9 +11,9 @@ function trackPupil(params)
 %
 %   Defaults:
 %       params.rangeAdjust  = 0.15;         % radius change (+/-) allowed from the previous frame
-%       params.threshVals   = [40 175];     % grayscale threshold values for pupil and glint, respectively
-%       params.imageSize    = [900 1200];   % used to resize input image
-%       params.pupilRange   = [100 300];    % initial pupil size range
+%       params.threshVals   = [50 175];     % grayscale threshold values for pupil and glint, respectively
+%       params.imageSize    = [900 1200];   % used to resize input video
+%       params.pupilRange   = [50 300];     % initial pupil size range
 %       params.glintRange   = [10 30];      % constant glint size range
 %
 %   Written by Andrew S Bock Sep 2016
@@ -23,13 +23,13 @@ if ~isfield(params,'rangeAdjust');
     params.rangeAdjust  = 0.15;
 end
 if ~isfield(params,'binThresh');
-    params.threshVals   = [40 175]; % bin for pupil and glint, respectively
+    params.threshVals   = [50 175]; % bin for pupil and glint, respectively
 end
 if ~isfield(params,'imageSize');
     params.imageSize    = [900 1200];
 end
 if ~isfield(params,'pupilRange');
-    params.pupilRange   = [100 300];
+    params.pupilRange   = [50 300];
 end
 if ~isfield(params,'glintRange');
     params.glintRange   = [10 30];
