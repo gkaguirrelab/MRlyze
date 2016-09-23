@@ -2,55 +2,105 @@ function trackPupil(params)
 
 % Tracks the pupil using an input video file, write out an .avi video
 %
-%   Usage: 
+%   Usage:
 %       trackPupil(params)
+%
+%   Required input:
+%       params.inVideo      = '/path/to/inputFile';
+%       params.outVideo     = '/path/to/outputFile';
+%
+%   Defaults:
+%       params.rangeAdjust  = 0.15;         % radius change (+/-) allowed from the previous frame
+%       params.threshVals   = [40 175];     % grayscale threshold values for pupil and glint, respectively
+%       params.imageSize    = [900 1200];   % used to resize input image
+%       params.pupilRange   = [100 300];    % initial pupil size range
+%       params.glintRange   = [10 30];      % constant glint size range
 %
 %   Written by Andrew S Bock Sep 2016
 
 %% set defaults
-if ~isfield(params,'video')
-   params.video = '/Users/abock/Dropbox-Aguirre-Brainard-Lab/TOME_data/session1_restandstructure/tome_3001/081916/EyeTracking/rfMRI_REST_AP_run01_raw.mov';
+if ~isfield(params,'rangeAdjust');
+    params.rangeAdjust  = 0.15;
 end
-if ~isfield(params,'NumberOfFrames');
-    params.NumberOfFrames = 100;
+if ~isfield(params,'binThresh');
+    params.threshVals   = [40 175]; % bin for pupil and glint, respectively
 end
-rangeAdjust = 0.1;
-imageSize = [900 1200];
-filtSize = [40 40 10];
-glintRange = [10 20];
-pupilRange = [100 200];
-% Good videos:
-% '/Users/abock/Dropbox-Aguirre-Brainard-Lab/TOME_data/session1_restAndStructure/TOME_3004/091916/EyeTracking/rfMRI_REST_AP_run01_raw.mov';
-% Bad videos:
-% '/Users/abock/Dropbox-Aguirre-Brainard-Lab/TOME_data/session1_restandstructure/tome_3001/081916/EyeTracking/rfMRI_REST_AP_run01_raw.mov';
-% '/Users/abock/Dropbox-Aguirre-Brainard-Lab/TOME_data/session2_spatialstimuli/tome_3002/082616/EyeTracking/tfMRI_MOVIE_AP_run02_raw.mov';
+if ~isfield(params,'imageSize');
+    params.imageSize    = [900 1200];
+end
+if ~isfield(params,'pupilRange');
+    params.pupilRange   = [100 300];
+end
+if ~isfield(params,'glintRange');
+    params.glintRange   = [10 30];
+end
+% Create filter parameters
+filtSize                = [0.05*min(params.imageSize) 0.05*min(params.imageSize) 0.01*min(params.imageSize)];
+
+% Useful:
+%   figure;imshow(I);
+%   d = imdistline;
+%   % check size of pupil or glint
+%   delete(d);
 %% Load video
-obj = VideoReader(params.video);
-NumberOfFrames = obj.NumberOfFrames;
-aviobj = VideoWriter('BockPupilTracking');
-open(aviobj);
+disp('Loading video file, may take a couple minutes...');
+inObj                   = VideoReader(params.inVideo);
+NumberOfFrames          = inObj.NumberOfFrames;
+RGB                     = read(inObj);
+clear inObj
+grayI                   = zeros([params.imageSize,size(RGB,4)],'uint8');
+% Convert to gray, resize
+for i = 1:size(RGB,4)
+    tmp                 = rgb2gray(squeeze(RGB(:,:,:,i)));
+    grayI(:,:,i)        = imresize(tmp,params.imageSize);
+end
+clear RGB;
+outObj                  = VideoWriter(params.outVideo);
+open(outObj);
 %% Track
 progBar = ProgressBar(NumberOfFrames,'makingMovie');
 ih = fullFigure;
 for i = 1:NumberOfFrames
-    RGB                 = read(obj,i);
-    I                   = rgb2gray(RGB);
-    I                   = imresize(I,imageSize);
+    % Get the frame
+    I                   = squeeze(grayI(:,:,i));
+    % Filter for glint
+    gI                  = ones(size(I));
+    gI(I<params.threshVals(2)) = 0;
+    padG                = padarray(gI,[size(I,1)/2 size(I,2)/2], 0);
     h                   = fspecial('gaussian',[filtSize(1) filtSize(2)],filtSize(3));
-    fI                  = imfilter(I,h); % smooth image
-    % Pupil (smoothed image)
-    [pCenters, pRadii]  = imfindcircles(fI,pupilRange,'ObjectPolarity','dark','Sensitivity',0.99);
-    % Glint (unsmoothed image)
-    [gCenters, gRadii]  = imfindcircles(fI,glintRange,'ObjectPolarity','bright','Sensitivity',0.99);
+    gI                  = imfilter(padG,h);
+    gI = gI(size(I,1)/2+1:size(I,1)/2+size(I,1),size(I,2)/2+1:size(I,2)/2+size(I,2));
+    % Filter for pupil
+    padP                = padarray(I,[size(I,1)/2 size(I,2)/2], 128);
+    h                   = fspecial('gaussian',[filtSize(1) filtSize(2)],filtSize(3));
+    fI                  = imfilter(padP,h);
+    fI = fI(size(I,1)/2+1:size(I,1)/2+size(I,1),size(I,2)/2+1:size(I,2)/2+size(I,2));
+    % Binarize the image
+    binP                = ones(size(fI));
+    binP(fI<params.threshVals(1))   = 0;
+    binG                = zeros(size(fI));
+    binG(gI>0.1)        = 1;
+    %  binI(gI>params.binThresh)  = 1;
+    % Show the frame
     imshow(I);
+    % Find the pupil
+    [pCenters, pRadii]  = imfindcircles(binP,params.pupilRange,'ObjectPolarity','dark','Sensitivity',0.99);
+    % Find the glint
+    [gCenters, gRadii]  = imfindcircles(binG,params.glintRange,'ObjectPolarity','bright','Sensitivity',0.99);
+    % Remove glints outside the pupil
     if ~isempty(pCenters) && ~isempty(gCenters)
-        ph              = viscircles(pCenters(1,:),pRadii(1),'Color','r');
-        gh              = viscircles(gCenters(1,:),gRadii(1),'Color','b');
-        pupilRange      = [floor(pRadii(1)*(1-rangeAdjust)) ceil(pRadii(1)*(1 + rangeAdjust))];
-        glintRange      = [floor(gRadii(1)*(1-rangeAdjust)) ceil(gRadii(1)*(1 + rangeAdjust))];
+        dists = sqrt( (gCenters(:,1) - pCenters(1,1)).^2 + (gCenters(:,2) - pCenters(1,2)).^2 );
+        gCenters(dists>pRadii(1),:) = [];
+        gRadii(dists>pRadii(1)) = [];
+    end
+    % Visualize the pupil and glint on the image
+    if ~isempty(pCenters) && ~isempty(gCenters)
+        viscircles(pCenters(1,:),pRadii(1),'Color','r');
+        viscircles(gCenters(1,:),gRadii(1),'Color','b');
+        params.pupilRange = [floor(pRadii(1)*(1-params.rangeAdjust)) ceil(pRadii(1)*(1 + params.rangeAdjust))];
     end
     frame               = getframe(ih);
-    writeVideo(aviobj,frame);
+    writeVideo(outObj,frame);
     progBar(i);
 end
-close(aviobj);
+close(outObj);
