@@ -11,11 +11,14 @@ function trackPupil(params)
 %       params.outData      = '/path/to/outData.mat'
 %
 %   Defaults:
-%       params.rangeAdjust  = 0.15;         % radius change (+/-) allowed from the previous frame
+%       params.rangeAdjust  = 0.05;         % radius change (+/-) allowed from the previous frame
 %       params.threshVals   = [50 175];     % grayscale threshold values for pupil and glint, respectively
-%       params.imageSize    = [900 1200];   % used to resize input video
-%       params.pupilRange   = [50 300];     % initial pupil size range
-%       params.glintRange   = [10 30];      % constant glint size range
+%       params.imageSize    = [300 400];    % used to resize input video
+%       params.pupilRange   = [10 100];     % initial pupil size range
+%       params.glintRange   = [10 15];      % constant glint size range
+%       params.glintOut     = 0.1;          % proportion outside of pupil glint is allowed to be. Higher = more outside
+%       params.sensitivity  = 0.99;         % [0 1] - sensitivity for 'imfindcircles'. Higher = more circles found
+%       params.dilateGlint  = 6;            % used to dialate glint. Higher = more dilation.
 %
 %   Written by Andrew S Bock Sep 2016
 
@@ -35,11 +38,14 @@ end
 if ~isfield(params,'glintRange');
     params.glintRange   = [10 15];
 end
+if ~isfield(params,'glintOut');
+    params.glintOut     = 0.1;
+end
 if ~isfield(params,'sensitivity');
-    params.sensitivity   = 0.99;
+    params.sensitivity  = 0.99;
 end
 if ~isfield(params,'dilateGlint');
-    params.dilateGlint   = 6;
+    params.dilateGlint  = 6;
 end
 % Create filter parameters
 filtSize                = round([0.01*min(params.imageSize) 0.01*min(params.imageSize) 0.01*min(params.imageSize)]);
@@ -84,6 +90,9 @@ for i = 1:NumberOfFrames
     h                   = fspecial('gaussian',[filtSize(1) filtSize(2)],filtSize(3));
     pI                  = imfilter(padP,h);
     pI = pI(size(I,1)/2+1:size(I,1)/2+size(I,1),size(I,2)/2+1:size(I,2)/2+size(I,2));
+    % Binarize pupil
+    binP                = ones(size(pI));
+    binP(pI<params.threshVals(1))   = 0;
     % Filter for glint
     gI                  = ones(size(I));
     gI(I<params.threshVals(2)) = 0;
@@ -91,9 +100,7 @@ for i = 1:NumberOfFrames
     h                   = fspecial('gaussian',[filtSize(1) filtSize(2)],filtSize(3));
     gI                  = imfilter(padG,h);
     gI = gI(size(I,1)/2+1:size(I,1)/2+size(I,1),size(I,2)/2+1:size(I,2)/2+size(I,2));
-    % Binarize the images
-    binP                = ones(size(pI));
-    binP(pI<params.threshVals(1))   = 0;
+    % Binarize glint
     binG                = zeros(size(gI));
     binG(gI>0.01)       = 1;
     dbinG               = imdilate(binG,se);
@@ -106,8 +113,8 @@ for i = 1:NumberOfFrames
     % Remove glints outside the pupil
     if ~isempty(pCenters) && ~isempty(gCenters)
         dists = sqrt( (gCenters(:,1) - pCenters(1,1)).^2 + (gCenters(:,2) - pCenters(1,2)).^2 );
-        gCenters(dists>pRadii(1),:) = [];
-        gRadii(dists>pRadii(1)) = [];
+        gCenters(dists>(1 + params.glintOut)*(pRadii(1)),:) = [];
+        gRadii(dists>(1 + params.glintOut)*(pRadii(1))) = [];
     end
     % Visualize the pupil and glint on the image
     if ~isempty(pCenters) && ~isempty(gCenters)
@@ -122,8 +129,8 @@ for i = 1:NumberOfFrames
     end
     % Adjust range if pupil is not found
     if ~isempty(pCenters)
-        pupilRange(1) = max(ceil(pupilRange(1)*(1 - params.rangeAdjust)),params.pupilRange(1));
-        pupilRange(2) = min(ceil(pupilRange(2)*(1 + params.rangeAdjust)),params.pupilRange(2));
+        pupilRange(1)   = max(ceil(pupilRange(1)*(1 - params.rangeAdjust)),params.pupilRange(1));
+        pupilRange(2)   = min(ceil(pupilRange(2)*(1 + params.rangeAdjust)),params.pupilRange(2));
     end
     frame               = getframe(ih);
     writeVideo(outObj,frame);
