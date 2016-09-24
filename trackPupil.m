@@ -78,9 +78,8 @@ for i = 1:NumberOfFrames
     % Binarize the image
     binP                = ones(size(fI));
     binP(fI<params.threshVals(1))   = 0;
-    binG                = zeros(size(fI));
+    binG                = zeros(size(gI));
     binG(gI>0.1)        = 1;
-    %  binI(gI>params.binThresh)  = 1;
     % Show the frame
     imshow(I);
     % Find the pupil
