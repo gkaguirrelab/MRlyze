@@ -45,16 +45,17 @@ filtSize                = [0.05*min(params.imageSize) 0.05*min(params.imageSize)
 %% Load video
 disp('Loading video file, may take a couple minutes...');
 inObj                   = VideoReader(params.inVideo);
-NumberOfFrames          = inObj.NumberOfFrames;
-RGB                     = read(inObj);
-clear inObj
-grayI                   = zeros([params.imageSize,size(RGB,4)],'uint8');
+%NumberOfFrames         = inObj.NumberOfFrames;
+%RGB                     = read(inObj);
+NumberOfFrames          = ceil(inObj.Duration*inObj.FrameRate);
+grayI                   = zeros([params.imageSize,NumberOfFrames],'uint8');
 % Convert to gray, resize
-for i = 1:size(RGB,4)
-    tmp                 = rgb2gray(squeeze(RGB(:,:,:,i)));
+for i = 1:NumberOfFrames
+    thisFrame           = readFrame(inObj);
+    tmp                 = rgb2gray(thisFrame);
     grayI(:,:,i)        = imresize(tmp,params.imageSize);
 end
-clear RGB;
+clear RGB inObj
 outObj                  = VideoWriter(params.outVideo);
 open(outObj);
 %% Track
