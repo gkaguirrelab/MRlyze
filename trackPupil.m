@@ -47,7 +47,7 @@ disp('Loading video file, may take a couple minutes...');
 inObj                   = VideoReader(params.inVideo);
 %NumberOfFrames         = inObj.NumberOfFrames;
 %RGB                     = read(inObj);
-NumberOfFrames          = ceil(inObj.Duration*inObj.FrameRate);
+NumberOfFrames          = floor(inObj.Duration*inObj.FrameRate);
 grayI                   = zeros([params.imageSize,NumberOfFrames],'uint8');
 % Convert to gray, resize
 for i = 1:NumberOfFrames
