@@ -57,10 +57,10 @@ filtSize                = round([0.01*min(params.imageSize) 0.01*min(params.imag
 %% Load video
 disp('Loading video file, may take a couple minutes...');
 inObj                   = VideoReader(params.inVideo);
-NumberOfFrames          = floor(inObj.Duration*inObj.FrameRate);
-grayI                   = zeros([params.imageSize,NumberOfFrames],'uint8');
+numFrames               = floor(inObj.Duration*inObj.FrameRate);
+grayI                   = zeros([params.imageSize,numFrames],'uint8');
 % Convert to gray, resize
-for i = 1:NumberOfFrames
+for i = 1:numFrames
     thisFrame           = readFrame(inObj);
     tmp                 = rgb2gray(thisFrame);
     grayI(:,:,i)        = imresize(tmp,params.imageSize);
@@ -71,16 +71,16 @@ open(outObj);
 %% Initialize pupil and glint structures
 pupilRange              = params.pupilRange;
 glintRange              = params.glintRange;
-pupil.size              = nan(1,NumberOfFrames);
-pupil.XY                = nan(2,NumberOfFrames);
-glint.size              = nan(1,NumberOfFrames);
-glint.XY                = nan(2,NumberOfFrames);
+pupil.size              = nan(1,numFrames);
+pupil.XY                = nan(2,numFrames);
+glint.size              = nan(1,numFrames);
+glint.XY                = nan(2,numFrames);
 % structuring element to dialate the glint
 se                      = strel('disk',params.dilateGlint);
 %% Track
-progBar = ProgressBar(NumberOfFrames,'makingMovie');
+progBar = ProgressBar(numFrames,'makingMovie');
 ih = fullFigure;
-for i = 1:NumberOfFrames
+for i = 1:numFrames
     % Get the frame
     I                   = squeeze(grayI(:,:,i));
     % Show the frame
