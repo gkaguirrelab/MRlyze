@@ -1,2 +1,2 @@
 # MRlyze
-Toolbox for the analysis of MR data after pre-processing with MRklar
+Toolbox for the analysis of MRI data after pre-processing with MRklar
