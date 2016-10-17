@@ -150,4 +150,4 @@ for i = 1:length(rLines)
         'HorizontalAlignment','center','VerticalAlignment','middle');
 end
 axis square;
-colorbar('NorthEastOutside');
+colorbar;
