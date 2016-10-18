@@ -24,32 +24,32 @@ function [hcamlight] = surface_plot(map_type,data,subject_name,hemi,surface,thre
 
 %% Set up defaults
 SUBJECTS_DIR=getenv('SUBJECTS_DIR');
-if ~exist('subject_name','var')
+if ~exist('subject_name','var') || isempty(subject_name)
     subject_name = 'fsaverage_sym';
 end
-if ~exist('hemi','var')
+if ~exist('hemi','var') || isempty(hemi)
     hemi = 'lh';
 end
-if ~exist('surface','var')
+if ~exist('surface','var') || isempty(surface)
     surface = 'inflated';
 end
-if ~exist('trans','var')
+if ~exist('trans','var') || isempty(trans)
     trans = 0.85;
 end
-if ~exist('polar_map','var')
+if ~exist('polar_map','var') || isempty(polar_map)
     polar_map = 'full'; %'hemi'
 end
-if ~exist('view_angle','var')
+if ~exist('view_angle','var') || isempty(view_angle)
     if strcmp(hemi,'lh')
         view_angle = [30,-10];
     elseif strcmp(hemi,'rh')
         view_angle = [-30,-10];
     end
 end
-if ~exist('show_curv','var')
+if ~exist('show_curv','var') || isempty(show_curv)
     show_curv = 1;
 end
-if ~exist('light_angle','var')
+if ~exist('light_angle','var') || isempty(show_curv)
     if strcmp(hemi,'lh')
         light_angle = [30,-10];
     elseif strcmp(hemi,'rh')
