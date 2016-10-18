@@ -42,21 +42,21 @@ for m = 1:length(hfigs)
         %saveas(hfigs(m), [filename '.fig']) %Matlab .FIG file
         %set(gcf, 'PaperPosition', [0 0 20 12]); %Position plot at left hand corner with width 20 and height 12.
         if strcmp(savetype,'png')
-            saveas(hfigs(m), [filename '.png'], 'png') %Save as png
+            saveas(hfigs(m),filename,'png') %Save as png
         elseif strcmp(savetype,'eps');
-            saveas(hfigs(m), [filename '.eps'], 'eps') %Save as eps
+            saveas(hfigs(m),filename,'eps') %Save as eps
         elseif strcmp(savetype,'pdf');
             set(hfigs(m),'Units','Inches');
             pos = get(hfigs(m),'Position');
             set(hfigs(m),'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
-            saveas(hfigs(m),[filename '.pdf'],'pdf') %Save as pdf
+            saveas(hfigs(m),filename,'pdf') %Save as pdf
         elseif strcmp(savetype,'all')
-            saveas(hfigs(m), [filename '.png'], 'png') %Save as png
-            saveas(hfigs(m), [filename '.eps'], 'eps') %Save as eps
+            saveas(hfigs(m),filename,'png') %Save as png
+            saveas(hfigs(m),filename,'eps') %Save as eps
             set(hfigs(m),'Units','Inches');
             pos = get(hfigs(m),'Position');
             set(hfigs(m),'PaperPositionMode','Auto','PaperUnits','Inches','PaperSize',[pos(3), pos(4)])
-            saveas(hfigs(m),[filename '.pdf'],'pdf') %Save as pdf
+            saveas(hfigs(m),filename,'pdf') %Save as pdf
         end
     end
     clear filename
