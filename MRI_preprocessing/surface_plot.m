@@ -319,7 +319,7 @@ cameratoolbar;
 camproj perspective; % orthographic; perspective
 lighting phong; % flat; gouraud; phong
 material dull; % shiny; metal; dull
-view(view_angle(1),view_angle(2)); % ASB/AEK (45,-10); GKA (55,-5)
+view(view_angle(1),view_angle(2));
 %lightangle(light_angle(1),light_angle(2));
 hcamlight = camlight('headlight');
 axis tight off
