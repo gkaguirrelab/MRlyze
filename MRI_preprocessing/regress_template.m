@@ -11,6 +11,8 @@ function [R2,B] = regress_template(session_dir,saveDir,templateType,runs,hemi,fu
 %% Set defaults
 areas = {'V1' 'V2' 'V3'};
 switch templateType
+    case 'coarseV2V3size'
+        pRF_dir = fullfile(session_dir,'pRFs','coarse_model_templates_V2V3size','decimated_templates');
     case 'coarse'
         pRF_dir = fullfile(session_dir,'pRFs','coarse_model_templates','decimated_templates');
     case 'fine'
