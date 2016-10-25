@@ -108,6 +108,6 @@ disp('done.');
 tmp = fisher_z_corr(corr(vertMov(:,1:length(srcind)),vertMov(:,length(srcind)+1:end)));
 tmp(tmp==inf) = 10;
 tmp(tmp==-inf) = -10;
-%corr_mat = tmp;
+corr_mat = tmp;
 %corr_mat = tmp-.2; % negative 0.2 offset
 %corr_mat = corr(vertMov(:,1:length(srcind)),vertMov(:,length(srcind)+1:end));
