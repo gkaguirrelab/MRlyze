@@ -1,14 +1,22 @@
-function trackPupil(params)
+function [pupil,glint] = trackPupil(params)
 
 % Tracks the pupil using an input video file, write out an .avi video
 %
 %   Usage:
-%       trackPupil(params)
+%       [pupil,glint]       = trackPupil(params)
 %
 %   Required input:
 %       params.inVideo      = '/path/to/inputFile';
 %       params.outVideo     = '/path/to/outVideo.avi';
 %       params.outData      = '/path/to/outData.mat'
+%
+%   Outputs:
+%       pupil.X             = X coordinate of pupil center (pixels)
+%       pupil.Y             = Y coordinate of pupil center (pixels)
+%       pupil.size          = radius of pupil (pixels)
+%       glint.X             = X coordinate of glint center (pixels)
+%       glint.Y             = Y coordinate of glint center (pixels)
+%       glint.size          = radius of glint (pixels)
 %
 %   Defaults:
 %       params.rangeAdjust  = 0.05;         % radius change (+/-) allowed from the previous frame
@@ -71,10 +79,12 @@ open(outObj);
 %% Initialize pupil and glint structures
 pupilRange              = params.pupilRange;
 glintRange              = params.glintRange;
-pupil.size              = nan(1,numFrames);
-pupil.XY                = nan(2,numFrames);
-glint.size              = nan(1,numFrames);
-glint.XY                = nan(2,numFrames);
+pupil.X                 = nan(numFrames,1);
+pupil.Y                 = nan(numFrames,1);
+pupil.size              = nan(numFrames,1);
+glint.X                 = nan(numFrames,1);
+glint.Y                 = nan(numFrames,1);
+glint.size              = nan(numFrames,1);
 % structuring element to dialate the glint
 se                      = strel('disk',params.dilateGlint);
 %% Track
@@ -112,20 +122,22 @@ for i = 1:numFrames
         'Sensitivity',params.sensitivity);
     % Remove glints outside the pupil
     if ~isempty(pCenters) && ~isempty(gCenters)
-        dists = sqrt( (gCenters(:,1) - pCenters(1,1)).^2 + (gCenters(:,2) - pCenters(1,2)).^2 );
+        dists           = sqrt( (gCenters(:,1) - pCenters(1,1)).^2 + (gCenters(:,2) - pCenters(1,2)).^2 );
         gCenters(dists>(1 + params.glintOut)*(pRadii(1)),:) = [];
         gRadii(dists>(1 + params.glintOut)*(pRadii(1))) = [];
     end
     % Visualize the pupil and glint on the image
     if ~isempty(pCenters) && ~isempty(gCenters)
+        pupil.X(i)      = pCenters(1,1);
+        pupil.Y(i)      = pCenters(1,2);
         pupil.size(i)   = pRadii(1);
-        pupil.XY(:,i)   = pCenters(1,:);
+        glint.X(i)      = gCenters(1,1);
+        glint.Y(i)      = gCenters(1,2);
         glint.size(i)   = gRadii(1);
-        glint.XY(:,i)   = gCenters(1,:);
         viscircles(pCenters(1,:),pRadii(1),'Color','r');
         viscircles(gCenters(1,:),gRadii(1),'Color','b');
-        pupilRange(1) = min(floor(pRadii(1)*(1-params.rangeAdjust)),params.pupilRange(2));
-        pupilRange(2) = max(ceil(pRadii(1)*(1 + params.rangeAdjust)),params.pupilRange(1));
+        pupilRange(1)   = min(floor(pRadii(1)*(1-params.rangeAdjust)),params.pupilRange(2));
+        pupilRange(2)   = max(ceil(pRadii(1)*(1 + params.rangeAdjust)),params.pupilRange(1));
     end
     % Adjust range if pupil is not found
     if ~isempty(pCenters)
