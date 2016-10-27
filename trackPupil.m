@@ -35,7 +35,7 @@ if ~isfield(params,'rangeAdjust');
     params.rangeAdjust  = 0.05;
 end
 if ~isfield(params,'binThresh');
-    params.threshVals   = [50 175]; % bin for pupil and glint, respectively
+    params.threshVals   = [0.01 0.999]; % bin for pupil and glint, respectively
 end
 if ~isfield(params,'imageSize');
     params.imageSize    = [300 400];
@@ -44,7 +44,7 @@ if ~isfield(params,'pupilRange');
     params.pupilRange   = [10 100];
 end
 if ~isfield(params,'glintRange');
-    params.glintRange   = [10 15];
+    params.glintRange   = [10 30];
 end
 if ~isfield(params,'glintOut');
     params.glintOut     = 0.1;
@@ -102,10 +102,10 @@ for i = 1:numFrames
     pI = pI(size(I,1)/2+1:size(I,1)/2+size(I,1),size(I,2)/2+1:size(I,2)/2+size(I,2));
     % Binarize pupil
     binP                = ones(size(pI));
-    binP(pI<params.threshVals(1))   = 0;
+    binP(pI<quantile(double(pI(:)),params.threshVals(1)))   = 0;
     % Filter for glint
     gI                  = ones(size(I));
-    gI(I<params.threshVals(2)) = 0;
+    gI(I<quantile(double(pI(:)),params.threshVals(2))) = 0;
     padG                = padarray(gI,[size(I,1)/2 size(I,2)/2], 0);
     h                   = fspecial('gaussian',[filtSize(1) filtSize(2)],filtSize(3));
     gI                  = imfilter(padG,h);
