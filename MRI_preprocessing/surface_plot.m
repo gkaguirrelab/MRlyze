@@ -322,6 +322,6 @@ material dull; % shiny; metal; dull
 view(view_angle(1),view_angle(2));
 %lightangle(light_angle(1),light_angle(2));
 hcamlight = camlight('headlight');
-axis tight off
+axis tight off;
 %zoom(2)
 % note - to delete light, type 'delete(findall(gcf,'Type','light'))'
