@@ -14,7 +14,7 @@ end
 %% Find template files
 t = listdir(fullfile(template_dir,'*.mgz'),'files');
 %% Template fit to pRF ROI
-disp('Creating scripts...');
+disp('Creating templates...');
 for dd = tNum
     hemi = t{dd}(1:2);
     % Load in a temporary file to overwrite
