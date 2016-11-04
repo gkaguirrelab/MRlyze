@@ -28,8 +28,7 @@ end
 t = listdir(fullfile(template_dir,'*.mgz'),'files');
 %% Create run_pRF
 for tt = 1:length(t)
-    job_name = sprintf('convertTemplate.%02d',tt);
-    convert_Mathematica_template(session_dir,template_dir,tNum)
+    job_name = sprintf('convertTemplate.%05d',tt);
     matlab_string = (['convert_Mathematica_template(''' session_dir ''',''' ...
         template_dir ''',' num2str(tt) ');']);
     create_job_shell(outDir,job_name,matlab_string)

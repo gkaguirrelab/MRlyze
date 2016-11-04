@@ -18,7 +18,10 @@ disp('Creating scripts...');
 for dd = tNum
     hemi = t{dd}(1:2);
     % Load in a temporary file to overwrite
-    tmp = load_nifti(fullfile(session_dir,'anat_templates',[hemi '.areas.anat.nii.gz']));
+    inTemp = fullfile(session_dir,'anat_templates',[hemi '.areas.anat.nii.gz']);
+    outTemp = fullfile(session_dir,'anat_templates',sprintf('temp%05d.nii.gz',dd));
+    system(['cp ' inTemp ' ' outTemp]);
+    tmp = load_nifti(outTemp);
     % Load the output from Mathematica
     tmpmgh = load_mgh(fullfile(template_dir,t{dd}));
     % get template name
@@ -59,5 +62,6 @@ for dd = tNum
         tmp.vol = -tmp.vol;
         save_nifti(tmp,areaname);
     end
+    system(['rm ' outTemp]);
 end
 disp('done.');
