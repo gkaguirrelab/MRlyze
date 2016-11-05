@@ -23,7 +23,7 @@ for dd = tNum
     mkdir(outDir);
     outTemp = fullfile(outDir,sprintf('temp%05d.nii.gz',dd));
     system(['cp ' inTemp ' ' outTemp]);
-    pause(5);
+    pause(10);
     tmp = load_nifti(outTemp);
     % Load the output from Mathematica
     tmpmgh = load_mgh(fullfile(template_dir,t{dd}));
