@@ -20,6 +20,7 @@ for dd = tNum
     % Load in a temporary file to overwrite
     inTemp = fullfile(session_dir,'anat_templates',[hemi '.areas.anat.nii.gz']);
     outDir  = fullfile(session_dir,'anat_templates',sprintf('temp%05d',dd));
+    mkdir(outDir);
     outTemp = fullfile(outDir,sprintf('temp%05d.nii.gz',dd));
     system(['cp ' inTemp ' ' outTemp]);
     pause(5);
