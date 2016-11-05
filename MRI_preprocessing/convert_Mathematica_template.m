@@ -19,7 +19,8 @@ for dd = tNum
     hemi = t{dd}(1:2);
     % Load in a temporary file to overwrite
     inTemp = fullfile(session_dir,'anat_templates',[hemi '.areas.anat.nii.gz']);
-    outTemp = fullfile(session_dir,'anat_templates',sprintf('temp%05d.nii.gz',dd));
+    outDir  = fullfile(session_dir,'anat_templates',sprintf('temp%05d',dd));
+    outTemp = fullfile(outDir,sprintf('temp%05d.nii.gz',dd));
     system(['cp ' inTemp ' ' outTemp]);
     pause(5);
     tmp = load_nifti(outTemp);
@@ -63,6 +64,6 @@ for dd = tNum
         tmp.vol = -tmp.vol;
         save_nifti(tmp,areaname);
     end
-    system(['rm ' outTemp]);
+    system(['rm -rf ' outDir]);
 end
 disp('done.');
