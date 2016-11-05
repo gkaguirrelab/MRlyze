@@ -21,6 +21,7 @@ for dd = tNum
     inTemp = fullfile(session_dir,'anat_templates',[hemi '.areas.anat.nii.gz']);
     outTemp = fullfile(session_dir,'anat_templates',sprintf('temp%05d.nii.gz',dd));
     system(['cp ' inTemp ' ' outTemp]);
+    pause(5);
     tmp = load_nifti(outTemp);
     % Load the output from Mathematica
     tmpmgh = load_mgh(fullfile(template_dir,t{dd}));
