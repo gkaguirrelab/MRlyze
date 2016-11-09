@@ -25,8 +25,8 @@ if ~exist('trg_surf','var')
 end
 lhct = 0;
 rhct = 0;
-%%
-disp('Decimating templates...');
+%% decimate templates
+progBar = ProgressBar(length(templates),'Decimating templates...');
 for i = 1:length(templates)
     if isempty([strfind(templates{i},'LGN'), strfind(templates{i},'SC')]);
         hemi = templates{i}(1:2);
@@ -42,5 +42,6 @@ for i = 1:length(templates)
         out_name = fullfile(tdir,'decimated_templates',templates{i});
         project_2_decimate(in_name,out_name,sind);
     end
+    progBar(i);
 end
 disp('done.');
