@@ -42,6 +42,6 @@ for i = 1:length(templates)
         out_name = fullfile(tdir,'decimated_templates',templates{i});
         project_2_decimate(in_name,out_name,sind);
     end
-    progBar(i);
+    if ~mod(i,100);progBar(i);end
 end
 disp('done.');
