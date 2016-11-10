@@ -116,4 +116,3 @@ for hhh = 1:length(hemis);
     mem = 5;
     create_submit_shell(outDir,logDir,submit_name,job_string,mem);
 end
-system(['chmod +x ' fullfile(outDir,'*')]);
