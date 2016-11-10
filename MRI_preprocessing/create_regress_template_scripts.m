@@ -73,7 +73,7 @@ for hhh = 1:length(hemis);
             for i = ii
                 % conditional statement for the fact that large V2 AND V3 
                 % templates could not be created (issue with model in Mathematica)
-                if i < 6 || i == 6 && h < 7 
+                if ~(h==7 && i>5) && ~(h==6 && i>6)
                     for j = jj
                         for k = kk
                             for l = ll
