@@ -62,7 +62,7 @@ for hhh = 1:length(hemis);
             kk = 1:7;
             ll = 1:7;
     end
-    if strcmp(templateType,'pRF') || strcmp(templateType,'anat');
+    if strcmp(templateType,'pRF') || strcmp(templateType,'anat')
         job_name = [hemi '.' templateType '.regress'];
         matlab_string = ([...
             'regress_template(''' session_dir ''',''' saveDir ''',''' templateType ''',' ...
