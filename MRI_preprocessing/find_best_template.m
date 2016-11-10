@@ -27,11 +27,11 @@ switch templateType
         FCx         = [-0.45 -0.35 -0.25 -0.15 -0.05 0.05 0.15];
         FCy         = [-0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1];
     case 'coarseV2V3size'
-        V2size      = [0.35 0.45 0.55 0.65 0.75];
-        V3size      = [0.25 0.35 0.45 0.55 0.65];
-        psi         = [0.5 0.6 0.7 0.8 0.9];
-        FCx         = [-0.35 -0.25 -0.15 -0.05 0.05];
-        FCy         = [-0.6 -0.5 -0.4 -0.3 -0.2];
+        V2size      = [0.35 0.45 0.55 0.65 0.75 0.85 0.95];
+        V3size      = [0.25 0.35 0.45 0.55 0.65 0.75 0.85];
+        psi         = [0.4 0.5 0.6 0.7 0.8 0.9 1.0];
+        FCx         = [-0.35 -0.25 -0.15 -0.05 0.05 0.10 0.15];
+        FCy         = [-0.6 -0.5 -0.4 -0.3 -0.2 -0.1 0.0];
         
     case 'fine'
         psi         = [-0.066 -0.033 0.000 0.033 0.066];
@@ -54,6 +54,8 @@ for i = 1:length(varFiles);
     elseif strcmp(templateType,'coarseV2V3size')
         if ~isempty(strfind(varFiles{i},'pRF')) || ...
                 ~isempty(strfind(varFiles{i},'anat'))
+%                 strcmp(varFiles{i}(4),'1') || ...
+%                 strcmp(varFiles{i}(6),'1')
             badind  = [badind i];
         end
     elseif strcmp(templateType,'fine')
