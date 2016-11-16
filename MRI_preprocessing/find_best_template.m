@@ -53,9 +53,9 @@ for i = 1:length(varFiles);
         end
     elseif strcmp(templateType,'coarseV2V3size')
         if ~isempty(strfind(varFiles{i},'pRF')) || ...
-                ~isempty(strfind(varFiles{i},'anat')) || ...
-                 strcmp(varFiles{i}(4),'1') || ...
-                 strcmp(varFiles{i}(6),'1')
+                ~isempty(strfind(varFiles{i},'anat')) %|| ...
+                %strcmp(varFiles{i}(4),'1') || ...
+                %strcmp(varFiles{i}(6),'1')
             badind  = [badind i];
         end
     elseif strcmp(templateType,'fine')
@@ -79,8 +79,7 @@ end
 if strcmp(fitType,'V1')
     subvals = vals(:,1:2); % V1-V2, V1-V3
 elseif strcmp(fitType,'V2V3')
-    %subvals = vals(:,1:3); % V1-V2, V1-V3, V2-V3
-    subvals = vals(:,2:3);
+    subvals = vals(:,1:3); % V1-V2, V1-V3, V2-V3
 end
 sumvals = nansum(subvals,2);
 %% Sort the values, output the template parameters
