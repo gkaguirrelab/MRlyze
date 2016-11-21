@@ -1,4 +1,4 @@
-function img2dshow = imshow3D(input_vol)
+function img2dshow = imshow3D(input_vol,crange)
 % Converts 3D image into a 2D mosaic
 %   Displays with imshow with no blank spaces between image slices.
 %
@@ -36,5 +36,9 @@ disp('done.');
 %% Plot the mosaic
 disp(['Plotting 2D mosaic for ' input_vol]);
 figure;
-imshow(img2dshow, [min(img2dshow(:)) max(img2dshow(:))]);
+if ~exist('crange','var')
+    imshow(img2dshow, [min(img2dshow(:)) max(img2dshow(:))]);
+else
+    imshow(img2dshow, crange);
+end
 colorbar;

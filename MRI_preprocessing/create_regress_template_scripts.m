@@ -56,8 +56,8 @@ for hhh = 1:length(hemis);
             ii = 1:5;
             jj = 1:5;
         case 'coarseV2V3size'
-            hh = 1:7;
-            ii = 1:7;
+            hh = 1:5;
+            ii = 1:5;
             jj = 1:7;
             kk = 1:7;
             ll = 1:7;
