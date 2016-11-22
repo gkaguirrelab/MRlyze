@@ -54,7 +54,8 @@ for i = 1:length(varFiles);
     elseif strcmp(templateType,'coarseV2V3size')
         if ~isempty(strfind(varFiles{i},'pRF')) || ...
                 ~isempty(strfind(varFiles{i},'anat')) || ...
-                sum(strcmp(varFiles{i}(10),{'7','6'}))
+                sum(strcmp(varFiles{i}(4),{'5'})) || ...
+                sum(strcmp(varFiles{i}(6),{'5'}))
             badind  = [badind i];
         end
     elseif strcmp(templateType,'fine')
