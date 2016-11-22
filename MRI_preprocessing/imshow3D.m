@@ -35,7 +35,7 @@ end
 disp('done.');
 %% Plot the mosaic
 disp(['Plotting 2D mosaic for ' input_vol]);
-figure;
+figure('units','normalized','position',[0 0 1 1]);
 if ~exist('crange','var')
     imshow(img2dshow, [min(img2dshow(:)) max(img2dshow(:))]);
 else
