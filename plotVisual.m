@@ -1,12 +1,34 @@
-function [outImage] = plotVisual(params)
+function plotVisual(params)
 
 % Plots values from an input volume in visual field coordinates
 %
 %   Usage:
-%   [outImage] = plotVisual(params)
+%       plotVisual(params)
+%
+%   Required:
+%       params.lhEcc        = '/path/to/lh/Ecc/file.nii.gz'
+%       params.rhEcc        = '/path/to/rh/Ecc/file.nii.gz'
+%       params.lhPol        = '/path/to/lh/Pol/file.nii.gz'
+%       params.rhPol        = '/path/to/rh/Pol/file.nii.gz'
+%       params.lhAreas      = '/path/to/lh/Areas/file.nii.gz'
+%       params.rhAreas      = '/path/to/rh/Areas/file.nii.gz'
+%       params.lhVals       = '/path/to/lh/Vals/file.nii.gz'
+%       params.rhVals       = '/path/to/rh/Vals/file.nii.gz'
+%
+%   Defaults:
+%       params.maxextent    = 15; % max eccentricity 
+%       params.visualArea   = 'V1'; % visual area
+%       params.gridsize     = 501; % should be an odd number to include zero
+%       params.intpmethod   = 'natural'; % interpolation method for griddata
+%       params.ringstep     = 5; % eccentricity steps (deg)
+%       params.textgap      = 0.15;	% gap for eccentricity text
+%       params.textsize     = 12; % text size
+%       params.textcolor    = [1,1,1]; % text color
+%       params.bgcolor      = [0.2 0.2 0.2]; % background color
+%       params.caxis        = [-8 8]; % values range
 %
 %   See also:
-%   convert_image2surf
+%       convert_image2surf
 %
 %   Written by Andrew S Bock Mar 2016
 %   Updates Dec 2016 based on Bosco Tjan's `vfmap2` function
@@ -111,14 +133,11 @@ xlim([-params.maxextent params.maxextent]*1.1); % add 1% to accommodate thick gr
 ylim([-params.maxextent params.maxextent]*1.1);
 axis equal
 hold on
-
-[x,y] = pol2cart(pol,ecc);
-y = -y;
+% create the grid for plotting
 [X,Y] = meshgrid(linspace(-params.maxextent,params.maxextent,params.gridsize));
 vq = griddata(x,y,vals,X,Y,params.intpmethod);
-%vq(abs(vq)<params.toosmall) = 0;
 vq(X.^2+Y.^2>params.maxextent^2) = nan;
-% pcolor(X,Y,vq)
+% plot the data values
 surf(X,Y,zeros(size(X)),vq)
 zlim([min(vq(:)) max(vq(:))])
 shading flat
@@ -137,7 +156,6 @@ end
 line([-lim*params.ringstep lim*params.ringstep], [0 0], 'color', params.textcolor);
 line([0 0], [-lim*params.ringstep lim*params.ringstep], 'color', params.textcolor);
 h=colorbar; h.Color = params.textcolor;
-
 if ~onhold
     hold off
 end
