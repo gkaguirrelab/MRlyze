@@ -62,6 +62,10 @@ switch map_type
         mapres=[0 30 200];
         %mycolormap = blue_red_yellow;
         mycolormap = make_ecc_colormap(mapres);
+    case 'extremeEcc'
+        mapres=[0 90 200];
+        %mycolormap = blue_red_yellow;
+        mycolormap = make_ecc_colormap(mapres);
     case 'pol'
         mapres=[-pi pi 200];
         if strcmp(polar_map,'hemi')
