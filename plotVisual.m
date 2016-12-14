@@ -1,163 +1,153 @@
-function plotVisual(params)
+function [outImage] = plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 
 % Plots values from an input volume in visual field coordinates
 %
 %   Usage:
-%       plotVisual(params)
-%
-%   Required:
-%       params.lhEcc        = '/path/to/lh/Ecc/file.nii.gz'
-%       params.rhEcc        = '/path/to/rh/Ecc/file.nii.gz'
-%       params.lhPol        = '/path/to/lh/Pol/file.nii.gz'
-%       params.rhPol        = '/path/to/rh/Pol/file.nii.gz'
-%       params.lhAreas      = '/path/to/lh/Areas/file.nii.gz'
-%       params.rhAreas      = '/path/to/rh/Areas/file.nii.gz'
-%       params.lhVals       = '/path/to/lh/Vals/file.nii.gz'
-%       params.rhVals       = '/path/to/rh/Vals/file.nii.gz'
-%
-%   Defaults:
-%       params.maxextent    = 15; % max eccentricity 
-%       params.visualArea   = 'V1'; % visual area
-%       params.gridsize     = 501; % should be an odd number to include zero
-%       params.intpmethod   = 'natural'; % interpolation method for griddata
-%       params.ringstep     = 5; % eccentricity steps (deg)
-%       params.textgap      = 0.15;	% gap for eccentricity text
-%       params.textsize     = 12; % text size
-%       params.textcolor    = [1,1,1]; % text color
-%       params.bgcolor      = [0.2 0.2 0.2]; % background color
-%       params.caxis        = [-8 8]; % values range
+%   [outImage] = plotVisual(inVol,eccVol,polVol,roiInd,axLim,vArea)
 %
 %   See also:
-%       convert_image2surf
+%   convert_image2surf
 %
 %   Written by Andrew S Bock Mar 2016
-%   Updates Dec 2016 based on Bosco Tjan's `vfmap2` function
+
+%% to do
+% create a visual angle by eccentricity function
+% combine with the sigma by eccentricity function
 
 %% set defaults
-if ~isfield(params,'maxextent')
-    params.maxextent        = 15;
+if ~exist('axLim','var')
+    axLim = 90;
 end
-if ~isfield(params,'visualArea')
-    params.visualArea        = 'V1';
+if ~exist('vArea','var')
+    vArea = 'V1';
 end
-if ~isfield(params,'gridsize')
-    params.gridsize          = 501; % should be an odd number to include zero
-end
-if ~isfield(params,'intpmethod')
-    params.intpmethod       = 'natural'; % interpolation method for griddata
-end
-if ~isfield(params,'ringstep')
-    params.ringstep         = 5;     % deg
-end
-if ~isfield(params,'textgap')
-    params.textgap          = 0.15;	% proportion of ringstep
-end
-if ~isfield(params,'textsize')
-    params.textsize         = 12;
-end
-if ~isfield(params,'textcolor')
-    params.textcolor        = [1,1,1];
-end
-if ~isfield(params,'bgcolor')
-    params.bgcolor          = [0.2 0.2 0.2];
-end
-if ~isfield(params,'caxis')
-    params.caxis            = [-8 8]; % color range
-end
-%% Make custom color map
-mymap                       = zeros([64 3]);
-mymap(1:32,1)               = linspace(1,0,32);
-mymap(33:end,2)             = linspace(0,1,32);
-mymap(1:8,2)                = linspace(0.5,0,8);
-mymap(1:8,3)                = linspace(0.5,0,8);
-mymap(end-7:end,3)          = linspace(0,0.5,8);
-mymap(end-7:end,1)          = linspace(0,0.5,8);
-params.cmap                 = mymap;
+matSize = 200;
+circPol = linspace(0,2*pi,matSize); % Polar angle sampling
+cLines = linspace(0,log10(axLim),6); % Eccentricity lines
+rLines = linspace(0,(2*pi) - (2*pi)/12,12); % Polar angle lines (spokes)
+outImage = nan(matSize,matSize);
+centerMat = (matSize+1)/2;
 %% Load in volumes
-% Eccentricity 
-inData = load_nifti(params.lhEcc);
-ecc = inData.vol;
-inData = load_nifti(params.rhEcc);
-ecc = [ecc;inData.vol];
-ecc(isnan(ecc)) = 0;
-% Polar angle 
-inData = load_nifti(params.lhPol);
-pol = inData.vol;
-inData = load_nifti(params.rhPol);
-pol = [pol;inData.vol];
-pol(isnan(pol)) = 0;
-% Areas
-inData = load_nifti(params.lhAreas);
-areas = inData.vol;
-inData = load_nifti(params.rhAreas);
-areas = [areas;inData.vol];
-areas(isnan(areas)) = 0;
-% Values
-inData = load_nifti(params.lhVals);
-vals = inData.vol;
-inData = load_nifti(params.rhVals);
-vals = [vals;inData.vol];
-vals(isnan(vals)) = 0;
-%% Threshold based on visual areas
-switch params.visualArea
-    case 'V1'
-        goodInd = abs(areas)==1;
-    case 'V2'
-        goodInd = abs(areas)==2;
-    case 'V3'
-        goodInd = abs(areas)==3;
+% eccentricity data
+if ischar(eccVol)
+    if exist(eccVol,'file')
+        [~,~,ext] = fileparts(eccVol);
+        if strcmp(ext,'.gz')
+            ecc = load_nifti(eccVol);
+        elseif strcmp(ext,'.mgh') || strcmp(ext,'.mgz')
+            ecc.vol = load_mgh(eccVol);
+        end
+    else
+        error('data input does not correspond to an existing file');
+    end
+else
+    ecc.vol = double(eccVol);
 end
-ecc(~goodInd) = [];
-pol(~goodInd) = [];
-areas(~goodInd) = [];
-vals(~goodInd) = [];
+ecc = ecc.vol(roiInd);
+% polar angle data
+if ischar(polVol)
+    if exist(polVol,'file')
+        [~,~,ext] = fileparts(polVol);
+        if strcmp(ext,'.gz')
+            pol = load_nifti(polVol);
+        elseif strcmp(ext,'.mgh') || strcmp(ext,'.mgz')
+            pol.vol = load_mgh(polVol);
+        end
+    else
+        error('data input does not correspond to an existing file');
+    end
+else
+    pol.vol = double(polVol);
+end
+pol = pol.vol(roiInd);
+% input data
+if ischar(inVol)
+    if exist(inVol,'file')
+        [~,~,ext] = fileparts(inVol);
+        if strcmp(ext,'.gz')
+            in = load_nifti(inVol);
+        elseif strcmp(ext,'.mgh') || strcmp(ext,'.mgz')
+            in.vol = load_mgh(inVol);
+        end
+    else
+        error('data input does not correspond to an existing file');
+    end
+else
+    in.vol = double(inVol);
+end
+in = in.vol(roiInd);
+%% Threshold based on axis limit
+badind = ecc>axLim;
+ecc(badind) = [];
+pol(badind) = [];
+in(badind) = [];
+% in = icdf('normal',in); % convert p to z-score
+% in(in==-inf) = -10;
+% in(in==inf) = 10;
 %% Convert polar to cartesian
 [x,y] = pol2cart(pol,ecc);
 % flip y
 y = -y;
-%% Plot the data points in visual space
-figure('units','normalized','position',[0 0 1 1]);
-polarplot(pol,ecc,'ko','MarkerFaceColor','k','MarkerSize',1);
-rlim([0 15]);
-ax = gca;
-ax.Color = [0.5 0.5 0.5];
-ax.RColor = [1 1 1];
-ax.GridColor = [1 1 1];
-ax.GridAlpha = 1;
-%% Plot the values in visual space
-figure('units','normalized','position',[0 0 1 1]);
-onhold = ishold;
-% set the axis
-caxis(params.caxis);
-xlim([-params.maxextent params.maxextent]*1.1); % add 1% to accommodate thick grid lines
-ylim([-params.maxextent params.maxextent]*1.1);
-axis equal
-hold on
-% create the grid for plotting
-[X,Y] = meshgrid(linspace(-params.maxextent,params.maxextent,params.gridsize));
-vq = griddata(x,y,vals,X,Y,params.intpmethod);
-vq(X.^2+Y.^2>params.maxextent^2) = nan;
-% plot the data values
-surf(X,Y,zeros(size(X)),vq)
-zlim([min(vq(:)) max(vq(:))])
-shading flat
-colormap(params.cmap);
-grid off
+%% Make matrix
+Sig = rf_ecc(ecc,vArea);
+progBar = ProgressBar(matSize,'mixing paint...');
+for i = 1:matSize % row (y)
+    for j = 1:matSize % columns (x)
+        tmpdist = sqrt( (i-centerMat)^2 + (j-centerMat)^2 );
+        if tmpdist <= centerMat
+            eccMat = 10^(tmpdist * log10(axLim)/(centerMat)); % log scale the value
+            polMat = cart2pol(j-centerMat,i-centerMat);
+            [matX,matY] = pol2cart(polMat,eccMat);
+            tmpDist = sqrt( (matY - y).^2 + (matX - x).^2);
+            tmpGauss = exp(-(tmpDist.^2)./(2*Sig.^2));
+            tmpVals = tmpGauss.*in;
+            outImage(i,j) = sum((tmpGauss .* tmpVals)) / sum(tmpGauss);
+        end
+    end
+    if ~mod(i,10);progBar(i);end
+end
+%% Plot image
+fullFigure;
+subplot(1,1,1);%hold on;
+axis off;
+% bak = outImage;
+%pImage = cdf('normal',outImage);
+% threshImage = pImage;
+% threshImage(threshImage>0.05) = nan;
+% finalImage = log10(threshImage);
+%finalImage = log10(pImage);
+pcolor(outImage);
+shading flat;
+colormap(viridis);
 axis off
-axis image
-% plot the grid
-lim = floor(params.maxextent/params.ringstep);
-gap = params.ringstep*params.textgap;
-text(gap,gap, '0','FontSize',params.textsize,'Color',params.textcolor);
-for i=1:lim
-    h=mycircle([0 0],i*params.ringstep); h.EdgeColor = params.textcolor;
-    text(0+gap,i*params.ringstep+gap, num2str(i*params.ringstep),'FontSize',params.textsize,'Color',params.textcolor);
+axis square
+hold on;
+%% Create circles and spokes
+clear cX cY
+% Create circles
+for i = 1:length(cLines)
+    [cX(i,:),cY(i,:)] = pol2cart(circPol,(cLines(i)/max(cLines))*centerMat);
 end
-line([-lim*params.ringstep lim*params.ringstep], [0 0], 'color', params.textcolor);
-line([0 0], [-lim*params.ringstep lim*params.ringstep], 'color', params.textcolor);
-h=colorbar; h.Color = params.textcolor;
-if ~onhold
-    hold off
+% Move to center, fix indexing
+cX = cX + centerMat + 0.5;
+cY = cY + centerMat + 0.5;
+%% Plot circles and spokes
+% Plot circles
+for i = 1:length(cLines)
+    plot(cX(i,:),cY(i,:),'k:','LineWidth',1);
+    if cLines(i) ~= 0
+        [tX,tY] = pol2cart(deg2rad(15),(cLines(i)/max(cLines))*(matSize-1)/2);
+        text(-tX + max(cX(:))/2,tY + max(cY(:))/2,num2str(round(10^cLines(i))), 'FontSize', 20,...
+            'HorizontalAlignment','center','VerticalAlignment','middle');
+    end
 end
-H = gcf;
-H.Color = params.bgcolor;
+% Plot spokes
+for i = 1:length(rLines)
+    [sX,sY] = pol2cart(rLines(i),(matSize-1)/2);
+    plot([sX -sX] + max(cX(:))/2,[sY -sY] + max(cY(:))/2,'k:','LineWidth',1);
+    [tX,tY] = pol2cart(rLines(i),(matSize-1)/2+5);
+    text(tX + max(cX(:))/2,tY + max(cY(:))/2,num2str(rad2deg( rLines(i) )) , 'FontSize', 20,...
+        'HorizontalAlignment','center','VerticalAlignment','middle');
+end
+axis square;
+colorbar;
