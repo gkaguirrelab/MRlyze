@@ -1,4 +1,4 @@
-function fisher_combined_prob_test(output_dir, session_dir,subject_name,subj_name, condition, runNums,func,thresh,inAnatomicalSpace, SUBJECTS_DIR)
+function fisher_combined_prob_test(output_dir, session_dir,subj_name, runNums,func,condition, inAnatomicalSpace)
 % fisher_combined_prob_test(output_dir, session_dir,subject_name,subj_name, condition, runNums,func,thresh,inAnatomicalSpace, SUBJECTS_DIR)
 % Loads pval.nii.gz or pval.anat.nii.gz from feat/stats directory and
 % performs the Fisher's probability test.
@@ -67,39 +67,29 @@ end
 d = find_bold(session_dir);
 
 %%
-switch condition
-    case {'MelPulses_400pct' , 'LMSPulses_400pct'}
-% Get the feat stats dir
-for i = runNums
-    statsDir = fullfile(session_dir,d{i},[func '.feat'],'stats');
-    dof = load(fullfile(statsDir,'dof'));
-    pval = load_nifti(fullfile(statsDir,pvalVolumeName));
-    
-    tmp(:, :, :, i) = pval.vol;
-
-end
-
-% Take the natural log
-tmp(tmp == 0) = NaN;
-logTmp = log(tmp);
-sumLogTmp = -2*sum(logTmp, 4);
-pval.vol = sumLogTmp;
-fprintf('\t * Saving out Fisher''s test...');
-save_nifti(pval,fullfile(output_dir,[subj_name '_' condition '_' 'Fisher_Chisq.anat.nii.gz']));
-fprintf('done!');
-
-P = 1 - chi2cdf(sumLogTmp,2*length(runNums));
-pval.vol = P;
-fprintf('\t * Saving out Fisher''s test as p values...');
-save_nifti(pval,fullfile(output_dir,[subj_name '_' condition '_' 'Fisher_pval.anat.nii.gz']));
-fprintf('done!');
-
-    case {'MaxMelCRF', 'MaxLMSCRF'}
-         controls = {...
-            '25pct'...
-            '50pct'...
-            '100pct'...
-            '200pct'...
-            '400pct'...
-            'AttentionTask'...
-            };
+        % Get the feat stats dir
+        for i = runNums
+            statsDir = fullfile(session_dir,d{i},[func '.feat'],'stats');
+            dof = load(fullfile(statsDir,'dof'));
+            pval = load_nifti(fullfile(statsDir,pvalVolumeName));
+            
+            tmp(:, :, :, i) = pval.vol;
+            
+        end
+        
+        % Take the natural log
+        tmp(tmp == 0) = NaN;
+        logTmp = log(tmp);
+        sumLogTmp = -2*sum(logTmp, 4);
+        pval.vol = sumLogTmp;
+        fprintf('\t * Saving out Fisher''s test...');
+        save_nifti(pval,fullfile(output_dir,[subj_name  condition 'Fisher_Chisq.anat.nii.gz']));
+        fprintf('done!');
+        
+        P = 1 - chi2cdf(sumLogTmp,2*length(runNums));
+        pval.vol = P;
+        fprintf('\t * Saving out Fisher''s test as p values...');
+        save_nifti(pval,fullfile(output_dir,[subj_name condition 'Fisher_pval.anat.nii.gz']));
+        fprintf('done!');
+        
+   
